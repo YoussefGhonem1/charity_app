@@ -5,6 +5,10 @@ class AppTheme {
   static ThemeData Theme = ThemeData(
     scaffoldBackgroundColor: AppColors.bgColor,
     textTheme: TextTheme(
+      headlineLarge: TextStyle(
+        fontSize: 36,
+        fontWeight: FontWeight.bold,
+      ),
       headlineMedium: TextStyle(
         fontSize: 32,
         fontWeight: FontWeight.w700,
@@ -23,6 +27,15 @@ class AppTheme {
       bodyMedium: TextStyle(
         fontSize: 16,
         fontWeight: FontWeight.w400,
+        color: Colors.black,
+      ),
+      labelMedium: TextStyle(
+        fontSize: 15,
+        fontWeight: FontWeight.bold,
+        color: Colors.black,
+      ),
+      labelSmall: TextStyle(
+        fontSize: 15,
         color: Colors.black,
       ),
 
