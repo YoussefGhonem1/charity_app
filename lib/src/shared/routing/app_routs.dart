@@ -2,9 +2,12 @@
 import 'package:charity/src/features/splash/screens/splash_page.dart';
 import 'package:flutter/material.dart';
 
+import '../../features/sign_in_password/screens/sign_in_password_screen.dart';
+
 
 class Routes {
   static const String initial = '/';
+  static const String signInPassword = '/sign_in_password';
 
 }
 
@@ -13,6 +16,8 @@ class AppRoutes {
     switch (settings.name) {
       case Routes.initial:
         return MaterialPageRoute(builder: (_) => const SplashPage());
+      case Routes.signInPassword:
+        return MaterialPageRoute(builder: (_) => SignInPasswordScreen());
        
       default:
         return MaterialPageRoute(
