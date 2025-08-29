@@ -1,5 +1,6 @@
 
 import 'package:charity/src/features/splash/widgets/animation_letter.dart';
+import 'package:charity/src/shared/routing/app_routs.dart';
 import 'package:flutter/material.dart';
 
 import '../../../shared/theme/app_colors.dart';
@@ -72,7 +73,7 @@ late final List<Offset> entryOffsets = List.generate(
   void navigateToOnBoarding() {
     Future.delayed(const Duration(seconds: 3), () {
       if (mounted) {
-       // Navigator.pushReplacementNamed(context, Routes.onBoarding);
+        Navigator.pushReplacementNamed(context, Routes.onBoarding);
       }
     });
   }
