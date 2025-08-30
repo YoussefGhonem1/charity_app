@@ -1,3 +1,4 @@
+import 'package:charity/src/shared/routing/app_routs.dart';
 import 'package:flutter/material.dart';
 
 import '../../../shared/widgets/button.dart';
@@ -19,10 +20,7 @@ class SignInPasswordScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 50),
-              Text(
-                'Sign in',
-                style: theme.textTheme.headlineLarge
-              ),
+              Text('Sign in', style: theme.textTheme.headlineLarge),
               const SizedBox(height: 40),
               CustomTextField(
                 controller: passController,
@@ -31,17 +29,23 @@ class SignInPasswordScreen extends StatelessWidget {
                 obscureText: true,
               ),
               const SizedBox(height: 30),
-              ContinueButton(onPressed: () {}),
+              ContinueButton(
+                onPressed: () {
+                  //Navigator.pushReplacementNamed(context, Routes.createAcount);
+                },
+              ),
               const SizedBox(height: 20),
               Row(
                 children: [
-                  Text(
-                    'Forgot Password ? ',
-                    style: theme.textTheme.labelSmall
-                  ),
-                  Text(
-                    'Reset',
-                    style: theme.textTheme.labelMedium
+                  Text('Forgot Password ?', style: theme.textTheme.labelSmall),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pushReplacementNamed(
+                        context,
+                        Routes.forgetPassword,
+                      );
+                    },
+                    child: Text('Reset', style: theme.textTheme.labelMedium),
                   ),
                 ],
               ),

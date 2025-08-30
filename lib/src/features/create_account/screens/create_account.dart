@@ -1,25 +1,23 @@
-
+import 'package:charity/src/shared/widgets/text_form.dart';
 import 'package:flutter/material.dart';
 import '../../../shared/widgets/button.dart';
 
-
-
 class CreateAccountPage extends StatefulWidget {
   CreateAccountPage({super.key});
-final TextEditingController passController = TextEditingController();
-
+  final TextEditingController passController = TextEditingController();
 
   @override
   State<CreateAccountPage> createState() => _CreateAccountPageState();
 }
 
 class _CreateAccountPageState extends State<CreateAccountPage> {
-  bool _isPasswordVisible = false;
-
+  final TextEditingController firstNameController = TextEditingController();
+  final TextEditingController lastNameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
-      final theme = Theme.of(context);
-      
+    final theme = Theme.of(context);
 
     return Scaffold(
       body: SafeArea(
@@ -28,100 +26,49 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              
-              IconButton(
-                icon: const Icon(Icons.arrow_back),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
               const SizedBox(height: 10),
 
-              const Text(
-                "Create Account",
-                style: TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 30),
+              Text("Create Account", style: theme.textTheme.headlineLarge),
+              const SizedBox(height: 40),
 
-              TextField(
-                decoration: InputDecoration(
-                  hintText: "Firstname",
-                  filled: true,
-                  fillColor: Colors.grey.shade200,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
+              CustomTextField(
+                hintText: 'First Name',
+                controller: firstNameController,
               ),
-              const SizedBox(height: 15),
-              TextField(
-                decoration: InputDecoration(
-                  hintText: "Lastname",
-                  filled: true,
-                  fillColor: Colors.grey.shade200,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 15),
-             TextField(
-                decoration: InputDecoration(
-                  hintText: "Email",
-                  filled: true,
-                  fillColor: Colors.grey.shade200,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-              ),
-                            
-              const SizedBox(height: 15),
-              TextField(
-                obscureText: !_isPasswordVisible,
-                decoration: InputDecoration(
-                  hintText: "Password",
-                  suffixIcon: IconButton(
-                    icon:  Icon(_isPasswordVisible ? Icons.visibility : Icons.visibility_off,),
-                    onPressed: () {
-                      setState(() {
-                        _isPasswordVisible = !_isPasswordVisible;
-                      });
-                    },
-                  ),
-                  filled: true,
-                  fillColor: Colors.grey.shade200,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 16),
 
-              
+              CustomTextField(
+                hintText: 'Last Name',
+                controller: lastNameController,
+              ),
+              const SizedBox(height: 16),
+
+              CustomTextField(
+                hintText: 'Email Address',
+                controller: emailController,
+              ),
+              const SizedBox(height: 16),
+
+              CustomTextField(
+                hintText: 'Password',
+                controller: passwordController,
+                obscureText: true,
+              ),
+              const SizedBox(height: 32),
+
               SizedBox(
                 width: double.infinity,
                 height: 50,
                 child: ContinueButton(onPressed: () {}),
-                    ),
-                                  
+              ),
+
               const SizedBox(height: 20),
               Row(
                 children: [
-                  Text(
-                    'Forgot Password ? ',
-                    style: theme.textTheme.labelSmall
-                  ),
-                  Text(
-                    'Reset',
-                    style: theme.textTheme.labelMedium
+                  Text('Have an account?', style: theme.textTheme.labelSmall),
+                  TextButton(
+                    onPressed: () {},
+                    child: Text('Sign In', style: theme.textTheme.labelMedium),
                   ),
                 ],
               ),
@@ -131,8 +78,4 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
       ),
     );
   }
-  
- 
-  
-  
 }

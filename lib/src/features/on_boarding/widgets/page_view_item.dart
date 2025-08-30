@@ -1,4 +1,5 @@
 import 'package:charity/src/features/on_boarding/widgets/custom_button_onboarding.dart';
+import 'package:charity/src/shared/routing/app_routs.dart';
 import 'package:charity/src/shared/theme/app_colors.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +35,7 @@ class PageViewItem extends StatelessWidget {
               maintainSize: true,
               child: GestureDetector(
                 onTap: () {
-                  //   Navigator.pushReplacementNamed(context, Routes.signInEmail);
+                    Navigator.pushReplacementNamed(context, Routes.signInPassword);
                 },
                 child: Padding(
                   padding: EdgeInsets.symmetric(
@@ -115,7 +116,7 @@ class PageViewItem extends StatelessWidget {
                         maintainSize: true,
                         child: CustomButtonOnboarding(
                           onPressed: () {
-                            //    Navigator.pushReplacementNamed(context, Routes.signInEmail);
+                              Navigator.pushReplacementNamed(context, Routes.signInPassword);
                           },
                           label: 'Get Started',
                         ),

@@ -6,14 +6,11 @@ class AppTheme {
     scaffoldBackgroundColor: AppColors.bgColor,
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
-      fillColor: AppColors.greyShade200,
+      fillColor: AppColors.lightGrey,
       hintStyle: TextStyle(color: AppColors.greyColor, fontSize: 17),
     ),
     textTheme: TextTheme(
-      headlineLarge: TextStyle(
-        fontSize: 36,
-        fontWeight: FontWeight.bold,
-      ),
+      headlineLarge: TextStyle(fontSize: 34, fontWeight: FontWeight.bold),
       headlineMedium: TextStyle(
         fontSize: 32,
         fontWeight: FontWeight.w700,
@@ -39,12 +36,7 @@ class AppTheme {
         fontWeight: FontWeight.bold,
         color: Colors.black,
       ),
-      labelSmall: TextStyle(
-        fontSize: 15,
-        color: Colors.black,
-      ),
-
+      labelSmall: TextStyle(fontSize: 15, color: Colors.black),
     ),
   );
-
 }
