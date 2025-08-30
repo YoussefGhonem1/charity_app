@@ -4,6 +4,11 @@ import 'app_colors.dart';
 class AppTheme {
   static ThemeData Theme = ThemeData(
     scaffoldBackgroundColor: AppColors.bgColor,
+    inputDecorationTheme: InputDecorationTheme(
+      filled: true,
+      fillColor: AppColors.greyShade200,
+      hintStyle: TextStyle(color: AppColors.greyColor, fontSize: 17),
+    ),
     textTheme: TextTheme(
       headlineLarge: TextStyle(
         fontSize: 36,
