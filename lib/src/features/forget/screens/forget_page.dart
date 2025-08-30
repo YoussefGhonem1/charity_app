@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import '../../../shared/widgets/button.dart';
 import '../../../shared/widgets/text_form.dart';
 
-class SignInPasswordScreen extends StatelessWidget {
-  SignInPasswordScreen({super.key});
+class Forget extends StatelessWidget {
+  Forget({super.key});
 
   final TextEditingController passController = TextEditingController();
 
@@ -18,37 +18,30 @@ class SignInPasswordScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+  IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
               const SizedBox(height: 50),
               Text(
-                'Sign in',
+                'Forgot Password',
                 style: theme.textTheme.headlineLarge
               ),
               const SizedBox(height: 40),
               CustomTextField(
                 controller: passController,
-                hintText: "Password",
+                hintText: "Enter Email Address",
                 keyboardType: TextInputType.name,
                 obscureText: true,
               ),
               const SizedBox(height: 30),
               ContinueButton(onPressed: () {}),
-              const SizedBox(height: 20),
-              Row(
-                children: [
-                  Text(
-                    'Forgot Password ? ',
-                    style: theme.textTheme.labelSmall
-                  ),
-                  Text(
-                    'Reset',
-                    style: theme.textTheme.labelMedium
-                  ),
-                ],
-              ),
+            
             ],
           ),
         ),
       ),
     );
-  }
-}
+  }}

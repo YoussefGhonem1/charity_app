@@ -1,34 +1,37 @@
-import 'package:charity/src/shared/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
-class PasswordInputBox extends StatelessWidget {
+class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
-  const PasswordInputBox({super.key, required this.controller});
-
+  final String hintText;
+  final TextInputType keyboardType;
+  final bool obscureText;
+  final bool readOnly;
+  const CustomTextField({
+    super.key,
+    required this.controller,
+    required this.hintText,
+    this.keyboardType = TextInputType.text,
+    this.obscureText = false,
+    this.readOnly = false,
+  });
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: 56,
-      decoration: BoxDecoration(
-        color: AppColors.greyShade200,
-        borderRadius: BorderRadius.circular(4),
-      ),
-      alignment: Alignment.centerLeft,
-      child: Padding(
-        padding: const EdgeInsets.only(left: 18.0),
-        child: TextField(
-          controller: controller,
-          decoration: const InputDecoration(
-            border: InputBorder.none,
-            hintText: 'Password',
-            hintStyle: TextStyle(
-              color: AppColors.greyColor,
-              fontSize: 18,
-            ),
-          ),
-          obscureText: true,
+    return TextField(
+      controller: controller,
+      keyboardType: keyboardType,
+      obscureText: obscureText,
+      readOnly: readOnly,
+      style: Theme.of(context).textTheme.bodyMedium,
+      decoration: InputDecoration(
+        contentPadding: const EdgeInsets.symmetric(
+          vertical: 20.0,
+          horizontal: 15.0,
         ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(4),
+          borderSide: BorderSide.none,
+        ),
+        hintText: hintText,
       ),
     );
   }

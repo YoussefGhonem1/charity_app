@@ -9,7 +9,7 @@ abstract class AppColors {
  static const Color blackColor = Color(0xFF000000);
   static const Color greyColor = Color(0xFF9E9E9E);
   static const Color greyShade200 = Color(0xFFEEEEEE);
-
-
-
-}
+  static const Color greenColor = Color.fromARGB(255, 11, 148, 18);
+  
+  
+  }
