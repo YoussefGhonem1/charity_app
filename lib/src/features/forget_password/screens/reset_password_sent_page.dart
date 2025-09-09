@@ -1,8 +1,7 @@
 
+import 'package:charity/src/shared/routing/app_routs.dart';
 import 'package:flutter/material.dart';
-
-import '../../../shared/theme/app_colors.dart' show AppColors;
-import '../../sign_in_password/screens/sign_in_password_screen.dart' show SignInPasswordScreen;
+import '../../../shared/theme/app_colors.dart' ;
 
 class ResetPasswordSentScreen extends StatelessWidget {
   const ResetPasswordSentScreen({super.key});
@@ -45,12 +44,7 @@ class ResetPasswordSentScreen extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(vertical: 14),
                     ),
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => SignInPasswordScreen(),
-                        ),
-                      );
+                     Navigator.pushNamed(context, Routes.signInPassword);
                     },
                     child: const Text(
                       "Return to Login",

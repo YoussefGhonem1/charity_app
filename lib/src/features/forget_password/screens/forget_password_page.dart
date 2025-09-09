@@ -1,5 +1,5 @@
+import 'package:charity/src/shared/routing/app_routs.dart';
 import 'package:flutter/material.dart';
-
 import '../../../shared/widgets/button.dart';
 import '../../../shared/widgets/text_form.dart';
 
@@ -36,12 +36,7 @@ class ForgetPasswordPage extends StatelessWidget {
               const SizedBox(height: 30),
               ContinueButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ResetPasswordSentScreen(),
-                    ),
-                  );
+               Navigator.pushNamed(context, Routes.forgetConfirmation);
                 },
               ),
             ],
