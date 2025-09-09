@@ -34,7 +34,16 @@ class ForgetPasswordPage extends StatelessWidget {
                 obscureText: true,
               ),
               const SizedBox(height: 30),
-              ContinueButton(onPressed: () {}),
+              ContinueButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ResetPasswordSentScreen(),
+                    ),
+                  );
+                },
+              ),
             ],
           ),
         ),
