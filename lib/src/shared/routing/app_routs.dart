@@ -5,6 +5,7 @@ import 'package:charity/src/features/on_boarding/screens/on_boarding_page.dart';
 import 'package:charity/src/features/splash/screens/splash_page.dart';
 import 'package:flutter/material.dart';
 import 'package:charity/src/features/forget_password/screens/reset_password_sent_page.dart';
+import '../../features/sigin_in_email/screens/signin_email.dart';
 import '../../features/sign_in_password/screens/sign_in_password_screen.dart';
 
 
@@ -15,6 +16,7 @@ class Routes {
   static const String createAcount = '/create_account';
   static const String forgetPassword = '/forget_password';
   static const String forgetConfirmation = '/forget_confirmation';
+  static const String signInEmail = '/sign_in_email';
 
 
 
@@ -39,6 +41,9 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => ForgetPasswordPage());
       case Routes.forgetConfirmation:
         return MaterialPageRoute(builder: (_) => ResetPasswordSentScreen());
+
+      case Routes.signInEmail:
+        return MaterialPageRoute(builder: (_) => LoginPage());
 
 
 
