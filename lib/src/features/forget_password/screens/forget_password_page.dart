@@ -36,7 +36,10 @@ class ForgetPasswordPage extends StatelessWidget {
               const SizedBox(height: 30),
               ContinueButton(
                 onPressed: () {
-               Navigator.pushNamed(context, Routes.forgetConfirmation);
+                  Navigator.pushReplacementNamed(
+                    context,
+                    Routes.forgetConfirmation,
+                  );
                 },
               ),
             ],

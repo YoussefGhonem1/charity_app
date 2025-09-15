@@ -1,3 +1,4 @@
+import 'package:charity/src/shared/routing/app_routs.dart';
 import 'package:charity/src/shared/widgets/text_form.dart';
 import 'package:flutter/material.dart';
 import '../../../shared/widgets/button.dart';
@@ -67,7 +68,9 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                 children: [
                   Text('Have an account?', style: theme.textTheme.labelSmall),
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushNamed(context, Routes.signInEmail);
+                    },
                     child: Text('Sign In', style: theme.textTheme.labelMedium),
                   ),
                 ],

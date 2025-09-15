@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'app_colors.dart';
 
 class AppTheme {
-  static ThemeData Theme = ThemeData(
+  static ThemeData theme = ThemeData(
     scaffoldBackgroundColor: AppColors.bgColor,
     inputDecorationTheme: InputDecorationTheme(
       filled: true,

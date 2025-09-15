@@ -1,4 +1,3 @@
-
 import 'package:charity/src/shared/routing/app_routs.dart';
 import 'package:charity/src/shared/theme/app_theme.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +14,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Charity App',
       debugShowCheckedModeBanner: false,
-       theme: AppTheme.Theme,
+       theme: AppTheme.theme,
       onGenerateRoute: AppRoutes.onGenerateRoute,
       initialRoute: Routes.initial,
 

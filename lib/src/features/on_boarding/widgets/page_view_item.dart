@@ -35,7 +35,7 @@ class PageViewItem extends StatelessWidget {
               maintainSize: true,
               child: GestureDetector(
                 onTap: () {
-                    Navigator.pushReplacementNamed(context, Routes.signInPassword);
+                    Navigator.pushReplacementNamed(context, Routes.signInEmail);
                 },
                 child: Padding(
                   padding: EdgeInsets.symmetric(
@@ -116,7 +116,7 @@ class PageViewItem extends StatelessWidget {
                         maintainSize: true,
                         child: CustomButtonOnboarding(
                           onPressed: () {
-                              Navigator.pushReplacementNamed(context, Routes.signInPassword);
+                              Navigator.pushReplacementNamed(context, Routes.signInEmail);
                           },
                           label: 'Get Started',
                         ),

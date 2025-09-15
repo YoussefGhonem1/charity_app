@@ -1,3 +1,5 @@
+import 'package:charity/src/shared/routing/app_routs.dart';
+import 'package:charity/src/shared/widgets/text_form.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatelessWidget {
@@ -5,6 +7,7 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final TextEditingController emailController = TextEditingController();
     return Scaffold(
       backgroundColor: Colors.white,
       body: Padding(
@@ -22,37 +25,15 @@ class LoginPage extends StatelessWidget {
               ),
             ),
             SizedBox(height: 32),
-            TextField(
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Colors.white,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(
-                    width: 1,
-                    color: const Color(0xFF4790EF),
-                  ),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(width: 1, color: Colors.grey),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(
-                    width: 1,
-                    color: const Color(0xFF4790EF),
-                  ),
-                ),
-                labelText: 'Email Address',
-                hintText: 'example@gmail.com',
-              ),
+            CustomTextField(
+              hintText: 'Email Address',
+              controller: emailController,
             ),
             SizedBox(height: 16),
 
             ElevatedButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/signin_password');
+                Navigator.pushNamed(context, Routes.signInPassword);
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFfe7277),
@@ -83,18 +64,21 @@ class LoginPage extends StatelessWidget {
                   ),
                 ),
                 GestureDetector(
-                  onTap: (){
-                    Navigator.pushNamed(context, '/create_account');
-                    },
-               child:  Text(
-                  'Create One',
-                  style: TextStyle(
-                    color: const Color(0xFF272727),
-                    fontSize: 12,
+                  onTap: () {
+                    Navigator.pushReplacementNamed(
+                      context,
+                      Routes.createAcount,
+                    );
+                  },
+                  child: Text(
+                    'Create One',
+                    style: TextStyle(
+                      color: const Color(0xFF272727),
+                      fontSize: 12,
 
-                    fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
-               ),
                 ),
               ],
             ),
@@ -111,7 +95,7 @@ class LoginPage extends StatelessWidget {
                 visualDensity: const VisualDensity(
                   vertical: VisualDensity.minimumDensity,
                 ),
-                leading: Image.asset('assets/Apple svg.png'),
+                leading: Image.asset('assets/icons/Apple svg.png'),
                 title: Text(
                   'Continue With Apple',
                   textAlign: TextAlign.center,
@@ -136,7 +120,7 @@ class LoginPage extends StatelessWidget {
                 visualDensity: const VisualDensity(
                   vertical: VisualDensity.minimumDensity,
                 ),
-                leading: Image.asset('assets/Google - png 0.png'),
+                leading: Image.asset('assets/icons/Google - png 0.png'),
                 title: Text(
                   'Continue With Google',
                   textAlign: TextAlign.center,
@@ -161,7 +145,7 @@ class LoginPage extends StatelessWidget {
                 visualDensity: const VisualDensity(
                   vertical: VisualDensity.minimumDensity,
                 ),
-                leading: Image.asset('assets/Facebook - png 0.png'),
+                leading: Image.asset('assets/icons/Facebook - png 0.png'),
                 title: Text(
                   'Continue With Facebook',
                   textAlign: TextAlign.center,
