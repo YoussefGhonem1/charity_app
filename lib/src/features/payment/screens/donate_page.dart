@@ -1,3 +1,4 @@
+import 'package:charity/src/shared/routing/app_routs.dart';
 import 'package:charity/src/shared/widgets/button.dart';
 import 'package:flutter/material.dart';
 import 'package:charity/src/shared/theme/app_colors.dart';
@@ -99,7 +100,11 @@ class _DonatePageState extends State<DonatePage> {
                 _buildPresetAmountsGrid(),
                 _buildAnonymousCheckbox(theme),
                 const SizedBox(height: 22),
-                ContinueButton(onPressed: () {}),
+                ContinueButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, Routes.payment);
+                  },
+                ),
               ],
             ),
           ),

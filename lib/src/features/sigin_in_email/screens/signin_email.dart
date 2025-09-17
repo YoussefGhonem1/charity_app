@@ -36,6 +36,7 @@ class LoginPage extends StatelessWidget {
                 Navigator.pushNamed(context, Routes.signInPassword);
               },
             ),
+
             SizedBox(height: 16),
             Row(
               children: [
