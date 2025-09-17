@@ -4,7 +4,12 @@ import '../theme/app_colors.dart';
 
 class ContinueButton extends StatelessWidget {
   final VoidCallback onPressed;
-  const ContinueButton({super.key, required this.onPressed});
+  final String text;
+  const ContinueButton({
+    super.key,
+    required this.onPressed,
+    this.text = 'Continue',
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +26,7 @@ class ContinueButton extends StatelessWidget {
         ),
         onPressed: onPressed,
         child: Text(
-          'Continue',
+          text,
           style: TextStyle(fontSize: 18, color: AppColors.bgColor),
         ),
       ),
