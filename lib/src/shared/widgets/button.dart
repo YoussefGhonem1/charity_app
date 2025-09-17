@@ -14,18 +14,15 @@ class ContinueButton extends StatelessWidget {
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primaryColor,
-          
+
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(6),
+            borderRadius: BorderRadius.circular(16),
           ),
         ),
         onPressed: onPressed,
         child: Text(
           'Continue',
-          style: TextStyle(
-            fontSize: 18,
-            color: AppColors.bgColor,
-          ),
+          style: TextStyle(fontSize: 18, color: AppColors.bgColor),
         ),
       ),
     );

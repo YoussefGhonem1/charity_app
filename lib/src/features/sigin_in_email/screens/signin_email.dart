@@ -1,4 +1,5 @@
 import 'package:charity/src/shared/routing/app_routs.dart';
+import 'package:charity/src/shared/widgets/button.dart';
 import 'package:charity/src/shared/widgets/text_form.dart';
 import 'package:flutter/material.dart';
 
@@ -30,26 +31,10 @@ class LoginPage extends StatelessWidget {
               controller: emailController,
             ),
             SizedBox(height: 16),
-
-            ElevatedButton(
+            ContinueButton(
               onPressed: () {
                 Navigator.pushNamed(context, Routes.signInPassword);
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFfe7277),
-                minimumSize: Size(double.infinity, 48),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: Text(
-                'Continue',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
             ),
             SizedBox(height: 16),
             Row(

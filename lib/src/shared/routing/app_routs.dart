@@ -2,6 +2,7 @@
 import 'package:charity/src/features/create_account/screens/create_account.dart';
 import 'package:charity/src/features/forget_password/screens/forget_password_page.dart';
 import 'package:charity/src/features/on_boarding/screens/on_boarding_page.dart';
+import 'package:charity/src/features/payment/screens/donate_page.dart';
 import 'package:charity/src/features/splash/screens/splash_page.dart';
 import 'package:flutter/material.dart';
 import 'package:charity/src/features/forget_password/screens/reset_password_sent_page.dart';
@@ -17,6 +18,7 @@ class Routes {
   static const String forgetPassword = '/forget_password';
   static const String forgetConfirmation = '/forget_confirmation';
   static const String signInEmail = '/sign_in_email';
+  static const String donate = '/donate';
 
 
 
@@ -41,6 +43,8 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => ForgetPasswordPage());
       case Routes.forgetConfirmation:
         return MaterialPageRoute(builder: (_) => ResetPasswordSentScreen());
+          case Routes.donate:
+        return MaterialPageRoute(builder: (_) => DonatePage());
 
       case Routes.signInEmail:
         return MaterialPageRoute(builder: (_) => LoginPage());

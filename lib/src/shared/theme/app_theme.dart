@@ -12,7 +12,7 @@ class AppTheme {
     textTheme: TextTheme(
       headlineLarge: TextStyle(fontSize: 34, fontWeight: FontWeight.bold),
       headlineMedium: TextStyle(
-        fontSize: 32,
+        fontSize: 28,
         fontWeight: FontWeight.w700,
         color: Colors.black,
       ),
