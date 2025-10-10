@@ -1,4 +1,5 @@
 import 'package:charity/src/features/create_account/screens/create_account.dart';
+import 'package:charity/src/features/donation_page/screen/donation_page.dart';
 import 'package:charity/src/features/forget_password/screens/forget_password_page.dart';
 import 'package:charity/src/features/on_boarding/screens/on_boarding_page.dart';
 import 'package:charity/src/features/payment/screens/add_card_page.dart';
@@ -25,6 +26,7 @@ class Routes {
   static const String addCard = '/add_card';
   static const String enterPin = '/enter_pin';
   static const String success = '/success';
+  static const String donationPage = '/donation_page';
 }
 
 class AppRoutes {
@@ -41,6 +43,10 @@ class AppRoutes {
 
       case Routes.createAcount:
         return MaterialPageRoute(builder: (_) => CreateAccountPage());
+
+      case Routes.donationPage:
+        return MaterialPageRoute(builder: (_) => const DonationPage());
+
 
       case Routes.forgetPassword:
         return MaterialPageRoute(builder: (_) => ForgetPasswordPage());
