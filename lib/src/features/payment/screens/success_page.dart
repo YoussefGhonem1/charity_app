@@ -1,3 +1,4 @@
+import 'package:charity/src/shared/routing/app_routs.dart';
 import 'package:flutter/material.dart';
 import 'package:charity/src/shared/theme/app_colors.dart';
 import 'package:confetti/confetti.dart';
@@ -73,9 +74,7 @@ class _SuccessPageState extends State<SuccessPage> {
                         ),
                       ),
                       onPressed: () {
-                        Navigator.of(
-                          context,
-                        ).popUntil((route) => route.isFirst);
+                        Navigator.pushNamed(context, Routes.homePage);
                       },
                       child: Text(
                         'OK',

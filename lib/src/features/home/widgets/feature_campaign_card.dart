@@ -18,7 +18,6 @@ class FeatureCampaignCard extends StatelessWidget {
     return Container(
       width: 220,
       padding: EdgeInsets.all(10),
-      margin: EdgeInsets.symmetric(vertical: 5),
       decoration: BoxDecoration(
         color: Colors.white,
         border: Border.all(color: Color(0xFFFE7277), width: 2),
@@ -61,7 +60,10 @@ class FeatureCampaignCard extends StatelessWidget {
           SizedBox(height: 4),
           Row(
             children: [
-              Text("By ${campaign.by}", style: TextStyle(fontSize: 12, color: Color(0xFFFE7277))),
+              Text(
+                "By ${campaign.by}",
+                style: TextStyle(fontSize: 12, color: Color(0xFFFE7277)),
+              ),
               SizedBox(width: 3),
               Icon(Icons.verified, color: Color(0xFFFE7277), size: 15),
             ],
@@ -69,9 +71,15 @@ class FeatureCampaignCard extends StatelessWidget {
           SizedBox(height: 5),
           Row(
             children: [
-              Text("Raised", style: TextStyle(fontSize: 11, color: Colors.grey[500])),
+              Text(
+                "Raised",
+                style: TextStyle(fontSize: 11, color: Colors.grey[500]),
+              ),
               Spacer(),
-              Text("${(campaign.percent * 100).round()}%", style: TextStyle(fontSize: 11, color: Color(0xFFFE7277))),
+              Text(
+                "${(campaign.percent * 100).round()}%",
+                style: TextStyle(fontSize: 11, color: Color(0xFFFE7277)),
+              ),
             ],
           ),
           SizedBox(height: 3),
@@ -85,15 +93,25 @@ class FeatureCampaignCard extends StatelessWidget {
           SizedBox(height: 6),
           Row(
             children: [
-              ...List.generate(3, (idx) => Padding(
-                padding: EdgeInsets.only(right: 2),
-                child: CircleAvatar(
-                  radius: 8,
-                  backgroundImage: NetworkImage("https://randomuser.me/api/portraits/women/${30 + idx}.jpg"),
+              ...List.generate(
+                3,
+                (idx) => Padding(
+                  padding: EdgeInsets.only(right: 2),
+                  child: CircleAvatar(
+                    radius: 8,
+                    backgroundImage: NetworkImage(
+                      "https://randomuser.me/api/portraits/women/${30 + idx}.jpg",
+                    ),
+                  ),
                 ),
-              )),
+              ),
               SizedBox(width: 4),
-              Text("+${campaign.donors} people donated", style: TextStyle(fontSize: 11, color: Colors.grey[800]), maxLines: 1, overflow: TextOverflow.ellipsis),
+              Text(
+                "+${campaign.donors} people donated",
+                style: TextStyle(fontSize: 11, color: Colors.grey[800]),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
             ],
           ),
           SizedBox(height: 6),
@@ -101,7 +119,11 @@ class FeatureCampaignCard extends StatelessWidget {
             children: [
               Text(
                 campaign.category,
-                style: TextStyle(fontSize: 13, color: Color(0xFFFE7277), fontWeight: FontWeight.w600),
+                style: TextStyle(
+                  fontSize: 13,
+                  color: Color(0xFFFE7277),
+                  fontWeight: FontWeight.w600,
+                ),
               ),
               SizedBox(width: 4),
               Icon(Icons.folder, color: Color(0xFFFE7277), size: 15),
