@@ -8,6 +8,7 @@ import 'package:charity/src/features/payment/screens/donate_page.dart';
 import 'package:charity/src/features/payment/screens/enter_pin_page.dart';
 import 'package:charity/src/features/payment/screens/payment_page.dart';
 import 'package:charity/src/features/payment/screens/success_page.dart';
+import 'package:charity/src/features/profile_management/profile_management_screen.dart';
 import 'package:charity/src/features/splash/screens/splash_page.dart';
 import 'package:flutter/material.dart';
 import 'package:charity/src/features/forget_password/screens/reset_password_sent_page.dart';
@@ -29,6 +30,7 @@ class Routes {
   static const String success = '/success';
   static const String donationPage = '/donation_page';
   static const String homePage = '/home_page';
+  static const String profileManagement = '/profile_management';
 }
 
 class AppRoutes {
@@ -68,6 +70,8 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => SuccessPage());
          case Routes.homePage:
         return MaterialPageRoute(builder: (_) => HomeScreen());
+      case Routes.profileManagement:
+        return MaterialPageRoute(builder: (_) => const ProfileManagementScreen());
       default:
         return MaterialPageRoute(
           builder: (_) =>
