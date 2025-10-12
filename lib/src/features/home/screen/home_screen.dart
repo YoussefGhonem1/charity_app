@@ -1,7 +1,8 @@
 import 'package:charity/src/shared/routing/app_routs.dart';
 import 'package:charity/src/shared/widgets/button.dart';
+import 'package:charity/src/shared/providers/user_provider.dart';
 import 'package:flutter/material.dart';
-import '../models/user_model.dart';
+import 'package:provider/provider.dart';
 import '../models/campaign_model.dart';
 import '../models/category_model.dart';
 import '../models/location_model.dart';
@@ -18,12 +19,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final UserModel user = UserModel(
-    "Mr Dat",
-    "https://randomuser.me/api/portraits/men/32.jpg",
-    "\$150K",
-  );
-  final double wallet = 500;
 
   List featureCampaigns = [
     CampaignModel(
@@ -171,36 +166,64 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color(0xFFF7FAF8),
-      body: SafeArea(
-        child: ListView(
-          padding: EdgeInsets.only(left: 16, right: 16, top: 12, bottom: 25),
-          children: [
-            Row(
+    return Consumer<UserProvider>(
+      builder: (context, userProvider, child) {
+        final user = userProvider.user;
+        
+        if (user == null) {
+          return Scaffold(
+            body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('No user logged in'),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () => Navigator.pushNamed(context, Routes.signInEmail),
+                    child: const Text('Sign In'),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+        
+        return Scaffold(
+          backgroundColor: Color(0xFFF7FAF8),
+          body: SafeArea(
+            child: ListView(
+              padding: EdgeInsets.only(left: 16, right: 16, top: 12, bottom: 25),
               children: [
-                CircleAvatar(
-                  backgroundImage: NetworkImage(user.avatarUrl),
-                  radius: 24,
-                ),
-                SizedBox(width: 16),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                Row(
                   children: [
-                    Text(
-                      "Hello, ${user.name}",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      ),
+                    CircleAvatar(
+                      backgroundImage: NetworkImage(user.avatarUrl),
+                      radius: 24,
+                      onBackgroundImageError: (exception, stackTrace) {
+                        // Handle image loading error
+                      },
+                      child: user.avatarUrl.isEmpty 
+                          ? const Icon(Icons.person, size: 24)
+                          : null,
                     ),
-                    SizedBox(height: 2),
-                    Text(
-                      "Donated ${user.donatedAmount}",
-                      style: TextStyle(color: Colors.grey[500], fontSize: 13),
+                    SizedBox(width: 16),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Hello, ${user.name}",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
+                        ),
+                        SizedBox(height: 2),
+                        Text(
+                          "Donated ${user.donatedAmount}",
+                          style: TextStyle(color: Colors.grey[500], fontSize: 13),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
                 Spacer(),
                 Icon(Icons.search, size: 26, color: Colors.grey[400]),
               ],
@@ -224,7 +247,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         SizedBox(height: 8),
                         Text(
-                          "\$$wallet.00",
+                          "\$${user.walletBalance.toStringAsFixed(2)}",
                           style: TextStyle(
                             fontSize: 25,
                             fontWeight: FontWeight.bold,
@@ -376,6 +399,8 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
+    );
+      },
     );
   }
 }

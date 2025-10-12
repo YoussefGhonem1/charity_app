@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:charity/src/shared/theme/app_colors.dart';
 import 'package:charity/src/shared/routing/app_routs.dart';
+import 'package:charity/src/shared/providers/user_provider.dart';
+import 'package:provider/provider.dart';
 
 class ProfileManagementScreen extends StatefulWidget {
   const ProfileManagementScreen({Key? key}) : super(key: key);
@@ -10,11 +12,42 @@ class ProfileManagementScreen extends StatefulWidget {
 }
 
 class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
-  bool donateAsAnonymous = false;
-  double walletBalance = 500.00;
-
   @override
   Widget build(BuildContext context) {
+    return Consumer<UserProvider>(
+      builder: (context, userProvider, child) {
+        final user = userProvider.user;
+        
+        if (userProvider.isLoading) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+        
+        if (user == null) {
+          return Scaffold(
+            body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('No user logged in'),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () => Navigator.pushNamed(context, Routes.signInEmail),
+                    child: const Text('Sign In'),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+        
+        return _buildProfileScreen(user, userProvider);
+      },
+    );
+  }
+
+  Widget _buildProfileScreen(user, UserProvider userProvider) {
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: 3, // Account Tab
@@ -47,21 +80,25 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
                 children: [
                   CircleAvatar(
                     radius: 30,
-                    backgroundImage: const NetworkImage(
-                      'https://images.unsplash.com/photo-1500648767791-00dcc994a43e',
-                    ),
+                    backgroundImage: NetworkImage(user.avatarUrl),
+                    onBackgroundImageError: (exception, stackTrace) {
+                      // Handle image loading error
+                    },
+                    child: user.avatarUrl.isEmpty 
+                        ? const Icon(Icons.person, size: 30)
+                        : null,
                   ),
                   const SizedBox(width: 12),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       Text(
-                        'Hello, Mr Hegazy',
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                        'Hello, ${user.name}',
+                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                       Text(
-                        'Donated \$150K',
-                        style: TextStyle(color: Colors.grey),
+                        'Donated ${user.donatedAmount}',
+                        style: const TextStyle(color: Colors.grey),
                       ),
                     ],
                   ),
@@ -87,7 +124,7 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
                           style: TextStyle(color: Colors.white70),
                         ),
                         Text(
-                          '\$${walletBalance.toStringAsFixed(2)}',
+                          '\$${user.walletBalance.toStringAsFixed(2)}',
                           style: const TextStyle(
                               color: Colors.white,
                               fontSize: 26,
@@ -103,10 +140,8 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      onPressed: () {
-                        setState(() {
-                          walletBalance += 100;
-                        });
+                      onPressed: () async {
+                        await userProvider.updateWalletBalance(100);
                       },
                       child: const Text('Top up'),
                     ),
@@ -124,7 +159,7 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
               _buildMenuItem(
                 icon: Icons.edit,
                 text: 'Edit profile',
-                onTap: () => Navigator.pushNamed(context, '/edit-profile'),
+                onTap: () => Navigator.pushNamed(context, Routes.editProfile),
               ),
 
               // 🔘 Toggle
@@ -132,11 +167,9 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
                 leading: const Icon(Icons.visibility_off),
                 title: const Text('Donate as anonymous'),
                 trailing: Switch(
-                  value: donateAsAnonymous,
-                  onChanged: (value) {
-                    setState(() {
-                      donateAsAnonymous = value;
-                    });
+                  value: user.donateAsAnonymous,
+                  onChanged: (value) async {
+                    await userProvider.updateAnonymousPreference(value);
                   },
                   activeColor: AppColors.greenColor,
                 ),
@@ -155,11 +188,18 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
               _buildMenuItem(
                 icon: Icons.logout,
                 text: 'Logout',
-                onTap: () {
-                  // 👇 Here you can add your logout logic
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Logged out successfully')),
-                  );
+                onTap: () async {
+                  await userProvider.logout();
+                  if (mounted) {
+                    Navigator.pushNamedAndRemoveUntil(
+                      context, 
+                      Routes.signInEmail, 
+                      (route) => false,
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Logged out successfully')),
+                    );
+                  }
                 },
               ),
             ],

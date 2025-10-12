@@ -6,6 +6,8 @@ class CustomTextField extends StatelessWidget {
   final TextInputType keyboardType;
   final bool obscureText;
   final bool readOnly;
+  final String? Function(String?)? validator;
+  final void Function(String)? onChanged;
   const CustomTextField({
     super.key,
     required this.controller,
@@ -13,6 +15,8 @@ class CustomTextField extends StatelessWidget {
     this.keyboardType = TextInputType.text,
     this.obscureText = false,
     this.readOnly = false,
+    this.validator,
+    this.onChanged,
   });
   @override
   Widget build(BuildContext context) {
@@ -21,6 +25,7 @@ class CustomTextField extends StatelessWidget {
       keyboardType: keyboardType,
       obscureText: obscureText,
       readOnly: readOnly,
+      onChanged: onChanged,
       style: Theme.of(context).textTheme.bodyMedium,
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.symmetric(
@@ -32,6 +37,7 @@ class CustomTextField extends StatelessWidget {
           borderSide: BorderSide.none,
         ),
         hintText: hintText,
+        errorText: validator != null ? validator!(controller.text) : null,
       ),
     );
   }

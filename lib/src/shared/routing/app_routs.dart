@@ -9,6 +9,7 @@ import 'package:charity/src/features/payment/screens/enter_pin_page.dart';
 import 'package:charity/src/features/payment/screens/payment_page.dart';
 import 'package:charity/src/features/payment/screens/success_page.dart';
 import 'package:charity/src/features/profile_management/profile_management_screen.dart';
+import 'package:charity/src/features/profile_management/screens/edit_profile_screen.dart';
 import 'package:charity/src/features/splash/screens/splash_page.dart';
 import 'package:flutter/material.dart';
 import 'package:charity/src/features/forget_password/screens/reset_password_sent_page.dart';
@@ -31,6 +32,7 @@ class Routes {
   static const String donationPage = '/donation_page';
   static const String homePage = '/home_page';
   static const String profileManagement = '/profile_management';
+  static const String editProfile = '/edit_profile';
 }
 
 class AppRoutes {
@@ -72,6 +74,8 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => HomeScreen());
       case Routes.profileManagement:
         return MaterialPageRoute(builder: (_) => const ProfileManagementScreen());
+      case Routes.editProfile:
+        return MaterialPageRoute(builder: (_) => const EditProfileScreen());
       default:
         return MaterialPageRoute(
           builder: (_) =>
