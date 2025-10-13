@@ -74,7 +74,7 @@ class _SuccessPageState extends State<SuccessPage> {
                         ),
                       ),
                       onPressed: () {
-                        Navigator.pushNamed(context, Routes.homePage);
+                        Navigator.pushNamed(context, Routes.layout);
                       },
                       child: Text(
                         'OK',

@@ -2,27 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/cupertino.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Favourite App',
-      theme: ThemeData(
-        primarySwatch: Colors.red,
-        scaffoldBackgroundColor: const Color(0xFFF5F5F5),
-      ),
-      home: const FavouriteScreen(),
-      debugShowCheckedModeBanner: false,
-    );
-  }
-}
-
 class FavouriteScreen extends StatefulWidget {
   const FavouriteScreen({super.key});
 
@@ -44,7 +23,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
       'title': 'Donation for Child',
       'org': 'Unesco',
       'image':
-      'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=500&q=80',
+          'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=500&q=80',
       'progress': 0.7,
       'isFav': true,
     },
@@ -52,7 +31,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
       'title': 'Feed the Hungry',
       'org': 'Red Cross',
       'image':
-      'https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?w=500&q=80',
+          'https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?w=500&q=80',
       'progress': 0.5,
       'isFav': true,
     },
@@ -61,7 +40,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
       'title': 'Education for All',
       'org': 'Unesco',
       'image':
-      'https://images.unsplash.com/photo-1588072432836-e10032774350?w=500&q=80',
+          'https://images.unsplash.com/photo-1588072432836-e10032774350?w=500&q=80',
       'progress': 0.8,
       'isFav': true,
     },
@@ -69,7 +48,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
       'title': 'Save the Planet',
       'org': 'Wwf',
       'image':
-      'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=500&q=80',
+          'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=500&q=80',
       'progress': 0.6,
       'isFav': false,
     },
@@ -110,8 +89,10 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
                             child: const TextField(
                               decoration: InputDecoration(
                                 border: InputBorder.none,
-                                suffixIcon:
-                                Icon(Icons.search_rounded, color: Colors.grey),
+                                suffixIcon: Icon(
+                                  Icons.search_rounded,
+                                  color: Colors.grey,
+                                ),
                                 contentPadding: EdgeInsets.symmetric(
                                   horizontal: 13,
                                   vertical: 12,
@@ -152,38 +133,10 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
             ],
           ),
         ),
-
-        bottomNavigationBar: BottomNavigationBar(
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.home),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.heart),
-              label: 'Favourite',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.doc_text),
-              label: 'Categories',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.person),
-              label: 'Account',
-            ),
-          ],
-          currentIndex: _selectedIndex,
-          selectedItemColor: Colors.redAccent,
-          unselectedItemColor: Colors.grey,
-          onTap: _onItemTapped,
-          showUnselectedLabels: true,
-          type: BottomNavigationBarType.fixed,
-        ),
       ),
     );
   }
 }
-
 
 class DonationCard extends StatelessWidget {
   final String imageUrl;
@@ -208,9 +161,7 @@ class DonationCard extends StatelessWidget {
     return Card(
       elevation: 2.0,
       shadowColor: Colors.grey.withOpacity(0.2),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15.0),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
       margin: const EdgeInsets.only(bottom: 20.0),
       child: Padding(
         padding: const EdgeInsets.all(10.0),
@@ -265,10 +216,7 @@ class DonationCard extends StatelessWidget {
                     ),
                     Row(
                       children: [
-                        const Text(
-                          'By',
-                          style: TextStyle(color: Colors.grey),
-                        ),
+                        const Text('By', style: TextStyle(color: Colors.grey)),
                         const SizedBox(width: 4.0),
                         Text(
                           org,
