@@ -1,3 +1,5 @@
+import 'package:charity/src/shared/routing/app_routs.dart';
+import 'package:charity/src/shared/widgets/button.dart';
 import 'package:flutter/material.dart';
 import '../models/user_model.dart';
 import '../models/campaign_model.dart';
@@ -133,16 +135,32 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("All Categories", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+              Text(
+                "All Categories",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              ),
+              SizedBox(height: 6),
+
               Wrap(
-                spacing: 11, runSpacing: 9,
-                children: categories.map((cat) => CategoryChip(category: cat)).toList(),
+                spacing: 11,
+                runSpacing: 9,
+                children: categories
+                    .map((cat) => CategoryChip(category: cat))
+                    .toList(),
               ),
               SizedBox(height: 18),
-              Text("All Locations", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+              Text(
+                "All Locations",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              ),
+              SizedBox(height: 6),
+
               Wrap(
-                spacing: 11, runSpacing: 9,
-                children: locations.map((loc) => LocationChip(location: loc)).toList(),
+                spacing: 11,
+                runSpacing: 9,
+                children: locations
+                    .map((loc) => LocationChip(location: loc))
+                    .toList(),
               ),
             ],
           ),
@@ -169,9 +187,18 @@ class _HomeScreenState extends State<HomeScreen> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Hello, ${user.name}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                    Text(
+                      "Hello, ${user.name}",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
                     SizedBox(height: 2),
-                    Text("Donated ${user.donatedAmount}", style: TextStyle(color: Colors.grey[500], fontSize: 13)),
+                    Text(
+                      "Donated ${user.donatedAmount}",
+                      style: TextStyle(color: Colors.grey[500], fontSize: 13),
+                    ),
                   ],
                 ),
                 Spacer(),
@@ -191,63 +218,103 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("Donation wallet", style: TextStyle(fontSize: 15, color: Colors.white)),
+                        Text(
+                          "Donation wallet",
+                          style: TextStyle(fontSize: 15, color: Colors.white),
+                        ),
                         SizedBox(height: 8),
-                        Text("\$$wallet.00", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.white)),
+                        Text(
+                          "\$$wallet.00",
+                          style: TextStyle(
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
                       ],
                     ),
                   ),
                   ElevatedButton(
                     onPressed: () {},
                     style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                       backgroundColor: Colors.white,
                     ),
-                    child: Text("Top up", style: TextStyle(color: Color(0xFFFE7277), fontWeight: FontWeight.bold)),
+                    child: Text(
+                      "Top up",
+                      style: TextStyle(
+                        color: Color(0xFFFE7277),
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ],
               ),
             ),
             SizedBox(height: 24),
-            Text("Feature Campaign", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
-            SizedBox(height: 14),
+            Text(
+              "Feature Campaign",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+            ),
+            SizedBox(height: 12),
             SizedBox(
-              height: 340,
+              height: 300,
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 itemCount: featureCampaigns.length,
                 separatorBuilder: (_, __) => SizedBox(width: 12),
-                itemBuilder: (context, i) => FeatureCampaignCard(
-                  campaign: featureCampaigns[i],
-                  isFavourite: featureFav[i] == 1,
-                  onFavouriteTap: () {
-                    setState(() => featureFav[i] = featureFav[i] == 1 ? 0 : 1);
+                itemBuilder: (context, i) => InkWell(
+                  onTap: () {
+                    Navigator.pushNamed(context, Routes.donationPage);
                   },
+                  child: FeatureCampaignCard(
+                    campaign: featureCampaigns[i],
+                    isFavourite: featureFav[i] == 1,
+                    onFavouriteTap: () {
+                      setState(
+                        () => featureFav[i] = featureFav[i] == 1 ? 0 : 1,
+                      );
+                    },
+                  ),
                 ),
               ),
             ),
-            SizedBox(height: 18),
+            SizedBox(height: 5),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Text("Categories", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
+                Text(
+                  "Categories",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+                ),
                 Spacer(),
                 TextButton(
                   onPressed: showAllCategoriesLocations,
-                  child: Text("See all", style: TextStyle(color: Color(0xFFFE7277), fontSize: 13)),
+                  child: Text(
+                    "See all",
+                    style: TextStyle(color: Color(0xFFFE7277), fontSize: 13),
+                  ),
                 ),
               ],
             ),
-            SizedBox(height: 10),
             Wrap(
-              spacing: 11, runSpacing: 9,
-              children: categories.take(2).map((cat) => CategoryChip(category: cat)).toList(),
+              spacing: 11,
+              runSpacing: 9,
+              children: categories
+                  .take(2)
+                  .map((cat) => CategoryChip(category: cat))
+                  .toList(),
             ),
             SizedBox(height: 22),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Text("Latest Campaign", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
+                Text(
+                  "Latest Campaign",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+                ),
               ],
             ),
             SizedBox(height: 12),
@@ -261,52 +328,50 @@ class _HomeScreenState extends State<HomeScreen> {
                 mainAxisSpacing: 12,
                 childAspectRatio: .85,
               ),
-              itemBuilder: (context, i) => LatestCampaignCard(
-                campaign: latestCampaigns[i],
-                isFavourite: latestFav[i] == 1,
-                onFavouriteTap: () {
-                  setState(() => latestFav[i] = latestFav[i] == 1 ? 0 : 1);
+              itemBuilder: (context, i) => InkWell(
+                onTap: () {
+                  Navigator.pushNamed(context, Routes.donationPage);
                 },
+                child: LatestCampaignCard(
+                  campaign: latestCampaigns[i],
+                  isFavourite: latestFav[i] == 1,
+                  onFavouriteTap: () {
+                    setState(() => latestFav[i] = latestFav[i] == 1 ? 0 : 1);
+                  },
+                ),
               ),
             ),
-            SizedBox(height: 18),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: showAllCategoriesLocations,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFFFE7277),
-                  padding: EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  elevation: 0,
-                ),
-                child: Text(
-                  "See all",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
+
+            SizedBox(height: 14),
+            ContinueButton(
+              onPressed: showAllCategoriesLocations,
+              text: "See all",
             ),
             SizedBox(height: 18),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("Locations", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
+                Text(
+                  "Locations",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+                ),
                 TextButton(
                   onPressed: showAllCategoriesLocations,
-                  child: Text("See all", style: TextStyle(color: Color(0xFFFE7277), fontSize: 13)),
+                  child: Text(
+                    "See all",
+                    style: TextStyle(color: Color(0xFFFE7277), fontSize: 13),
+                  ),
                 ),
               ],
             ),
-            SizedBox(height: 10),
+            SizedBox(height: 5),
             Wrap(
-              spacing: 11, runSpacing: 9,
-              children: locations.take(3).map((loc) => LocationChip(location: loc)).toList(),
+              spacing: 11,
+              runSpacing: 9,
+              children: locations
+                  .take(3)
+                  .map((loc) => LocationChip(location: loc))
+                  .toList(),
             ),
           ],
         ),

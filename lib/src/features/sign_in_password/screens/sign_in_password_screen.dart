@@ -30,7 +30,7 @@ class SignInPasswordScreen extends StatelessWidget {
               const SizedBox(height: 30),
               ContinueButton(
                 onPressed: () {
-                  //Navigator.pushReplacementNamed(context, Routes.createAcount);
+                  Navigator.pushReplacementNamed(context, Routes.layout);
                 },
               ),
               const SizedBox(height: 20),
