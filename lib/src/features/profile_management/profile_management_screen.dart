@@ -5,7 +5,8 @@ class ProfileManagementScreen extends StatefulWidget {
   const ProfileManagementScreen({Key? key}) : super(key: key);
 
   @override
-  State<ProfileManagementScreen> createState() => _ProfileManagementScreenState();
+  State<ProfileManagementScreen> createState() =>
+      _ProfileManagementScreenState();
 }
 
 class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
@@ -16,27 +17,6 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 3, // Account Tab
-        onTap: (index) {
-          // 👇 Simple navigation example
-          if (index == 0) {
-            Navigator.pushNamed(context, '/home');
-          } else if (index == 1) {
-            Navigator.pushNamed(context, '/favourite');
-          } else if (index == 2) {
-            Navigator.pushNamed(context, '/categories');
-          }
-        },
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: AppColors.primaryColor,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.favorite), label: 'Favourite'),
-          BottomNavigationBarItem(icon: Icon(Icons.category), label: 'Categories'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Account'),
-        ],
-      ),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
@@ -57,7 +37,10 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
                     children: [
                       Text(
                         'Hello, ' + userName,
-                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       const Text(
                         'Donated \$150K',
@@ -89,9 +72,10 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
                         Text(
                           '\$${walletBalance.toStringAsFixed(2)}',
                           style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 26,
-                              fontWeight: FontWeight.bold),
+                            color: Colors.white,
+                            fontSize: 26,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ],
                     ),
@@ -125,8 +109,13 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
                 icon: Icons.edit,
                 text: 'Edit profile',
                 onTap: () async {
-                  final result = await Navigator.pushNamed(context, '/edit-profile');
-                  if (result is Map && result['name'] is String && (result['name'] as String).trim().isNotEmpty) {
+                  final result = await Navigator.pushNamed(
+                    context,
+                    '/edit-profile',
+                  );
+                  if (result is Map &&
+                      result['name'] is String &&
+                      (result['name'] as String).trim().isNotEmpty) {
                     setState(() {
                       userName = (result['name'] as String).trim();
                     });
@@ -137,7 +126,10 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
               // 🔘 Toggle
               ListTile(
                 leading: const Icon(Icons.visibility_off),
-                title: const Text('Donate as anonymous'),
+                title: const Text(
+                  'Donate as anonymous',
+                  style: TextStyle(fontSize: 16),
+                ),
                 trailing: Switch(
                   value: donateAsAnonymous,
                   onChanged: (value) {
@@ -183,7 +175,7 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
   }) {
     return ListTile(
       leading: Icon(icon),
-      title: Text(text),
+      title: Text(text, style: TextStyle(fontSize: 16)),
       trailing: const Icon(Icons.chevron_right),
       onTap: onTap,
     );

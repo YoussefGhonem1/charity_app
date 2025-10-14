@@ -10,9 +10,21 @@ class TransactionsScreen extends StatefulWidget {
 
 class _TransactionsScreenState extends State<TransactionsScreen> {
   final List<_Transaction> _transactions = [
-    _Transaction(title: 'Donation to Education Fund', amount: 50.00, date: DateTime.now().subtract(const Duration(days: 1))),
-    _Transaction(title: 'Monthly Subscription', amount: 25.00, date: DateTime.now().subtract(const Duration(days: 3))),
-    _Transaction(title: 'Emergency Relief', amount: 100.00, date: DateTime.now().subtract(const Duration(days: 7))),
+    _Transaction(
+      title: 'Donation to Education Fund',
+      amount: 50.00,
+      date: DateTime.now().subtract(const Duration(days: 1)),
+    ),
+    _Transaction(
+      title: 'Monthly Subscription',
+      amount: 25.00,
+      date: DateTime.now().subtract(const Duration(days: 3)),
+    ),
+    _Transaction(
+      title: 'Emergency Relief',
+      amount: 100.00,
+      date: DateTime.now().subtract(const Duration(days: 7)),
+    ),
   ];
 
   bool _loading = false;
@@ -36,8 +48,14 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('Total donated', style: TextStyle(color: Colors.black54)),
-                  Text('4${total.toStringAsFixed(2)}', style: Theme.of(context).textTheme.headlineSmall),
+                  const Text(
+                    'Total donated',
+                    style: TextStyle(color: AppColors.primaryColor),
+                  ),
+                  Text(
+                    '4${total.toStringAsFixed(2)}',
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
                 ],
               ),
             ),
@@ -54,13 +72,19 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                   return ListTile(
                     leading: CircleAvatar(
                       backgroundColor: AppColors.primaryColor.withOpacity(0.1),
-                      child: const Icon(Icons.volunteer_activism, color: Colors.black54),
+                      child: const Icon(
+                        Icons.volunteer_activism,
+                        color: Colors.black54,
+                      ),
                     ),
-                    title: Text(t.title),
+                    title: Text(t.title, style: TextStyle(fontSize: 18)),
                     subtitle: Text(_formatDate(t.date)),
                     trailing: Text(
                       '+\u00024${t.amount.toStringAsFixed(2)}',
-                      style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                        color: Colors.green,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   );
                 },
@@ -90,7 +114,10 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
   void _simulateAdd() {
     setState(() {
-      _transactions.insert(0, _Transaction(title: 'New donation', amount: 10.0, date: DateTime.now()));
+      _transactions.insert(
+        0,
+        _Transaction(title: 'New donation', amount: 10.0, date: DateTime.now()),
+      );
     });
   }
 
@@ -105,5 +132,3 @@ class _Transaction {
   final DateTime date;
   _Transaction({required this.title, required this.amount, required this.date});
 }
-
-

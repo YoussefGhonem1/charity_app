@@ -10,7 +10,7 @@ class EditProfileScreen extends StatefulWidget {
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _nameController = TextEditingController(text: 'Mr Hegazy');
+  final TextEditingController _nameController = TextEditingController(text: 'Mr Hegazy' );
   final TextEditingController _emailController = TextEditingController(text: 'hegazy@example.com');
   final TextEditingController _phoneController = TextEditingController(text: '+201234567890');
 
@@ -52,7 +52,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               TextFormField(
                 controller: _nameController,
                 decoration: const InputDecoration(
-                  labelText: 'Full name',
+                  labelText: 'Full name' ,
                   prefixIcon: Icon(Icons.person),
                 ),
                 textInputAction: TextInputAction.next,

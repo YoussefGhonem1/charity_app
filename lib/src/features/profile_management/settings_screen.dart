@@ -10,7 +10,7 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   bool _notificationsEnabled = true;
-  bool _darkModeEnabled = false; // Demo only; not wiring a full theme switch here
+  bool _darkModeEnabled = false;
   String _language = 'English';
 
   @override
@@ -27,7 +27,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               setState(() => _notificationsEnabled = value);
               _toast('Notifications ${value ? 'enabled' : 'disabled'}');
             },
-            title: const Text('Notifications'),
+            title: const Text('Notifications', style: TextStyle(fontSize: 18)),
             secondary: const Icon(Icons.notifications),
             activeColor: AppColors.primaryColor,
           ),
@@ -37,13 +37,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
               setState(() => _darkModeEnabled = value);
               _toast('Dark mode ${value ? 'enabled' : 'disabled'}');
             },
-            title: const Text('Dark mode'),
+            title: const Text('Dark mode', style: TextStyle(fontSize: 18)),
             secondary: const Icon(Icons.dark_mode),
             activeColor: AppColors.primaryColor,
           ),
           ListTile(
             leading: const Icon(Icons.language),
-            title: const Text('Language'),
+            title: const Text('Language', style: TextStyle(fontSize: 18)),
             subtitle: Text(_language),
             trailing: const Icon(Icons.chevron_right),
             onTap: _pickLanguage,
@@ -53,7 +53,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           _buildSectionTitle(context, 'About'),
           ListTile(
             leading: const Icon(Icons.info_outline),
-            title: const Text('About app'),
+            title: const Text('About app', style: TextStyle(fontSize: 18)),
             onTap: () {
               showAboutDialog(
                 context: context,
@@ -65,7 +65,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           ListTile(
             leading: const Icon(Icons.privacy_tip_outlined),
-            title: const Text('Privacy policy'),
+            title: const Text('Privacy policy', style: TextStyle(fontSize: 18)),
             onTap: () {
               _toast('Open privacy policy');
             },
@@ -75,7 +75,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           _buildSectionTitle(context, 'Danger zone'),
           ListTile(
             leading: const Icon(Icons.logout, color: Colors.redAccent),
-            title: const Text('Log out'),
+            title: const Text('Log out', style: TextStyle(fontSize: 18)),
             onTap: _confirmLogout,
           ),
         ],
@@ -88,15 +88,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
       padding: const EdgeInsets.fromLTRB(12, 12, 12, 4),
       child: Text(
         text,
-        style: Theme.of(context).textTheme.labelMedium,
+        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
       ),
     );
   }
 
   void _toast(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   Future<void> _pickLanguage() async {
@@ -140,7 +140,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
             TextButton(
               onPressed: () => Navigator.pop(context, true),
-              child: Text('Log out', style: TextStyle(color: AppColors.primaryColor)),
+              child: Text(
+                'Log out',
+                style: TextStyle(color: AppColors.primaryColor),
+              ),
             ),
           ],
         );
@@ -152,5 +155,3 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
   }
 }
-
-
