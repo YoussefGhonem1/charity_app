@@ -15,6 +15,10 @@ import 'package:flutter/material.dart';
 import 'package:charity/src/features/forget_password/screens/reset_password_sent_page.dart';
 import '../../features/sigin_in_email/screens/signin_email.dart';
 import '../../features/sign_in_password/screens/sign_in_password_screen.dart';
+import 'package:charity/src/features/profile_management/transactions_screen.dart';
+import 'package:charity/src/features/profile_management/edit_profile_screen.dart';
+import 'package:charity/src/features/profile_management/invite_friends_screen.dart';
+import 'package:charity/src/features/profile_management/settings_screen.dart';
 
 class Routes {
   static const String initial = '/';
@@ -33,6 +37,10 @@ class Routes {
   static const String donationPage = '/donation_page';
   static const String homePage = '/home_page';
   static const String layout = '/layout';
+  static const String transactions = '/transactions';
+  static const String editProfile = '/edit-profile';
+  static const String inviteFriends = '/invite';
+  static const String settings = '/settings';
 }
 
 class AppRoutes {
@@ -76,6 +84,14 @@ class AppRoutes {
 
       case Routes.homePage:
         return MaterialPageRoute(builder: (_) => HomeScreen());
+      case Routes.transactions:
+        return MaterialPageRoute(builder: (_) => const TransactionsScreen());
+      case Routes.editProfile:
+        return MaterialPageRoute(builder: (_) => const EditProfileScreen());
+      case Routes.inviteFriends:
+        return MaterialPageRoute(builder: (_) => const InviteFriendsScreen());
+      case Routes.settings:
+        return MaterialPageRoute(builder: (_) => const SettingsScreen());
       default:
         return MaterialPageRoute(
           builder: (_) =>

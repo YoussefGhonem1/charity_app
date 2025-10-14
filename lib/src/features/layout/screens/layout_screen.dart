@@ -1,5 +1,6 @@
 import 'package:charity/src/features/favourite/favourite.dart';
 import 'package:charity/src/features/home/screen/home_screen.dart';
+import 'package:charity/src/features/profile_management/profile_management_screen.dart';
 import 'package:charity/src/shared/theme/app_colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +14,7 @@ class LayoutScreen extends StatefulWidget {
 
 class _LayoutScreenState extends State<LayoutScreen> {
   int _selectedIndex = 0;
-  List<Widget> tabs = [HomeScreen(), FavouriteScreen(), HomeScreen(), HomeScreen()];
+  List<Widget> tabs = [HomeScreen(), FavouriteScreen(), HomeScreen(), const ProfileManagementScreen()];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
