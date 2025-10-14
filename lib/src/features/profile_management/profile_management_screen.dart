@@ -11,6 +11,7 @@ class ProfileManagementScreen extends StatefulWidget {
 class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
   bool donateAsAnonymous = false;
   double walletBalance = 500.00;
+  String userName = 'Mr Hegazy';
 
   @override
   Widget build(BuildContext context) {
@@ -53,12 +54,12 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
                   const SizedBox(width: 12),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       Text(
-                        'Hello, Mr Hegazy',
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                        'Hello, ' + userName,
+                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                       ),
-                      Text(
+                      const Text(
                         'Donated \$150K',
                         style: TextStyle(color: Colors.grey),
                       ),
@@ -123,7 +124,14 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
               _buildMenuItem(
                 icon: Icons.edit,
                 text: 'Edit profile',
-                onTap: () => Navigator.pushNamed(context, '/edit-profile'),
+                onTap: () async {
+                  final result = await Navigator.pushNamed(context, '/edit-profile');
+                  if (result is Map && result['name'] is String && (result['name'] as String).trim().isNotEmpty) {
+                    setState(() {
+                      userName = (result['name'] as String).trim();
+                    });
+                  }
+                },
               ),
 
               // 🔘 Toggle
