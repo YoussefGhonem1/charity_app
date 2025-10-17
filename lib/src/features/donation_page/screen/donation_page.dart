@@ -2,6 +2,8 @@ import 'package:charity/src/shared/routing/app_routs.dart';
 import 'package:charity/src/shared/widgets/button.dart';
 import 'package:flutter/material.dart';
 
+import '../../../shared/widgets/text_form.dart';
+
 class DonationPage extends StatelessWidget {
   const DonationPage({super.key});
 
@@ -211,14 +213,250 @@ class DonationPage extends StatelessWidget {
 
                   SizedBox(height: 24),
 
-                  ContinueButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, Routes.donate);
-                    },
-                    text: "Donate Now",
-                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ContinueButton(
+                          onPressed: () {
+                            Navigator.pushNamed(context, Routes.donate);
+                          },
+                          text: "Donate Now",
+                        ),
+                      ),
+                      SizedBox(width: 16),
+                      Expanded(
+                        child: ContinueButton(
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                TextEditingController otherController = TextEditingController();
+                                bool showTextField = false;
+                                int selectedIndex = -1;
 
+                                return StatefulBuilder(
+                                  builder: (context, setState) {
+                                    return AlertDialog(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      title: Center(
+                                        child: Text(
+                                          'Choose With What You Will Help',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 19,
+                                            letterSpacing: 0.5,
+                                          ),
+                                        ),
+                                      ),
+                                      content: SingleChildScrollView(
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            ListTile(
+                                              leading: Icon(Icons.school, color: Colors.purple, size: 27),
+                                              title: Text(
+                                                'Educational Support',
+                                                style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
+                                              ),
+                                              selected: selectedIndex == 0,
+                                              selectedTileColor: Colors.purple.withOpacity(0.07),
+                                              shape: RoundedRectangleBorder(
+                                                side: BorderSide(
+                                                  color: selectedIndex == 0 ? Colors.purple : Colors.transparent,
+                                                  width: 2,
+                                                ),
+                                                borderRadius: BorderRadius.circular(16),
+                                              ),
+                                              onTap: () {
+                                                setState(() {
+                                                  selectedIndex = 0;
+                                                  showTextField = false;
+                                                });
+                                              },
+                                            ),
+                                            Divider(),
+                                            ListTile(
+                                              leading: Icon(Icons.medical_services, color: Colors.blueAccent, size: 27),
+                                              title: Text(
+                                                'Care Support',
+                                                style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
+                                              ),
+                                              selected: selectedIndex == 1,
+                                              selectedTileColor: Colors.blueAccent.withOpacity(0.07),
+                                              shape: RoundedRectangleBorder(
+                                                side: BorderSide(
+                                                  color: selectedIndex == 1 ? Colors.blueAccent : Colors.transparent,
+                                                  width: 2,
+                                                ),
+                                                borderRadius: BorderRadius.circular(16),
+                                              ),
+                                              onTap: () {
+                                                setState(() {
+                                                  selectedIndex = 1;
+                                                  showTextField = false;
+                                                });
+                                              },
+                                            ),
+                                            Divider(),
+                                            ListTile(
+                                              leading: Icon(Icons.help_outline, color: Colors.orangeAccent, size: 27),
+                                              title: Text(
+                                                'Item Donation',
+                                                style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
+                                              ),
+                                              selected: selectedIndex == 2,
+                                              selectedTileColor: Colors.orangeAccent.withOpacity(0.07),
+                                              shape: RoundedRectangleBorder(
+                                                side: BorderSide(
+                                                  color: selectedIndex == 2 ? Colors.orangeAccent : Colors.transparent,
+                                                  width: 2,
+                                                ),
+                                                borderRadius: BorderRadius.circular(16),
+                                              ),
+                                              onTap: () {
+                                                setState(() {
+                                                  selectedIndex = 2;
+                                                  showTextField = false;
+                                                });
+                                              },
+                                            ),
+                                            Divider(),
+                                            ListTile(
+                                              leading: Icon(Icons.volunteer_activism, color: Colors.red, size: 27),
+                                              title: Text(
+                                                'Field Volunteering',
+                                                style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
+                                              ),
+                                              selected: selectedIndex == 3,
+                                              selectedTileColor: Colors.red.withOpacity(0.07),
+                                              shape: RoundedRectangleBorder(
+                                                side: BorderSide(
+                                                  color: selectedIndex == 3 ? Colors.red : Colors.transparent,
+                                                  width: 2,
+                                                ),
+                                                borderRadius: BorderRadius.circular(16),
+                                              ),
+                                              onTap: () {
+                                                setState(() {
+                                                  selectedIndex = 3;
+                                                  showTextField = false;
+                                                });
+                                              },
+                                            ),
+                                            Divider(),
+                                            ListTile(
+                                              leading: Icon(Icons.emoji_emotions_outlined, color: Colors.pinkAccent, size: 27),
+                                              title: Text(
+                                                'Emotional Support',
+                                                style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
+                                              ),
+                                              selected: selectedIndex == 4,
+                                              selectedTileColor: Colors.pinkAccent.withOpacity(0.07),
+                                              shape: RoundedRectangleBorder(
+                                                side: BorderSide(
+                                                  color: selectedIndex == 4 ? Colors.pinkAccent : Colors.transparent,
+                                                  width: 2,
+                                                ),
+                                                borderRadius: BorderRadius.circular(16),
+                                              ),
+                                              onTap: () {
+                                                setState(() {
+                                                  selectedIndex = 4;
+                                                  showTextField = false;
+                                                });
+                                              },
+                                            ),
+                                            Divider(),
+                                            ListTile(
+                                              leading: Icon(Icons.food_bank_outlined, color: Colors.greenAccent, size: 27),
+                                              title: Text(
+                                                'Feeding',
+                                                style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
+                                              ),
+                                              selected: selectedIndex == 5,
+                                              selectedTileColor: Colors.greenAccent.withOpacity(0.07),
+                                              shape: RoundedRectangleBorder(
+                                                side: BorderSide(
+                                                  color: selectedIndex == 5 ? Colors.greenAccent : Colors.transparent,
+                                                  width: 2,
+                                                ),
+                                                borderRadius: BorderRadius.circular(16),
+                                              ),
+                                              onTap: () {
+                                                setState(() {
+                                                  selectedIndex = 5;
+                                                  showTextField = false;
+                                                });
+                                              },
+                                            ),
+                                            Divider(),
+                                            ListTile(
+                                              leading: Icon(Icons.more_horiz, color: Colors.blueGrey, size: 27),
+                                              title: Text(
+                                                'Other',
+                                                style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
+                                              ),
+                                              selected: selectedIndex == 6,
+                                              selectedTileColor: Colors.blueGrey.withOpacity(0.07),
+                                              shape: RoundedRectangleBorder(
+                                                side: BorderSide(
+                                                  color: selectedIndex == 6 ? Colors.blueGrey : Colors.transparent,
+                                                  width: 2,
+                                                ),
+                                                borderRadius: BorderRadius.circular(16),
+                                              ),
+                                              onTap: () {
+                                                setState(() {
+                                                  selectedIndex = 6;
+                                                  showTextField = true;
+                                                });
+                                              },
+                                            ),
+                                            if (showTextField) ...[
+                                              SizedBox(height: 16),
+                                              CustomTextField(
+                                                controller: otherController,
+                                                hintText: "Write Here",
+                                              ),
+                                              SizedBox(height: 8),
+                                              SizedBox(
+                                                width: 90,
+                                                height: 36,
+                                                child: ContinueButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  text: "Send",
+                                                ),
+                                              ),
+                                            ],
+                                            SizedBox(height: 12),
+                                            ContinueButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              text: "Continue",
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                            );
+                          },
+                          text: "Donate Service",
+                        ),
+                      )
+
+
+                    ],
+                  ),
                   SizedBox(height: 32),
+
 
                   Text(
                     'Story',
