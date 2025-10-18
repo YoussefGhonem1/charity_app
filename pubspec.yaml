@@ -39,6 +39,7 @@ dependencies:
   build_runner: any
   flutter_gen_runner: any
   confetti: ^0.7.0
+  url_launcher: ^6.3.2
 dev_dependencies:
   flutter_test:
     sdk: flutter

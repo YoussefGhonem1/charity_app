@@ -1,3 +1,4 @@
+import 'package:charity/src/shared/routing/app_routs.dart';
 import 'package:flutter/material.dart';
 import 'package:charity/src/shared/theme/app_colors.dart';
 
@@ -104,6 +105,12 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
                 icon: Icons.receipt_long,
                 text: 'Transactions',
                 onTap: () => Navigator.pushNamed(context, '/transactions'),
+              ),
+              _buildMenuItem(
+                icon: Icons.calculate,
+                text: 'Zakat calculator',
+                onTap: () =>
+                    Navigator.pushNamed(context, Routes.zakatCalculator),
               ),
               _buildMenuItem(
                 icon: Icons.edit,
