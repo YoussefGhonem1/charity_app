@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; // **أضف هذا الاستيراد**
 
 class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
@@ -6,6 +7,8 @@ class CustomTextField extends StatelessWidget {
   final TextInputType keyboardType;
   final bool obscureText;
   final bool readOnly;
+  final List<TextInputFormatter>? inputFormatters; // **أضف هذه الخاصية**
+
   const CustomTextField({
     super.key,
     required this.controller,
@@ -13,7 +16,9 @@ class CustomTextField extends StatelessWidget {
     this.keyboardType = TextInputType.text,
     this.obscureText = false,
     this.readOnly = false,
+    this.inputFormatters, // **أضف هذا في الكونستركتور**
   });
+
   @override
   Widget build(BuildContext context) {
     return TextField(
@@ -21,6 +26,7 @@ class CustomTextField extends StatelessWidget {
       keyboardType: keyboardType,
       obscureText: obscureText,
       readOnly: readOnly,
+      inputFormatters: inputFormatters, // **مرر الخاصية هنا**
       style: Theme.of(context).textTheme.bodyMedium,
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.symmetric(

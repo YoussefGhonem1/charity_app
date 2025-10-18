@@ -11,6 +11,7 @@ import 'package:charity/src/features/payment/screens/enter_pin_page.dart';
 import 'package:charity/src/features/payment/screens/payment_page.dart';
 import 'package:charity/src/features/payment/screens/success_page.dart';
 import 'package:charity/src/features/splash/screens/splash_page.dart';
+import 'package:charity/src/features/zakat_calculator/screens/zakat_calculator_page.dart';
 import 'package:flutter/material.dart';
 import 'package:charity/src/features/forget_password/screens/reset_password_sent_page.dart';
 import '../../features/sigin_in_email/screens/signin_email.dart';
@@ -41,6 +42,7 @@ class Routes {
   static const String editProfile = '/edit-profile';
   static const String inviteFriends = '/invite';
   static const String settings = '/settings';
+  static const String zakatCalculator = '/zakat_calculator';
 }
 
 class AppRoutes {
@@ -92,6 +94,8 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const InviteFriendsScreen());
       case Routes.settings:
         return MaterialPageRoute(builder: (_) => const SettingsScreen());
+        case Routes.zakatCalculator:
+        return MaterialPageRoute(builder: (_) => const ZakatCalculatorPage());
       default:
         return MaterialPageRoute(
           builder: (_) =>
