@@ -1,6 +1,7 @@
 import 'package:charity/src/shared/routing/app_routs.dart';
 import 'package:charity/src/shared/widgets/button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import '../models/user_model.dart';
 import '../models/campaign_model.dart';
 import '../models/category_model.dart';
@@ -11,7 +12,17 @@ import '../widgets/category_chip.dart';
 import '../widgets/location_chip.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+
+final bool isFavourite;
+
+  final VoidCallback? onFavouriteTap;
+
+ const HomeScreen({
+    this.isFavourite = false,
+    this.onFavouriteTap,
+    super.key,
+  });
+
 
   @override
   State createState() => _HomeScreenState();
@@ -62,6 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
       "Africa / Nigeria",
       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7csJ8xtOjTamjyw5sw84GqlRCUowlLOQF8w&s",
     ),
+
   ];
 
   List categories = [
@@ -71,6 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
     CategoryModel("Education"),
     CategoryModel("Environment"),
     CategoryModel("Women Support"),
+    CategoryModel("Islamic")
   ];
 
   List latestCampaigns = [
@@ -120,10 +133,18 @@ class _HomeScreenState extends State<HomeScreen> {
     LocationModel("Kenya"),
     LocationModel("Nigeria"),
     LocationModel("Egypt"),
+    LocationModel("Turkey"),
   ];
 
   List featureFav = [0, 0, 0, 0];
   List latestFav = [0, 0, 0, 0];
+  
+  GestureTapCallback? get onFavouriteTap => null;
+  
+  bool get isFavourite => true;
+  
+
+  
 
   void showAllCategoriesLocations() {
     showModalBottomSheet(
@@ -281,7 +302,138 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-            SizedBox(height: 5),
+
+SizedBox(height: 15),
+
+Row(
+  mainAxisAlignment: MainAxisAlignment.start,
+  children: [
+    Text(
+      'Foundations',
+      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+    ),
+  ],
+),
+
+SizedBox(height: 12),
+
+  
+    
+  
+    Row(
+       children:[
+        
+         Container(
+           width:220,
+           padding: EdgeInsets.all(10),
+           decoration: BoxDecoration( 
+             color: Colors.white,
+             border: Border.all(color: Color(0xFFFE7277), width: 2),
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Column(
+
+        crossAxisAlignment: CrossAxisAlignment.start,
+        
+        children: [
+          Stack(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.network(
+                  "https://tse3.mm.bing.net/th/id/OIP.FUbsof40Fn42_nbQva8S8wHaE8?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3",
+                  width: double.infinity,
+                  height: 125,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              Positioned(
+                top: 8,
+                right: 8,
+                child: GestureDetector(
+                  onTap: onFavouriteTap,
+                  child: Icon(
+                    isFavourite ? Icons.favorite : Icons.favorite_border,
+                    color: Color(0xFFFE7277),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 6),
+          Text(
+            "Mosques Donations",
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          
+         
+          
+          
+          SizedBox(height: 6),
+          Row(
+            children: [
+              ...List.generate(
+                3,
+                (idx) => Padding(
+                  padding: EdgeInsets.only(right: 2),
+                  child: CircleAvatar(
+                    radius: 8,
+                    backgroundImage: NetworkImage(
+                      "https://randomuser.me/api/portraits/women/${30 + idx}.jpg",
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(width: 4),
+              Text(
+                "+ 50000 people donated",
+                style: TextStyle(fontSize: 11, color: Colors.grey[800]),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+          SizedBox(height: 6),
+          Row(
+            children: [
+              Text(
+                "Islamic",
+                style: TextStyle(
+                  fontSize: 13,
+                  color: Color(0xFFFE7277),
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              SizedBox(width: 4),
+              Icon(Icons.folder, color: Color(0xFFFE7277), size: 15),
+            ],
+          ),
+          SizedBox(height: 2),
+          Row(
+            children: [
+              Icon(Icons.location_on, color: Colors.grey[600], size: 15),
+              SizedBox(width: 4),
+              Flexible(
+                child: Text(
+                  "Europe / Turkey",
+                  style: TextStyle(fontSize: 11, color: Colors.grey[600]),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+          ]
+          )
+        )]),
+      
+      
+        
+
+          
+           SizedBox(height: 5),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -373,9 +525,22 @@ class _HomeScreenState extends State<HomeScreen> {
                   .map((loc) => LocationChip(location: loc))
                   .toList(),
             ),
-          ],
-        ),
-      ),
-    );
-  }
+          
+    
+    
+        
+  
+        
+  
+  
+  
+  
+  
+  
+  ])
+  )
+  
+  );}
 }
+
+
