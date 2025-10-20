@@ -43,6 +43,7 @@ class Routes {
   static const String inviteFriends = '/invite';
   static const String settings = '/settings';
   static const String zakatCalculator = '/zakat_calculator';
+  static const String add_donate = '/add_donate';
 }
 
 class AppRoutes {
@@ -96,6 +97,8 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const SettingsScreen());
         case Routes.zakatCalculator:
         return MaterialPageRoute(builder: (_) => const ZakatCalculatorPage());
+      case Routes.add_donate:
+        return MaterialPageRoute(builder: (_) => DonationPage());
       default:
         return MaterialPageRoute(
           builder: (_) =>
