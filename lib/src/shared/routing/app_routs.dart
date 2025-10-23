@@ -56,8 +56,10 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const OnBoardingPage());
 
       case Routes.signInPassword:
-        return MaterialPageRoute(builder: (_) => SignInPasswordScreen());
-
+        final email = settings.arguments as String;
+        return MaterialPageRoute(
+          builder: (_) => SignInPasswordScreen(email: email),
+        );
       case Routes.createAcount:
         return MaterialPageRoute(builder: (_) => CreateAccountPage());
 
@@ -95,7 +97,7 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const InviteFriendsScreen());
       case Routes.settings:
         return MaterialPageRoute(builder: (_) => const SettingsScreen());
-        case Routes.zakatCalculator:
+      case Routes.zakatCalculator:
         return MaterialPageRoute(builder: (_) => const ZakatCalculatorPage());
       case Routes.add_donate:
         return MaterialPageRoute(builder: (_) => DonationPage());
