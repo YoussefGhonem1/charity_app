@@ -1,4 +1,6 @@
 
+import 'dart:async';
+
 import 'package:charity/src/features/splash/widgets/animation_letter.dart';
 import 'package:charity/src/shared/routing/app_routs.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +18,7 @@ class SplashPage extends StatefulWidget {
 class _SplashPageState extends State<SplashPage>
     with TickerProviderStateMixin {
   final String word = 'Charity';
-
+ Timer? _navigationTimer;
 late final List<Offset> entryOffsets = List.generate(
   word.length,
   (index) => [
@@ -62,14 +64,13 @@ late final List<Offset> entryOffsets = List.generate(
     startAnimations();
     navigateToOnBoarding();
   }
-
-  Future<void> startAnimations() async {
-    for (var controller in _controllers) {
+Future<void> startAnimations() async {
+    for (int i = 0; i < _controllers.length; i++) { // استخدام index
       await Future.delayed(const Duration(milliseconds: 300));
-      controller.forward();
+      if (!mounted) return; // <-- التحقق قبل التشغيل
+      _controllers[i].forward();
     }
   }
-
   void navigateToOnBoarding() {
     Future.delayed(const Duration(seconds: 3), () {
       if (mounted) {
@@ -80,6 +81,7 @@ late final List<Offset> entryOffsets = List.generate(
 
   @override
   void dispose() {
+    _navigationTimer?.cancel();
     for (var controller in _controllers) {
       controller.dispose();
     }

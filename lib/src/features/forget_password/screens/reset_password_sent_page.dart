@@ -1,7 +1,8 @@
-
+// lib/src/features/forget_password/screens/reset_password_sent_page.dart
+// لا تحتاج لتعديلات كبيرة هنا، الكود الحالي يؤدي الغرض
 import 'package:charity/src/shared/routing/app_routs.dart';
 import 'package:flutter/material.dart';
-import '../../../shared/theme/app_colors.dart' ;
+import '../../../shared/theme/app_colors.dart';
 
 class ResetPasswordSentScreen extends StatelessWidget {
   const ResetPasswordSentScreen({super.key});
@@ -44,7 +45,8 @@ class ResetPasswordSentScreen extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(vertical: 14),
                     ),
                     onPressed: () {
-                     Navigator.pushReplacementNamed(context, Routes.signInPassword);
+                      // العودة لشاشة تسجيل الدخول الأولى
+                      Navigator.pushNamedAndRemoveUntil(context, Routes.signInEmail, (route) => false);
                     },
                     child: const Text(
                       "Return to Login",
