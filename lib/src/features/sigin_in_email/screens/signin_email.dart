@@ -2,6 +2,9 @@ import 'package:charity/src/shared/routing/app_routs.dart';
 import 'package:charity/src/shared/widgets/button.dart';
 import 'package:charity/src/shared/widgets/text_form.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -33,7 +36,18 @@ class LoginPage extends StatelessWidget {
             SizedBox(height: 16),
             ContinueButton(
               onPressed: () {
-                Navigator.pushNamed(context, Routes.signInPassword);
+                String email = emailController.text.trim();
+                if (email.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Please enter your email')),
+                  );
+                  return;
+                }
+                Navigator.pushNamed(
+                  context,
+                  Routes.signInPassword,
+                  arguments: email,
+                );
               },
             ),
 
@@ -101,7 +115,9 @@ class LoginPage extends StatelessWidget {
                 ),
                 side: const BorderSide(width: 1, color: Color(0xFFDCDEDE)),
               ),
-              onPressed: () {},
+              onPressed: () async {
+                //  await signInWithGoogle(context: context);
+              },
               child: ListTile(
                 visualDensity: const VisualDensity(
                   vertical: VisualDensity.minimumDensity,
@@ -149,3 +165,48 @@ class LoginPage extends StatelessWidget {
     );
   }
 }
+
+/* Future<void> signInWithGoogle({required BuildContext context}) async {
+  try {
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    if (googleUser == null) return;
+
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
+
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+
+    UserCredential userCredential = await FirebaseAuth.instance
+        .signInWithCredential(credential);
+    User? user = userCredential.user;
+
+    if (user != null) {
+      final userDoc = FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid);
+
+      final userExists = await userDoc.get();
+      if (!userExists.exists) {
+        await userDoc.set({
+          'email': user.email,
+          'name': user.displayName,
+          'photoUrl': user.photoURL,
+          'createdAt': FieldValue.serverTimestamp(),
+        });
+      }
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        Routes.layout,
+        (route) => false,
+      );
+    }
+  } catch (e) {
+    print("Error signing in with Google: $e");
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Failed to login, try again later")),
+    );
+  }
+} */
