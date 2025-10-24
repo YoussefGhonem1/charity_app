@@ -17,7 +17,6 @@ class _HomeScreenState extends State<HomeScreen> {
   double wallet = 0;
   List<CampaignModel> campaigns = [];
   List<CampaignModel> filteredCampaigns = [];
-
   String query = '';
 
   @override
@@ -86,8 +85,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text("Hello, ${user!.name}",
-                      style:
-                      const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
                   Text("Donated ${user!.donatedAmount}",
                       style: TextStyle(color: Colors.grey[600], fontSize: 13)),
                 ],
@@ -122,8 +120,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10))),
                       child: const Text("Top up",
-                          style:
-                          TextStyle(color: Colors.pinkAccent, fontWeight: FontWeight.bold)))
+                          style: TextStyle(
+                              color: Colors.pinkAccent, fontWeight: FontWeight.bold)))
                 ],
               ),
             ),
