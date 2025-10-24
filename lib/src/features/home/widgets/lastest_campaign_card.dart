@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import '../models/campaign_model.dart';
 
-class LatestCampaignCard extends StatelessWidget {
+class LastestCampaignCard extends StatelessWidget {
   final CampaignModel campaign;
   final bool isFavourite;
   final VoidCallback? onFavouriteTap;
 
-  const LatestCampaignCard({
+  const LastestCampaignCard({
     required this.campaign,
     this.isFavourite = false,
     this.onFavouriteTap,
@@ -30,7 +30,7 @@ class LatestCampaignCard extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(8),
                 child: Image.network(
-                  campaign.image,
+                  campaign.imageUrl,
                   height: 110,
                   width: double.infinity,
                   fit: BoxFit.cover,
@@ -61,7 +61,7 @@ class LatestCampaignCard extends StatelessWidget {
           Row(
             children: [
               Text(
-                "By ${campaign.by}",
+                "By ${campaign.organization}",
                 style: TextStyle(fontSize: 11, color: Color(0xFFFE7277)),
               ),
               SizedBox(width: 2),
@@ -73,12 +73,12 @@ class LatestCampaignCard extends StatelessWidget {
             children: [
               Text("Raised", style: TextStyle(fontSize: 10, color: Colors.grey[500])),
               Spacer(),
-              Text("${(campaign.percent * 100).round()}%", style: TextStyle(fontSize: 10, color: Color(0xFFFE7277))),
+              Text("${(campaign.progress * 100).round()}%", style: TextStyle(fontSize: 10, color: Color(0xFFFE7277))),
             ],
           ),
           SizedBox(height: 2),
           LinearProgressIndicator(
-            value: campaign.percent,
+            value: campaign.progress,
             color: Color(0xFFFE7277),
             backgroundColor: Colors.grey[200],
             minHeight: 3,
@@ -96,7 +96,7 @@ class LatestCampaignCard extends StatelessWidget {
               )),
               SizedBox(width: 3),
               Text(
-                "+${campaign.donors}",
+                "+${campaign.donatedAmount.toInt()}",
                 style: TextStyle(fontSize: 11, color: Colors.grey[700]),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,

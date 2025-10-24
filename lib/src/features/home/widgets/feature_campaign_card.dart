@@ -31,7 +31,7 @@ class FeatureCampaignCard extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(12),
                 child: Image.network(
-                  campaign.image,
+                  campaign.imageUrl,
                   width: double.infinity,
                   height: 125,
                   fit: BoxFit.cover,
@@ -61,7 +61,7 @@ class FeatureCampaignCard extends StatelessWidget {
           Row(
             children: [
               Text(
-                "By ${campaign.by}",
+                "By ${campaign.organization}",
                 style: TextStyle(fontSize: 12, color: Color(0xFFFE7277)),
               ),
               SizedBox(width: 3),
@@ -77,14 +77,14 @@ class FeatureCampaignCard extends StatelessWidget {
               ),
               Spacer(),
               Text(
-                "${(campaign.percent * 100).round()}%",
+                "${(campaign.progress * 100).round()}%",
                 style: TextStyle(fontSize: 11, color: Color(0xFFFE7277)),
               ),
             ],
           ),
           SizedBox(height: 3),
           LinearProgressIndicator(
-            value: campaign.percent,
+            value: campaign.progress,
             color: Color(0xFFFE7277),
             backgroundColor: Colors.grey[200],
             minHeight: 4,
@@ -95,7 +95,7 @@ class FeatureCampaignCard extends StatelessWidget {
             children: [
               ...List.generate(
                 3,
-                (idx) => Padding(
+                    (idx) => Padding(
                   padding: EdgeInsets.only(right: 2),
                   child: CircleAvatar(
                     radius: 8,
@@ -107,7 +107,7 @@ class FeatureCampaignCard extends StatelessWidget {
               ),
               SizedBox(width: 4),
               Text(
-                "+${campaign.donors} people donated",
+                "+${campaign.donatedAmount.toInt()} people donated",
                 style: TextStyle(fontSize: 11, color: Colors.grey[800]),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,

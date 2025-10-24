@@ -1,19 +1,31 @@
 class CampaignModel {
   final String title;
-  final String by;
-  final double percent;
-  final int donors;
+  final String organization;
+  final double progress;
+  final double donatedAmount;
   final String category;
   final String location;
-  final String image;
+  final String imageUrl;
 
   CampaignModel(
       this.title,
-      this.by,
-      this.percent,
-      this.donors,
+      this.organization,
+      this.progress,
+      this.donatedAmount,
       this.category,
       this.location,
-      this.image,
+      this.imageUrl,
       );
+
+  factory CampaignModel.fromFirestore(Map<String, dynamic> data) {
+    return CampaignModel(
+      data['title'] ?? '',
+      data['organization'] ?? '',
+      (data['progress'] as num?)?.toDouble() ?? 0.0,
+      (data['donatedAmount'] as num?)?.toDouble() ?? 0.0,
+      data['category'] ?? '',
+      data['location'] ?? '',
+      data['imageUrl'] ?? '',
+    );
+  }
 }
