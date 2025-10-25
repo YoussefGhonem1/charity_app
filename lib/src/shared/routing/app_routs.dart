@@ -1,3 +1,4 @@
+import 'package:charity/src/features/add_donate/add_donate.dart';
 import 'package:charity/src/features/create_account/screens/create_account.dart';
 import 'package:charity/src/features/favourite/favourite.dart';
 import 'package:charity/src/features/donation_page/screen/donation_page.dart';
@@ -10,6 +11,7 @@ import 'package:charity/src/features/payment/screens/donate_page.dart';
 import 'package:charity/src/features/payment/screens/enter_pin_page.dart';
 import 'package:charity/src/features/payment/screens/payment_page.dart';
 import 'package:charity/src/features/payment/screens/success_page.dart';
+import 'package:charity/src/features/profile_management/profile_management_screen.dart';
 import 'package:charity/src/features/splash/screens/splash_page.dart';
 import 'package:charity/src/features/zakat_calculator/screens/zakat_calculator_page.dart';
 import 'package:flutter/material.dart';
@@ -44,6 +46,7 @@ class Routes {
   static const String settings = '/settings';
   static const String zakatCalculator = '/zakat_calculator';
   static const String add_donate = '/add_donate';
+  static const String prof_manage = '/prof_manage';
 }
 
 class AppRoutes {
@@ -91,6 +94,8 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => HomeScreen());
       case Routes.transactions:
         return MaterialPageRoute(builder: (_) => const TransactionsScreen());
+         case Routes.prof_manage:
+        return MaterialPageRoute(builder: (_) => const ProfileManagementScreen());
       case Routes.editProfile:
         return MaterialPageRoute(builder: (_) => const EditProfileScreen());
       case Routes.inviteFriends:
@@ -100,7 +105,7 @@ class AppRoutes {
       case Routes.zakatCalculator:
         return MaterialPageRoute(builder: (_) => const ZakatCalculatorPage());
       case Routes.add_donate:
-        return MaterialPageRoute(builder: (_) => DonationPage());
+        return MaterialPageRoute(builder: (_) => DonationScreen());
       default:
         return MaterialPageRoute(
           builder: (_) =>
