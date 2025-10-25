@@ -3,7 +3,7 @@ import 'package:charity/src/shared/routing/app_routs.dart';
 import 'package:flutter/material.dart';
 import 'package:charity/src/shared/theme/app_colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_bloc/flutter_bloc.dart'; 
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProfileManagementScreen extends StatefulWidget {
   const ProfileManagementScreen({Key? key}) : super(key: key);
@@ -15,26 +15,25 @@ class ProfileManagementScreen extends StatefulWidget {
 
 class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
   bool donateAsAnonymous = false;
-  double walletBalance = 500.00; 
-  double donatedAmount = 150.00; 
-  String userName = 'User'; 
+  double walletBalance = 500.00;
+  double donatedAmount = 150.00;
+  String userName = 'User';
 
   @override
   void initState() {
     super.initState();
-     final user = context.read<UserCubit>().state;
-     if (user != null) {
-       userName = '${user.firstName} ${user.lastName}';
-       walletBalance = user.wallet.toDouble();
-       donatedAmount = user.donatedAmount.toDouble();
-     }
+    final user = context.read<UserCubit>().state;
+    if (user != null) {
+      userName = '${user.firstName} ${user.lastName}';
+      walletBalance = user.wallet.toDouble();
+      donatedAmount = user.donatedAmount.toDouble();
+    }
   }
-
 
   @override
   Widget build(BuildContext context) {
-     final user = context.watch<UserCubit>().state;
-     userName = user != null ? '${user.firstName} ${user.lastName}' : 'User';
+    final user = context.watch<UserCubit>().state;
+    userName = user != null ? '${user.firstName} ${user.lastName}' : 'User';
     walletBalance = user != null ? user.wallet.toDouble() : 0.0;
     donatedAmount = user != null ? user.donatedAmount.toDouble() : 0.0;
 
@@ -46,19 +45,16 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
             children: [
               Row(
                 children: [
-                   CircleAvatar(
+                  CircleAvatar(
                     radius: 30,
-                     backgroundImage: NetworkImage(
-                      user?.avatarUrl ?? ''
-                     ),
-                  
+                    backgroundImage: NetworkImage(user?.avatarUrl ?? ''),
                   ),
                   const SizedBox(width: 12),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Hello, $userName', 
+                        'Hello, $userName',
                         style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -91,7 +87,7 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
                           style: TextStyle(color: Colors.white70),
                         ),
                         Text(
-                          '\$${walletBalance.toStringAsFixed(2)}', 
+                          '\$${walletBalance.toStringAsFixed(2)}',
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 26,
@@ -108,9 +104,7 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      onPressed: () {
-                      
-                      },
+                      onPressed: () {},
                       child: const Text('Top up'),
                     ),
                   ],
@@ -121,7 +115,7 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
               _buildMenuItem(
                 icon: Icons.receipt_long,
                 text: 'Transactions',
-                onTap: () => Navigator.pushNamed(context, Routes.transactions), 
+                onTap: () => Navigator.pushNamed(context, Routes.transactions),
               ),
               _buildMenuItem(
                 icon: Icons.calculate,
@@ -130,12 +124,17 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
                     Navigator.pushNamed(context, Routes.zakatCalculator),
               ),
               _buildMenuItem(
+                icon: Icons.add,
+                text: 'Add campaign',
+                onTap: () => Navigator.pushNamed(context, Routes.add_donate),
+              ),
+              _buildMenuItem(
                 icon: Icons.edit,
                 text: 'Edit profile',
                 onTap: () async {
                   final result = await Navigator.pushNamed(
                     context,
-                    Routes.editProfile, 
+                    Routes.editProfile,
                   );
                   if (result is Map &&
                       result['name'] is String &&
@@ -172,21 +171,25 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
               _buildMenuItem(
                 icon: Icons.settings,
                 text: 'Settings',
-                onTap: () => Navigator.pushNamed(context, Routes.settings), 
+                onTap: () => Navigator.pushNamed(context, Routes.settings),
               ),
               _buildMenuItem(
                 icon: Icons.logout,
                 text: 'Logout',
-                onTap: () async { 
+                onTap: () async {
                   try {
                     await FirebaseAuth.instance.signOut();
-                    context.read<UserCubit>().clearUser(); 
-                     ScaffoldMessenger.of(context).showSnackBar(
+                    context.read<UserCubit>().clearUser();
+                    ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Logged out successfully')),
                     );
-                    Navigator.pushNamedAndRemoveUntil(context, Routes.signInEmail, (route) => false);
+                    Navigator.pushNamedAndRemoveUntil(
+                      context,
+                      Routes.signInEmail,
+                      (route) => false,
+                    );
                   } catch (e) {
-                     ScaffoldMessenger.of(context).showSnackBar(
+                    ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text('Logout failed: $e')),
                     );
                   }

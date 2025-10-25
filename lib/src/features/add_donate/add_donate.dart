@@ -1,20 +1,5 @@
+import 'package:charity/src/shared/theme/app_colors.dart';
 import 'package:flutter/material.dart';
-
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: DonationScreen(),
-    );
-  }
-}
 
 class DonationScreen extends StatelessWidget {
   const DonationScreen({Key? key}) : super(key: key);
@@ -30,10 +15,7 @@ class DonationScreen extends StatelessWidget {
         ),
         backgroundColor: Colors.red[300],
         centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {},
-        ),
+        foregroundColor: AppColors.primaryColor.shade50,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -72,9 +54,10 @@ class DonationScreen extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: const [
-                  Text("Title",
-                      style:
-                      TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                  Text(
+                    "Title",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
                 ],
               ),
               const SizedBox(height: 8),
@@ -92,9 +75,10 @@ class DonationScreen extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: const [
-                  Text("Location",
-                      style:
-                      TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                  Text(
+                    "Location",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
                 ],
               ),
               const SizedBox(height: 8),
@@ -112,9 +96,10 @@ class DonationScreen extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: const [
-                  Text("Story",
-                      style:
-                      TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                  Text(
+                    "Story",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
                 ],
               ),
               const SizedBox(height: 8),
@@ -134,9 +119,10 @@ class DonationScreen extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: const [
-                  Text("Required Amount",
-                      style:
-                      TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                  Text(
+                    "Required Amount",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
                 ],
               ),
               const SizedBox(height: 8),
@@ -156,9 +142,10 @@ class DonationScreen extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: const [
-                  Text("Collection Period",
-                      style:
-                      TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                  Text(
+                    "Collection Period",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
                 ],
               ),
               const SizedBox(height: 8),
@@ -174,7 +161,6 @@ class DonationScreen extends StatelessWidget {
               ),
 
               const SizedBox(height: 20),
-
 
               SizedBox(
                 width: double.infinity,
