@@ -6,6 +6,11 @@ class CampaignModel {
   final String category;
   final String location;
   final String imageUrl;
+  final String imageUrl1;
+  final String period;
+  final double amount;
+  final String story;
+  final int numberOfPeopleDenoted;
 
   CampaignModel(
       this.title,
@@ -15,6 +20,11 @@ class CampaignModel {
       this.category,
       this.location,
       this.imageUrl,
+      this.imageUrl1,
+      this.period,
+      this.amount,
+      this.story,
+      this.numberOfPeopleDenoted,
       );
 
   factory CampaignModel.fromFirestore(Map<String, dynamic> data) {
@@ -26,6 +36,11 @@ class CampaignModel {
       data['category'] ?? '',
       data['location'] ?? '',
       data['imageUrl'] ?? '',
+      data['imageUrl1'] ?? '',
+      data['period'] ?? '',
+      (data['amount'] as num?)?.toDouble() ?? 0.0,
+      data['story'] ?? '',
+      (data['number_of_people_denoted'] as int?) ?? 0,
     );
   }
 }
