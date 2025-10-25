@@ -1,8 +1,8 @@
+import 'package:charity/src/features/create_account/cubits/user_cubit.dart';
+import 'package:charity/src/features/create_account/models/users_models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../cubits/user_cubit.dart';
 import '../cubits/campaign_cubit.dart';
-import '../models/user_model.dart';
 import '../models/campaign_model.dart';
 import '../widgets/feature_campaign_card.dart';
 import '../widgets/lastest_campaign_card.dart';
@@ -30,7 +30,7 @@ class HomeScreen extends StatelessWidget {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Hello, ${user.name}", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                          Text("Hello, ${user.firstName} ${user.lastName}", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
                           Text("Donated ${user.donatedAmount}", style: TextStyle(color: Colors.grey[600], fontSize: 13)),
                         ],
                       ),
@@ -55,7 +55,7 @@ class HomeScreen extends StatelessWidget {
                             children: [
                               Text("Donation Wallet", style: TextStyle(color: Colors.white, fontSize: 16)),
                               SizedBox(height: 10),
-                              Text("\${user.wallet}.00", style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold)),
+                              Text("${user.wallet}.00", style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold)),
                             ],
                           ),
                           ElevatedButton(

@@ -1,8 +1,12 @@
+import 'package:charity/src/features/create_account/cubits/user_cubit.dart';
 import 'package:charity/src/shared/routing/app_routs.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../shared/widgets/button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../shared/widgets/text_form.dart';
+import 'package:charity/src/features/create_account/models/users_models.dart';
 
 class SignInPasswordScreen extends StatelessWidget {
   final String email;
@@ -43,11 +47,27 @@ class SignInPasswordScreen extends StatelessWidget {
                   try {
                     final userCredential = await FirebaseAuth.instance
                         .signInWithEmailAndPassword(
-                          email: email.trim(),
-                          password: passController.text.trim(),
-                        );
+                      email: email.trim(),
+                      password: passController.text.trim(),
+                    );
+
                     final user = userCredential.user;
                     if (user != null) {
+                      final doc = await FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(user.uid)
+                          .get();
+
+                      if (doc.exists) {
+                        final userModel = UserModel.fromMap({
+                          'uid': user.uid,
+                          ...doc.data()!,
+                        });
+
+                        context.read<UserCubit>().setUser(userModel);
+                      }
+
+                      // 🟢 الانتقال إلى الصفحة الرئيسية
                       Navigator.pushNamedAndRemoveUntil(
                         context,
                         Routes.layout,
@@ -55,19 +75,23 @@ class SignInPasswordScreen extends StatelessWidget {
                       );
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Login Failed User Null')),
+                        SnackBar(content: Text('Login Failed: User Null')),
                       );
                     }
                   } on FirebaseAuthException catch (e) {
                     if (e.code == 'user-not-found') {
-                      ScaffoldMessenger.of(
-                        context,
-                      ).showSnackBar(SnackBar(content: Text('No User Found')));
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('No user found for that email.')),
+                      );
                     } else if (e.code == 'wrong-password') {
-                      ScaffoldMessenger.of(
-                        context,
-                      ).showSnackBar(SnackBar(content: Text('Wrong Password')));
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Wrong password.')),
+                      );
                     }
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Error: $e')),
+                    );
                   }
                 },
               ),

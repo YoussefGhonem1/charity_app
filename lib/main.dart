@@ -1,5 +1,5 @@
+import 'package:charity/src/features/create_account/cubits/user_cubit.dart';
 import 'package:charity/src/features/home/cubits/campaign_cubit.dart';
-import 'package:charity/src/features/home/cubits/user_cubit.dart';
 import 'package:charity/src/shared/routing/app_routs.dart';
 import 'package:charity/src/shared/theme/app_theme.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +16,7 @@ void main() async {
   runApp(
     MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => UserCubit()..fetchUser()),
+BlocProvider(create: (_) => UserCubit()..loadUserData()),
         BlocProvider(create: (_) => CampaignsCubit()..fetchCampaigns()),
       ],
       child: const MyApp(),
