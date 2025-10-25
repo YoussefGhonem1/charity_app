@@ -48,6 +48,19 @@ class FeatureCampaignCard extends StatelessWidget {
                   ),
                 ),
               ),
+              Positioned(
+                bottom: 8,
+                right: 8,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.network(
+                    campaign.imageUrl1,
+                    width: 45,
+                    height: 45,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
             ],
           ),
           SizedBox(height: 6),
@@ -143,6 +156,26 @@ class FeatureCampaignCard extends StatelessWidget {
                 ),
               ),
             ],
+          ),
+          SizedBox(height: 6),
+          Text(
+            campaign.story,
+            style: TextStyle(fontSize: 12, color: Colors.grey[700]),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+          SizedBox(height: 3),
+          Text(
+            "Number of people denoted:${campaign.numberOfPeopleDenoted}",
+            style: TextStyle(fontSize: 12, color: Colors.green[800]),
+          ),
+          Text(
+            "Goal: ${campaign.amount}",
+            style: TextStyle(fontSize: 12),
+          ),
+          Text(
+            "Period:${campaign.period}",
+            style: TextStyle(fontSize: 11, color: Colors.orange[700]),
           ),
         ],
       ),

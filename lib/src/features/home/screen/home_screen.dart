@@ -3,12 +3,26 @@ import 'package:charity/src/features/create_account/models/users_models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../cubits/campaign_cubit.dart';
+import '../cubits/foundations_cubit.dart';
 import '../models/campaign_model.dart';
+import '../models/foundation_model.dart';
 import '../widgets/feature_campaign_card.dart';
 import '../widgets/lastest_campaign_card.dart';
+import '../widgets/foundations_list.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<FoundationCubit>().getFoundations();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +57,7 @@ class HomeScreen extends StatelessWidget {
                 builder: (context, user) {
                   if (user == null) return const SizedBox.shrink();
                   return Card(
-                    color: Colors.pinkAccent,
+                    color: Color(0xFFFE7277),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                     child: Padding(
                       padding: const EdgeInsets.all(20),
@@ -61,7 +75,7 @@ class HomeScreen extends StatelessWidget {
                           ElevatedButton(
                             onPressed: () {},
                             style: ElevatedButton.styleFrom(backgroundColor: Colors.white, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
-                            child: const Text("Top up", style: TextStyle(color: Colors.pinkAccent, fontWeight: FontWeight.bold)),
+                            child: const Text("Top up", style: TextStyle(color: Color(0xFFFE7277), fontWeight: FontWeight.bold)),
                           ),
                         ],
                       ),
@@ -104,6 +118,21 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 20),
+
+                      Text('Foundations', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                      const SizedBox(height: 12),
+
+                      BlocBuilder<FoundationCubit, List<FoundationModel>>(
+                        builder: (context, foundations) {
+                          if (foundations.isEmpty) {
+                            return const Center(child: CircularProgressIndicator());
+                          }
+                          return FoundationsList(foundations: foundations);
+                        },
+                      ),
+
+                      const SizedBox(height: 20),
+
                       Text('Latest Campaigns', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
                       const SizedBox(height: 12),
                       ...campaigns.map((c) => LastestCampaignCard(campaign: c)).toList(),

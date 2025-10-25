@@ -48,6 +48,19 @@ class LastestCampaignCard extends StatelessWidget {
                   ),
                 ),
               ),
+              Positioned(
+                bottom: 6,
+                right: 6,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(6),
+                  child: Image.network(
+                    campaign.imageUrl1,
+                    width: 35,
+                    height: 35,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
             ],
           ),
           SizedBox(height: 5),
@@ -102,6 +115,21 @@ class LastestCampaignCard extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               ),
             ],
+          ),
+          SizedBox(height: 5),
+          Text(
+            campaign.story,
+            style: TextStyle(fontSize: 11, color: Colors.grey[600]),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+          Text(
+            "Number of people denoted: ${campaign.numberOfPeopleDenoted}",
+            style: TextStyle(fontSize: 11, color: Colors.green[700]),
+          ),
+          Text(
+            "Period:${campaign.period}",
+            style: TextStyle(fontSize: 10, color: Colors.orange[700]),
           ),
         ],
       ),
