@@ -8,19 +8,15 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(
     MultiBlocProvider(
       providers: [
-BlocProvider(create: (_) => UserCubit()..loadUserData()),
+        BlocProvider(create: (_) => UserCubit()..loadUserData()),
         BlocProvider(create: (_) => CampaignsCubit()..fetchCampaigns()),
-            BlocProvider(create: (context) => FoundationCubit()..getFoundations()),
-
+        BlocProvider(create: (context) => FoundationCubit()..fetchFoundations()),
       ],
       child: const MyApp(),
     ),

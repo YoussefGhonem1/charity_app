@@ -1,13 +1,12 @@
 import 'package:charity/src/features/create_account/cubits/user_cubit.dart';
 import 'package:charity/src/features/create_account/models/users_models.dart';
 import 'package:charity/src/features/home/cubits/foundations_cubit.dart';
-import 'package:charity/src/features/home/models/foundation_model.dart';
-import 'package:charity/src/features/home/widgets/foundation_card';
-import 'package:charity/src/features/home/widgets/foundation_list.dart';
+import 'package:charity/src/features/home/widgets/foundation_card.dart';
+import 'package:charity/src/shared/routing/app_routs.dart';
+import 'package:charity/src/shared/widgets/button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../cubits/campaign_cubit.dart';
-import '../models/campaign_model.dart';
 import '../widgets/feature_campaign_card.dart';
 import '../widgets/lastest_campaign_card.dart';
 
@@ -57,7 +56,7 @@ class HomeScreen extends StatelessWidget {
             builder: (context, user) {
               if (user == null) return const SizedBox.shrink();
               return Card(
-                color: Color(0xFFFE7277),
+                color: const Color(0xFFFE7277),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15),
                 ),
@@ -107,12 +106,10 @@ class HomeScreen extends StatelessWidget {
             },
           ),
           const SizedBox(height: 24),
-          // Feature campaigns horizontal cards
           BlocBuilder<CampaignsCubit, CampaignsState>(
             builder: (context, state) {
-              if (state is CampaignsLoading) {
+              if (state is CampaignsLoading)
                 return const Center(child: CircularProgressIndicator());
-              }
               if (state is CampaignsLoaded) {
                 final featureCampaigns = state.campaigns;
                 return Column(
@@ -134,10 +131,18 @@ class HomeScreen extends StatelessWidget {
                         separatorBuilder: (_, __) => const SizedBox(width: 12),
                         itemBuilder: (context, index) {
                           final campaign = featureCampaigns[index];
-                          return FeatureCampaignCard(
-                            campaign: campaign,
-                            isFavourite: false,
-                            onFavouriteTap: () {},
+                          return GestureDetector(
+                            onTap: () {
+                                Navigator.pushNamed(
+                                  context,
+                                  Routes.donationPage,
+                                );
+                            },
+                            child: FeatureCampaignCard(
+                              campaign: campaign,
+                              isFavourite: false,
+                              onFavouriteTap: () {},
+                            ),
                           );
                         },
                       ),
@@ -145,79 +150,123 @@ class HomeScreen extends StatelessWidget {
                   ],
                 );
               }
-              if (state is CampaignsError) {
+              if (state is CampaignsError)
                 return Center(child: Text('Error: ${state.message}'));
-              }
               return const SizedBox();
             },
           ),
           const SizedBox(height: 20),
-          Text(
+          const Text(
             'Foundations',
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
           ),
           const SizedBox(height: 12),
-
           SizedBox(
-            height: 250,
-            child: BlocBuilder<FoundationCubit, List<FoundationModel>?>(
-              builder: (context, foundations) {
-                if (foundations == null) {
+            height: 240,
+            child: BlocBuilder<FoundationCubit, FoundationsState>(
+              builder: (context, state) {
+                if (state is FoundationsLoading)
                   return const Center(child: CircularProgressIndicator());
+                if (state is FoundationsLoaded) {
+                  return ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: state.foundations.length,
+                    itemBuilder: (context, index) {
+                      final foundation = state.foundations[index];
+                      return GestureDetector(
+                        onTap: () {
+                            Navigator.pushNamed(
+                                  context,
+                                  Routes.donationPage,
+                                );
+                        },
+                        child: SizedBox(
+                          width: 200,
+                          child: FoundationCard(foundation: foundation),
+                        ),
+                      );
+                    },
+                  );
                 }
-                if (foundations.isEmpty) {
-                  return const Center(child: Text('No foundations found'));
-                }
-                return FoundationsList(foundations: foundations);
+                if (state is FoundationsError)
+                  return Center(child: Text('Error: ${state.message}'));
+                return const SizedBox();
               },
             ),
           ),
-
           const SizedBox(height: 20),
-          // Latest campaigns grid cards
           BlocBuilder<CampaignsCubit, CampaignsState>(
             builder: (context, state) {
-              if (state is CampaignsLoading) {
+              if (state is CampaignsLoading)
                 return const Center(child: CircularProgressIndicator());
-              }
               if (state is CampaignsLoaded) {
                 final latestCampaigns = state.campaigns;
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Lastest Campaigns',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    GridView.builder(
-                      padding: EdgeInsets.zero,
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemCount: latestCampaigns.length,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 0.99,
-                        crossAxisSpacing: 12,
-                        mainAxisSpacing: 12,
-                      ),
-                      itemBuilder: (context, index) {
-                        return LastestCampaignCard(
-                          campaign: latestCampaigns[index],
-                          isFavourite: false,
-                          onFavouriteTap: () {},
-                        );
-                      },
-                    ),
-                  ],
+                final displayedCampaigns = latestCampaigns.length > 4
+                    ? latestCampaigns.sublist(0, 4)
+                    : latestCampaigns;
+                bool showAll = false;
+                return StatefulBuilder(
+                  builder: (context, setState) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Latest Campaigns',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        GridView.builder(
+                          padding: EdgeInsets.zero,
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: showAll
+                              ? latestCampaigns.length
+                              : displayedCampaigns.length,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                childAspectRatio: 0.99,
+                                crossAxisSpacing: 12,
+                                mainAxisSpacing: 12,
+                              ),
+                          itemBuilder: (context, index) {
+                            final campaign = showAll
+                                ? latestCampaigns[index]
+                                : displayedCampaigns[index];
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.pushNamed(
+                                  context,
+                                  Routes.donationPage,
+                                );
+                              },
+                              child: LastestCampaignCard(
+                                campaign: campaign,
+                                isFavourite: false,
+                                onFavouriteTap: () {},
+                              ),
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 10),
+                        ContinueButton(
+                          text: showAll ? "Show Less" : "See All",
+                          onPressed: () {
+                            setState(() {
+                              showAll = !showAll;
+                            });
+                          },
+                        ),
+                      ],
+                    );
+                  },
                 );
               }
-              if (state is CampaignsError) {
+              if (state is CampaignsError)
                 return Center(child: Text('Error: ${state.message}'));
-              }
               return const SizedBox();
             },
           ),
