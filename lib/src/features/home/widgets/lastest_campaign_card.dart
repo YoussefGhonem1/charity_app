@@ -27,14 +27,24 @@ class LastestCampaignCard extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
-            child: Image.network(
-              campaign.imageUrl,
-              height: 75,
-              width: double.infinity,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) =>
-                  Container(height: 75, color: Colors.grey[200], child: Icon(Icons.error)),
-            ),
+            child: (campaign.imageUrl.isNotEmpty)
+                ? Image.network(
+                    campaign.imageUrl,
+                    height: 75,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => Container(
+                      height: 75,
+                      color: Colors.grey[200],
+                      child: Icon(Icons.error),
+                    ),
+                  )
+                : Image.asset(
+                    'assets/images/image1170x530cropped.jpg',
+                    width: double.infinity,
+                    height: 75,
+                    fit: BoxFit.cover,
+                  ),
           ),
           SizedBox(height: 6),
           Row(
@@ -94,7 +104,9 @@ class LastestCampaignCard extends StatelessWidget {
                   padding: EdgeInsets.only(right: 2),
                   child: CircleAvatar(
                     radius: 8,
-                    backgroundImage: NetworkImage("https://randomuser.me/api/portraits/men/${17 + idx}.jpg"),
+                    backgroundImage: NetworkImage(
+                      "https://randomuser.me/api/portraits/men/${17 + idx}.jpg",
+                    ),
                   ),
                 ),
               SizedBox(width: 3),

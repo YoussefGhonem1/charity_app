@@ -30,12 +30,19 @@ class FeatureCampaignCard extends StatelessWidget {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(12),
-                child: Image.network(
-                  campaign.imageUrl,
-                  width: double.infinity,
-                  height: 125,
-                  fit: BoxFit.cover,
-                ),
+                child: (campaign.imageUrl.isNotEmpty)
+                    ? Image.network(
+                        campaign.imageUrl,
+                        width: double.infinity,
+                        height: 125,
+                        fit: BoxFit.cover,
+                      )
+                    : Image.asset(
+                        'assets/images/image1170x530cropped.jpg',
+                        width: double.infinity,
+                        height: 125,
+                        fit: BoxFit.cover,
+                      ),
               ),
               Positioned(
                 top: 8,
@@ -95,7 +102,7 @@ class FeatureCampaignCard extends StatelessWidget {
             children: [
               ...List.generate(
                 3,
-                    (idx) => Padding(
+                (idx) => Padding(
                   padding: EdgeInsets.only(right: 2),
                   child: CircleAvatar(
                     radius: 8,
