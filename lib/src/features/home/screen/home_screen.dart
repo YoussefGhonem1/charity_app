@@ -133,10 +133,11 @@ class HomeScreen extends StatelessWidget {
                           final campaign = featureCampaigns[index];
                           return GestureDetector(
                             onTap: () {
-                                Navigator.pushNamed(
-                                  context,
-                                  Routes.donationPage,
-                                );
+                               Navigator.pushNamed(
+    context,
+    Routes.donationPage,
+    arguments: campaign,
+  );
                             },
                             child: FeatureCampaignCard(
                               campaign: campaign,
@@ -175,10 +176,11 @@ class HomeScreen extends StatelessWidget {
                       final foundation = state.foundations[index];
                       return GestureDetector(
                         onTap: () {
-                            Navigator.pushNamed(
-                                  context,
-                                  Routes.donationPage,
-                                );
+                             Navigator.pushNamed(
+    context,
+    Routes.foundationPage,
+    arguments: foundation,
+  );
                         },
                         child: SizedBox(
                           width: 200,
@@ -239,9 +241,10 @@ class HomeScreen extends StatelessWidget {
                             return GestureDetector(
                               onTap: () {
                                 Navigator.pushNamed(
-                                  context,
-                                  Routes.donationPage,
-                                );
+    context,
+    Routes.donationPage,
+    arguments: campaign,
+  );
                               },
                               child: LastestCampaignCard(
                                 campaign: campaign,

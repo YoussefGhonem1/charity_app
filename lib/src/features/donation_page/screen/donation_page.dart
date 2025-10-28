@@ -1,3 +1,4 @@
+import 'package:charity/src/features/home/models/campaign_model.dart';
 import 'package:charity/src/shared/routing/app_routs.dart';
 import 'package:charity/src/shared/widgets/button.dart';
 import 'package:flutter/material.dart';
@@ -5,7 +6,10 @@ import 'package:flutter/material.dart';
 import '../../../shared/widgets/text_form.dart';
 
 class DonationPage extends StatelessWidget {
-  const DonationPage({super.key});
+final CampaignModel campaign;
+
+  const DonationPage({super.key,    required this.campaign,
+});
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +45,7 @@ class DonationPage extends StatelessWidget {
               decoration: BoxDecoration(
                 image: DecorationImage(
                   image: NetworkImage(
-                    'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+                    campaign.imageUrl,
                   ),
                   fit: BoxFit.cover,
                 ),
@@ -55,7 +59,7 @@ class DonationPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Donation for child',
+                                campaign.title,
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -68,7 +72,7 @@ class DonationPage extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        "by",
+                        "By ${campaign.organization}",
                         style: TextStyle(
                           fontSize: 16,
                           color: Color(0xFFFE7277),
@@ -94,7 +98,7 @@ class DonationPage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "\$1200",
+"${(campaign.progress * 100).round()}%",
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
@@ -114,7 +118,7 @@ class DonationPage extends StatelessWidget {
 
                   SizedBox(height: 8),
                   LinearProgressIndicator(
-                    value: 0.8,
+                    value: campaign.progress,
                     backgroundColor: Colors.grey[200],
                     valueColor: AlwaysStoppedAnimation<Color>(
                       Color(0xFFFE7277),
@@ -177,7 +181,7 @@ class DonationPage extends StatelessWidget {
 
                       SizedBox(width: 40),
                       Text(
-                        '+12,300 people donated',
+                       "+${campaign.donatedAmount.toInt()} people donated",
                         style: TextStyle(color: Colors.grey, fontSize: 12),
                       ),
                     ],
@@ -205,7 +209,7 @@ class DonationPage extends StatelessWidget {
                       ),
                       SizedBox(width: 4),
                       Text(
-                        'Africa/ Namibia',
+                                          campaign.location,
                         style: TextStyle(color: Colors.grey, fontSize: 12),
                       ),
                     ],
@@ -605,3 +609,5 @@ class DonationPage extends StatelessWidget {
     );
   }
 }
+
+
