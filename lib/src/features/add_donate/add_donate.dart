@@ -1,3 +1,4 @@
+import 'package:charity/src/features/home/models/campaign_model.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -6,6 +7,7 @@ import 'dart:io';
 
 class DonationScreen extends StatefulWidget {
   @override
+  // ignore: library_private_types_in_public_api
   _AddDonationPageState createState() => _AddDonationPageState();
 }
 
@@ -15,10 +17,16 @@ class _AddDonationPageState extends State<DonationScreen> {
   final _locationController = TextEditingController();
   final _storyController = TextEditingController();
   final _amountController = TextEditingController();
-  final _collectionPeriod = TextEditingController();
+  final _PeriodController = TextEditingController();
+  final _organizationController = TextEditingController();
+  final _categoryController = TextEditingController();
+  final _donatedAmountController = TextEditingController();
+  final _imageLinkController = TextEditingController();
+
   
   bool _isLoading = false;
   File? _imageFile;
+  String?  _imageUrlFromLink;
   final ImagePicker _picker = ImagePicker();
 
   // Pick image from gallery or camera
@@ -67,6 +75,19 @@ class _AddDonationPageState extends State<DonationScreen> {
                 Navigator.pop(context);
                 pickImage(ImageSource.gallery);
               },
+            ), 
+
+        Divider(),
+ ListTile(
+              leading: Icon(Icons.link),
+              title: Text('Use Image URL'),
+              onTap: () {
+                Navigator.pop(context);
+                setState(() {
+                  _imageFile = null;
+                  _imageUrlFromLink = null;
+                });
+              },
             ),
           ],
         ),
@@ -93,13 +114,44 @@ class _AddDonationPageState extends State<DonationScreen> {
     }
   }
 
+void confirmImageLink() {
+    String url = _imageLinkController.text.trim();
+    
+    if (url.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please enter an image URL')),
+      );
+      return;
+    }
+    
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please enter a valid URL (starting with http:// or https://)')),
+      );
+      return;
+    }
+    
+    setState(() {
+      _imageUrlFromLink = url;
+      _imageFile = null; // Clear uploaded file if URL is used
+    });
+    
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Image link confirmed!'),
+        backgroundColor: Colors.green,
+      ),
+    );
+  }
+
+
   // Add donation to Firestore with image
   Future<void> addDonationToFirestore() async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
 
-    if (_imageFile == null) {
+    if (_imageFile == null && _imageUrlFromLink == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Please add a photo')),
       );
@@ -112,20 +164,30 @@ class _AddDonationPageState extends State<DonationScreen> {
 
     try {
       // Upload image first
-      String? imageUrl = await uploadImageToStorage();
+      String? imageUrl; 
+
+      if (_imageUrlFromLink != null) {
+        imageUrl = _imageUrlFromLink;
+      } else {
+        imageUrl = await uploadImageToStorage();
+      }
 
       if (imageUrl == null) {
-        throw Exception('Failed to upload image');
+        throw Exception('Failed to get image URL');
       }
 
       // Add donation data to Firestore
-      await FirebaseFirestore.instance.collection('donations').add({
+      await FirebaseFirestore.instance.collection('campaigns').add({
         'title': _titleController.text,
         'location': _locationController.text,
         'story': _storyController.text,
         'requiredAmount': double.parse(_amountController.text),
-        'imageUrl': imageUrl,
-'collectionPeriod':int.parse(_collectionPeriod.text),
+        'imageUrl': _imageLinkController.text.isNotEmpty 
+      ? _imageLinkController.text:imageUrl,       
+        'Period':int.parse(_PeriodController.text),
+        'donatedAmount': double.parse(_donatedAmountController.text),
+        'organization': _organizationController.text,
+        'category':_categoryController.text,
         'createdAt': FieldValue.serverTimestamp(),
         'status': 'active',
         'currentAmount': 0,
@@ -144,9 +206,15 @@ class _AddDonationPageState extends State<DonationScreen> {
       _locationController.clear();
       _storyController.clear();
       _amountController.clear();
-      _collectionPeriod.clear();
+      _PeriodController.clear();
+      _categoryController.clear();
+      _donatedAmountController.clear();
+      _organizationController.clear();
+      _imageLinkController.clear();
       setState(() {
         _imageFile = null;
+        _imageUrlFromLink = null;
+
       });
 
       // Go back
@@ -173,7 +241,11 @@ class _AddDonationPageState extends State<DonationScreen> {
     _locationController.dispose();
     _storyController.dispose();
     _amountController.dispose();
-    _collectionPeriod.dispose();
+    _PeriodController.dispose();
+    _donatedAmountController.dispose();
+    _categoryController.dispose();
+    _organizationController.dispose();
+    _imageLinkController.dispose();
     super.dispose();
   }
 
@@ -212,7 +284,7 @@ class _AddDonationPageState extends State<DonationScreen> {
                     borderRadius: BorderRadius.circular(12),
                     color: Colors.grey[100],
                   ),
-                  child: _imageFile == null
+                  child: _imageFile == null && _imageUrlFromLink == null
                       ? Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -233,14 +305,66 @@ class _AddDonationPageState extends State<DonationScreen> {
                         )
                       : ClipRRect(
                           borderRadius: BorderRadius.circular(10),
-                          child: Image.file(
-                            _imageFile!,
-                            fit: BoxFit.cover,
-                          ),
+                          child: _imageFile != null?Image.file(_imageFile!,fit: BoxFit.cover,)
+                          :Image.network(
+                                  _imageUrlFromLink!,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Center(
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Icon(Icons.error, color: Colors.red, size: 50),
+                                          SizedBox(height: 8),
+                                          Text('Failed to load image'),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                  loadingBuilder: (context, child, loadingProgress) {
+                                    if (loadingProgress == null) return child;
+                                    return Center(
+                                      child: CircularProgressIndicator(),
+                                    );
+                                  },
+                                ),
                         ),
                 ),
               ),
               SizedBox(height: 20),
+
+  Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: _imageLinkController,
+                      decoration: InputDecoration(
+                        hintText: 'Or paste image URL here',
+                        prefixIcon: Icon(Icons.link),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 8),
+                  ElevatedButton(
+                    onPressed: confirmImageLink,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFFE57373),
+                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: Text(
+                      'Confirm',
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
+                  ),
+                ],
+              ),
 
               // Title
               Text(
@@ -289,6 +413,50 @@ class _AddDonationPageState extends State<DonationScreen> {
               ),
               SizedBox(height: 20),
 
+            Text(
+                'Category',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 8),
+              TextFormField(
+                controller: _categoryController,
+                decoration: InputDecoration(
+                  hintText: 'Enter Category',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter category';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 20),
+
+ Text(
+                'Organization',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 8),
+              TextFormField(
+                controller: _organizationController,
+                decoration: InputDecoration(
+                  hintText: 'Enter organization',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter organization';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 20),
+
               // Story
               Text(
                 'Story',
@@ -313,6 +481,32 @@ class _AddDonationPageState extends State<DonationScreen> {
               ),
               SizedBox(height: 20),
 
+ Text(
+                'Donated Amount',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 8),
+              TextFormField(
+                controller: _donatedAmountController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  prefixText: '\$ ',
+                  hintText: 'Enter Donated amount',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter amount';
+                  }
+                  if (double.tryParse(value) == null) {
+                    return 'Please enter a valid number';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 20),
               // Required Amount
               Text(
                 'Required Amount',
@@ -354,7 +548,7 @@ class _AddDonationPageState extends State<DonationScreen> {
               ),
               const SizedBox(height: 8),
               TextFormField(
-                controller: _collectionPeriod,
+                controller: _PeriodController,
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
                   prefixIcon: Icon(Icons.timer),
