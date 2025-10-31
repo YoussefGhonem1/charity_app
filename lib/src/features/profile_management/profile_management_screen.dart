@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:charity/src/shared/theme/app_colors.dart';
+import '../../shared/state/profile_service.dart';
+import 'dart:io';
+import 'data/settings_repository.dart';
+import 'data/profile_repository.dart';
+import 'package:charity/l10n/app_localizations.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:charity/src/shared/routing/app_routs.dart';
 
 class ProfileManagementScreen extends StatefulWidget {
-  const ProfileManagementScreen({Key? key}) : super(key: key);
+  const ProfileManagementScreen({super.key});
 
   @override
   State<ProfileManagementScreen> createState() => _ProfileManagementScreenState();
@@ -11,32 +18,43 @@ class ProfileManagementScreen extends StatefulWidget {
 class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
   bool donateAsAnonymous = false;
   double walletBalance = 500.00;
-  String userName = 'Mr Hegazy';
+  late String userName;
+  String? avatar;
+
+  @override
+  void initState() {
+    super.initState();
+    final p = ProfileService.instance.profile.value;
+    userName = p.name;
+    avatar = p.avatarPathOrUrl;
+    ProfileService.instance.profile.addListener(() {
+      final p2 = ProfileService.instance.profile.value;
+      if (!mounted) return;
+      setState(() {
+        userName = p2.name;
+        avatar = p2.avatarPathOrUrl;
+      });
+    });
+    // Listen to Firestore profile and settings
+    ProfileRepository.instance.profileStream().listen((data) {
+      if (data == null || !mounted) return;
+      setState(() {
+        userName = (data['name'] as String?) ?? userName;
+        avatar = (data['avatarUrl'] as String?) ?? avatar;
+      });
+    });
+    SettingsRepository.instance.settingsStream().listen((data) {
+      if (!mounted) return;
+      setState(() {
+        donateAsAnonymous = (data?['donateAsAnonymous'] as bool?) ?? donateAsAnonymous;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context);
     return Scaffold(
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 3, // Account Tab
-        onTap: (index) {
-          // 👇 Simple navigation example
-          if (index == 0) {
-            Navigator.pushNamed(context, '/home');
-          } else if (index == 1) {
-            Navigator.pushNamed(context, '/favourite');
-          } else if (index == 2) {
-            Navigator.pushNamed(context, '/categories');
-          }
-        },
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: AppColors.primaryColor,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.favorite), label: 'Favourite'),
-          BottomNavigationBarItem(icon: Icon(Icons.category), label: 'Categories'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Account'),
-        ],
-      ),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
@@ -47,21 +65,25 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
                 children: [
                   CircleAvatar(
                     radius: 30,
-                    backgroundImage: const NetworkImage(
-                      'https://images.unsplash.com/photo-1500648767791-00dcc994a43e',
-                    ),
+                    backgroundImage: avatar == null
+                        ? null
+                        : (avatar!.startsWith('http')
+                            ? NetworkImage(avatar!) as ImageProvider
+                            : FileImage(File(avatar!))),
+                    child: avatar == null ? const Icon(Icons.person, size: 30) : null,
                   ),
                   const SizedBox(width: 12),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Hello, ' + userName,
+                        t.hello(userName),
                         style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                       ),
-                      const Text(
-                        'Donated \$150K',
-                        style: TextStyle(color: Colors.grey),
+                      const SizedBox(height: 2),
+                      Text(
+                        t.donated('\$150K'),
+                        style: const TextStyle(color: Colors.grey),
                       ),
                     ],
                   ),
@@ -82,9 +104,9 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Donation wallet',
-                          style: TextStyle(color: Colors.white70),
+                        Text(
+                          t.donationWallet,
+                          style: const TextStyle(color: Colors.white70),
                         ),
                         Text(
                           '\$${walletBalance.toStringAsFixed(2)}',
@@ -108,7 +130,7 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
                           walletBalance += 100;
                         });
                       },
-                      child: const Text('Top up'),
+                      child: Text(t.topUp),
                     ),
                   ],
                 ),
@@ -118,12 +140,12 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
               // 📌 Menu Options
               _buildMenuItem(
                 icon: Icons.receipt_long,
-                text: 'Transactions',
+                text: t.transactions,
                 onTap: () => Navigator.pushNamed(context, '/transactions'),
               ),
               _buildMenuItem(
                 icon: Icons.edit,
-                text: 'Edit profile',
+                text: t.editProfile,
                 onTap: () async {
                   final result = await Navigator.pushNamed(context, '/edit-profile');
                   if (result is Map && result['name'] is String && (result['name'] as String).trim().isNotEmpty) {
@@ -137,35 +159,44 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
               // 🔘 Toggle
               ListTile(
                 leading: const Icon(Icons.visibility_off),
-                title: const Text('Donate as anonymous'),
+                title: Text(t.donateAsAnonymous),
                 trailing: Switch(
                   value: donateAsAnonymous,
-                  onChanged: (value) {
+                  onChanged: (value) async {
                     setState(() {
                       donateAsAnonymous = value;
                     });
+                    await SettingsRepository.instance.updateSettings(donateAsAnonymous: value);
                   },
-                  activeColor: AppColors.primaryColor,
+                  activeThumbColor: AppColors.primaryColor,
                 ),
               ),
 
               _buildMenuItem(
                 icon: Icons.group_add,
-                text: 'Invite friends',
+                text: t.inviteFriends,
                 onTap: () => Navigator.pushNamed(context, '/invite'),
               ),
               _buildMenuItem(
                 icon: Icons.settings,
-                text: 'Settings',
+                text: t.settings,
                 onTap: () => Navigator.pushNamed(context, '/settings'),
               ),
               _buildMenuItem(
                 icon: Icons.logout,
-                text: 'Logout',
-                onTap: () {
-                  // 👇 Here you can add your logout logic
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Logged out successfully')),
+                text: t.logout,
+                onTap: () async {
+                  try {
+                    await FirebaseAuth.instance.signOut();
+                  } catch (_) {}
+                  // Clear local profile state immediately
+                  ProfileService.instance.update(
+                    const UserProfile(name: '', email: '', phone: '', avatarPathOrUrl: null),
+                  );
+                  if (!mounted) return;
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                    Routes.initial,
+                    (route) => false,
                   );
                 },
               ),

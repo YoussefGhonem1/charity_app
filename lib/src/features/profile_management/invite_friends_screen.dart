@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:charity/src/shared/theme/app_colors.dart';
+import 'package:share_plus/share_plus.dart';
 
 class InviteFriendsScreen extends StatefulWidget {
-  const InviteFriendsScreen({Key? key}) : super(key: key);
+  const InviteFriendsScreen({super.key});
 
   @override
   State<InviteFriendsScreen> createState() => _InviteFriendsScreenState();
@@ -74,8 +75,10 @@ class _InviteFriendsScreenState extends State<InviteFriendsScreen> {
                 foregroundColor: Colors.white,
                 minimumSize: const Size.fromHeight(48),
               ),
-              onPressed: _copyLink,
-              child: const Text('Copy and share later'),
+              onPressed: () {
+                Share.share('Join me on Charity App! $_referralLink');
+              },
+              child: const Text('Share invite link'),
             ),
           ],
         ),

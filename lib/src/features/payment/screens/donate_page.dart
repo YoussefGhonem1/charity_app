@@ -194,7 +194,7 @@ class _DonatePageState extends State<DonatePage> {
           onPressed: () => _onPresetAmountSelected(amount),
           style: OutlinedButton.styleFrom(
             backgroundColor: isSelected
-                ? AppColors.primaryColor.withOpacity(0.1)
+                ? AppColors.primaryColor.withValues(alpha: 0.1)
                 : AppColors.bgColor,
             side: BorderSide(
               color: isSelected

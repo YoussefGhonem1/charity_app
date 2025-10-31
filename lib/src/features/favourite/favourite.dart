@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/cupertino.dart';
+import '../home/data/campaign_repository.dart';
+import '../home/models/campaign_model.dart';
+import '../../shared/state/favourite_service.dart';
 
 class FavouriteScreen extends StatefulWidget {
   const FavouriteScreen({super.key});
@@ -10,49 +12,9 @@ class FavouriteScreen extends StatefulWidget {
 }
 
 class _FavouriteScreenState extends State<FavouriteScreen> {
-  int _selectedIndex = 1;
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
-  final List<Map<String, dynamic>> donations = [
-    {
-      'title': 'Donation for Child',
-      'org': 'Unesco',
-      'image':
-          'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=500&q=80',
-      'progress': 0.7,
-      'isFav': true,
-    },
-    {
-      'title': 'Feed the Hungry',
-      'org': 'Red Cross',
-      'image':
-          'https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?w=500&q=80',
-      'progress': 0.5,
-      'isFav': true,
-    },
-
-    {
-      'title': 'Education for All',
-      'org': 'Unesco',
-      'image':
-          'https://images.unsplash.com/photo-1588072432836-e10032774350?w=500&q=80',
-      'progress': 0.8,
-      'isFav': true,
-    },
-    {
-      'title': 'Save the Planet',
-      'org': 'Wwf',
-      'image':
-          'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=500&q=80',
-      'progress': 0.6,
-      'isFav': false,
-    },
-  ];
+  final repo = CampaignRepository.instance;
+  final fav = FavouriteService.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -110,21 +72,44 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
               ),
 
               Expanded(
-                child: ListView.builder(
-                  padding: const EdgeInsets.all(16.0),
-                  itemCount: donations.length,
-                  itemBuilder: (context, index) {
-                    final donation = donations[index];
-                    return DonationCard(
-                      title: donation['title'],
-                      org: donation['org'],
-                      imageUrl: donation['image'],
-                      progress: donation['progress'],
-                      isFavourite: donation['isFav'],
-                      onFavToggle: () {
-                        setState(() {
-                          donation['isFav'] = !donation['isFav'];
-                        });
+                child: ValueListenableBuilder<Set<String>>(
+                  valueListenable: fav.favourites,
+                  builder: (context, set, _) {
+                    final all = <CampaignModel>[
+                      ...repo.featureCampaigns,
+                      ...repo.latestCampaigns,
+                    ];
+                    final unique = {
+                      for (final c in all) FavouriteService.campaignKey(c.title, c.by): c
+                    };
+                    final favCampaigns = unique.entries
+                        .where((e) => set.contains(e.key))
+                        .map((e) => e.value)
+                        .toList();
+
+                    if (favCampaigns.isEmpty) {
+                      return const Center(
+                        child: Text('No favourite campaigns yet'),
+                      );
+                    }
+
+                    return ListView.builder(
+                      padding: const EdgeInsets.all(16.0),
+                      itemCount: favCampaigns.length,
+                      itemBuilder: (context, index) {
+                        final c = favCampaigns[index];
+                        return DonationCard(
+                          title: c.title,
+                          org: c.by,
+                          imageUrl: c.image,
+                          progress: c.percent,
+                          isFavourite: true,
+                          onFavToggle: () {
+                            setState(() {
+                              fav.toggleFavourite(c.title, c.by);
+                            });
+                          },
+                        );
                       },
                     );
                   },
@@ -160,7 +145,7 @@ class DonationCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 2.0,
-      shadowColor: Colors.grey.withOpacity(0.2),
+      shadowColor: Colors.grey.withValues(alpha: 0.2),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
       margin: const EdgeInsets.only(bottom: 20.0),
       child: Padding(
@@ -185,7 +170,7 @@ class DonationCard extends StatelessWidget {
                     margin: const EdgeInsets.all(5.0),
                     padding: const EdgeInsets.all(4.0),
                     decoration: BoxDecoration(
-                      color: Colors.grey.withOpacity(0.8),
+                      color: Colors.grey.withValues(alpha: 0.8),
                       shape: BoxShape.circle,
                     ),
                     child: Icon(

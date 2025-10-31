@@ -4,6 +4,7 @@ import 'package:charity/src/features/profile_management/profile_management_scree
 import 'package:charity/src/shared/theme/app_colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:charity/l10n/app_localizations.dart';
 
 class LayoutScreen extends StatefulWidget {
   const LayoutScreen({super.key});
@@ -17,6 +18,7 @@ class _LayoutScreenState extends State<LayoutScreen> {
   List<Widget> tabs = [HomeScreen(), FavouriteScreen(), HomeScreen(), const ProfileManagementScreen()];
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context);
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
@@ -27,19 +29,19 @@ class _LayoutScreenState extends State<LayoutScreen> {
         items: <BottomNavigationBarItem>[
            BottomNavigationBarItem(
               icon: Icon(CupertinoIcons.home),
-              label: 'Home',
+              label: t.home,
             ),
             BottomNavigationBarItem(
               icon: Icon(CupertinoIcons.heart),
-              label: 'Favourite',
+              label: t.favourite,
             ),
             BottomNavigationBarItem(
               icon: Icon(CupertinoIcons.doc_text),
-              label: 'Categories',
+              label: t.categories,
             ),
             BottomNavigationBarItem(
               icon: Icon(CupertinoIcons.person),
-              label: 'Account',
+              label: t.account,
             ),
         ],
       ),

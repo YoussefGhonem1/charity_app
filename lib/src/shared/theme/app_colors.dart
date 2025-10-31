@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 
 abstract class AppColors {
@@ -17,12 +15,18 @@ abstract class AppColors {
       800: Color(0xFFFB2A35),
       900: Color(0xFFFA0A1A),
     },
-  );  static const Color bgColor = Color(0xFFFFFFFF);
- static const Color lightGrey = Color(0xFFF2F1F1);
- static const Color blackColor = Color(0xFF000000);
+  );
+  static const Color bgColor = Color(0xFFFFFFFF);
+  static const Color lightGrey = Color(0xFFF2F1F1);
+  static const Color blackColor = Color(0xFF000000);
+  static const Color whiteColor = Color(0xFFFFFFFF);
   static const Color greyColor = Color(0xFF9E9E9E);
   static const Color greyShade200 = Color(0xFFEEEEEE);
   static const Color greenColor = Color.fromARGB(255, 11, 148, 18);
-  
-  
-  }
+
+  // Dark mode specific
+  static const Color darkBg = Color(0xFF121212);
+  static const Color darkSurface = Color(0xFF1E1E1E);
+  static const Color darkTextPrimary = Color(0xFFECECEC);
+  static const Color darkTextSecondary = Color(0xFFBDBDBD);
+}

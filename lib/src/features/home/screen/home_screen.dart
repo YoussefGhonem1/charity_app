@@ -1,8 +1,12 @@
 import 'package:charity/src/shared/routing/app_routs.dart';
+import 'dart:io';
 import 'package:charity/src/shared/widgets/button.dart';
 import 'package:flutter/material.dart';
+import 'package:charity/l10n/app_localizations.dart';
 import '../models/user_model.dart';
-import '../models/campaign_model.dart';
+import '../data/campaign_repository.dart';
+import '../../../shared/state/favourite_service.dart';
+import '../../../shared/state/profile_service.dart';
 import '../models/category_model.dart';
 import '../models/location_model.dart';
 import '../widgets/feature_campaign_card.dart';
@@ -11,58 +15,17 @@ import '../widgets/category_chip.dart';
 import '../widgets/location_chip.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   @override
   State createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final UserModel user = UserModel(
-    "Mr Dat",
-    "https://randomuser.me/api/portraits/men/32.jpg",
-    "\$150K",
-  );
+  late UserModel user;
   final double wallet = 500;
 
-  List featureCampaigns = [
-    CampaignModel(
-      "Donation for Child",
-      "Unesco",
-      0.5,
-      12300,
-      "Emergencies",
-      "Africa / Namibia",
-      "https://media.hawzahnews.com/d/2019/11/03/4/866306.jpg",
-    ),
-    CampaignModel(
-      "Help for Families",
-      "Unesco",
-      0.7,
-      4530,
-      "Social project",
-      "Europe / France",
-      "https://ofhsoupkitchen.org/wp-content/uploads/2021/02/charity-bible-verses-1-1024x683.jpg",
-    ),
-    CampaignModel(
-      "Orphans Charity",
-      "Unesco",
-      0.6,
-      7800,
-      "Emergencies",
-      "Asia / Indonesia",
-      "https://storage.googleapis.com/wp-static/wp-orphansinneed/2023/12/07b86145-giving-charity-ramadan.jpeg",
-    ),
-    CampaignModel(
-      "Donation Drive",
-      "Unesco",
-      0.9,
-      19000,
-      "Medical",
-      "Africa / Nigeria",
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7csJ8xtOjTamjyw5sw84GqlRCUowlLOQF8w&s",
-    ),
-  ];
+  final repo = CampaignRepository.instance;
 
   List categories = [
     CategoryModel("Emergencies"),
@@ -73,44 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
     CategoryModel("Women Support"),
   ];
 
-  List latestCampaigns = [
-    CampaignModel(
-      "Donation for Child",
-      "Unesco",
-      0.5,
-      12300,
-      "Emergencies",
-      "Africa / Namibia",
-      "https://media.hawzahnews.com/d/2019/11/03/4/866306.jpg",
-    ),
-    CampaignModel(
-      "School Library Project",
-      "Unesco",
-      0.7,
-      6700,
-      "Education",
-      "Asia / Indonesia",
-      "https://ofhsoupkitchen.org/wp-content/uploads/2021/02/charity-bible-verses-1-1024x683.jpg",
-    ),
-    CampaignModel(
-      "Medical Aid Campaign",
-      "Unesco",
-      0.4,
-      3200,
-      "Medical",
-      "Africa / Kenya",
-      "https://storage.googleapis.com/wp-static/wp-orphansinneed/2023/12/07b86145-giving-charity-ramadan.jpeg",
-    ),
-    CampaignModel(
-      "Clean Water Action",
-      "Unesco",
-      0.6,
-      2100,
-      "Environment",
-      "Africa / Nigeria",
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7csJ8xtOjTamjyw5sw84GqlRCUowlLOQF8w&s",
-    ),
-  ];
+  late List latestCampaigns;
 
   List locations = [
     LocationModel("Samarinda"),
@@ -122,8 +48,28 @@ class _HomeScreenState extends State<HomeScreen> {
     LocationModel("Egypt"),
   ];
 
-  List featureFav = [0, 0, 0, 0];
-  List latestFav = [0, 0, 0, 0];
+  final fav = FavouriteService.instance;
+
+  @override
+  void initState() {
+    super.initState();
+    latestCampaigns = repo.latestCampaigns;
+    user = UserModel(
+      ProfileService.instance.profile.value.name,
+      ProfileService.instance.profile.value.avatarPathOrUrl ?? '',
+      "\$150K",
+    );
+    ProfileService.instance.profile.addListener(() {
+      final p = ProfileService.instance.profile.value;
+      setState(() {
+        user = UserModel(
+          p.name,
+          p.avatarPathOrUrl ?? user.avatarUrl,
+          user.donatedAmount,
+        );
+      });
+    });
+  }
 
   void showAllCategoriesLocations() {
     showModalBottomSheet(
@@ -136,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "All Categories",
+                AppLocalizations.of(context).allCategories,
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),
               SizedBox(height: 6),
@@ -150,7 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               SizedBox(height: 18),
               Text(
-                "All Locations",
+                AppLocalizations.of(context).allLocations,
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),
               SizedBox(height: 6),
@@ -171,6 +117,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: Color(0xFFF7FAF8),
       body: SafeArea(
@@ -180,15 +127,22 @@ class _HomeScreenState extends State<HomeScreen> {
             Row(
               children: [
                 CircleAvatar(
-                  backgroundImage: NetworkImage(user.avatarUrl),
                   radius: 24,
+                  backgroundImage: user.avatarUrl.trim().isEmpty
+                      ? null
+                      : (user.avatarUrl.startsWith('http')
+                          ? NetworkImage(user.avatarUrl) as ImageProvider
+                          : FileImage(File(user.avatarUrl))),
+                  child: user.avatarUrl.trim().isEmpty
+                      ? const Icon(Icons.person)
+                      : null,
                 ),
                 SizedBox(width: 16),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Hello, ${user.name}",
+                      user.name.trim().isEmpty ? t.helloNoName : t.hello(user.name),
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
@@ -196,7 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     SizedBox(height: 2),
                     Text(
-                      "Donated ${user.donatedAmount}",
+                      t.donated(user.donatedAmount),
                       style: TextStyle(color: Colors.grey[500], fontSize: 13),
                     ),
                   ],
@@ -219,7 +173,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Donation wallet",
+                          t.donationWallet,
                           style: TextStyle(fontSize: 15, color: Colors.white),
                         ),
                         SizedBox(height: 8),
@@ -243,7 +197,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       backgroundColor: Colors.white,
                     ),
                     child: Text(
-                      "Top up",
+                      t.topUp,
                       style: TextStyle(
                         color: Color(0xFFFE7277),
                         fontWeight: FontWeight.bold,
@@ -255,7 +209,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             SizedBox(height: 24),
             Text(
-              "Feature Campaign",
+              t.featureCampaign,
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
             ),
             SizedBox(height: 12),
@@ -263,19 +217,25 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 300,
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
-                itemCount: featureCampaigns.length,
-                separatorBuilder: (_, __) => SizedBox(width: 12),
+                itemCount: repo.featureCampaigns.length,
+                separatorBuilder: (_, _) => SizedBox(width: 12),
                 itemBuilder: (context, i) => InkWell(
                   onTap: () {
                     Navigator.pushNamed(context, Routes.donationPage);
                   },
                   child: FeatureCampaignCard(
-                    campaign: featureCampaigns[i],
-                    isFavourite: featureFav[i] == 1,
+                    campaign: repo.featureCampaigns[i],
+                    isFavourite: fav.isFavourite(
+                      repo.featureCampaigns[i].title,
+                      repo.featureCampaigns[i].by,
+                    ),
                     onFavouriteTap: () {
-                      setState(
-                        () => featureFav[i] = featureFav[i] == 1 ? 0 : 1,
-                      );
+                      setState(() {
+                        fav.toggleFavourite(
+                          repo.featureCampaigns[i].title,
+                          repo.featureCampaigns[i].by,
+                        );
+                      });
                     },
                   ),
                 ),
@@ -286,14 +246,14 @@ class _HomeScreenState extends State<HomeScreen> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Text(
-                  "Categories",
+                  t.categories,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
                 ),
                 Spacer(),
                 TextButton(
                   onPressed: showAllCategoriesLocations,
                   child: Text(
-                    "See all",
+                    t.seeAll,
                     style: TextStyle(color: Color(0xFFFE7277), fontSize: 13),
                   ),
                 ),
@@ -312,7 +272,7 @@ class _HomeScreenState extends State<HomeScreen> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Text(
-                  "Latest Campaign",
+                  t.latestCampaign,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
                 ),
               ],
@@ -334,9 +294,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
                 child: LatestCampaignCard(
                   campaign: latestCampaigns[i],
-                  isFavourite: latestFav[i] == 1,
+                  isFavourite: fav.isFavourite(
+                    latestCampaigns[i].title,
+                    latestCampaigns[i].by,
+                  ),
                   onFavouriteTap: () {
-                    setState(() => latestFav[i] = latestFav[i] == 1 ? 0 : 1);
+                    setState(() {
+                      fav.toggleFavourite(
+                        latestCampaigns[i].title,
+                        latestCampaigns[i].by,
+                      );
+                    });
                   },
                 ),
               ),
@@ -345,20 +313,20 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(height: 14),
             ContinueButton(
               onPressed: showAllCategoriesLocations,
-              text: "See all",
+              text: t.seeAll,
             ),
             SizedBox(height: 18),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Locations",
+                  t.locations,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
                 ),
                 TextButton(
                   onPressed: showAllCategoriesLocations,
                   child: Text(
-                    "See all",
+                    t.seeAll,
                     style: TextStyle(color: Color(0xFFFE7277), fontSize: 13),
                   ),
                 ),

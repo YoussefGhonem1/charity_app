@@ -143,9 +143,12 @@ class _PaymentPageState extends State<PaymentPage> {
               ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             const Spacer(),
+            // ignore: deprecated_member_use
             Radio<int>(
               value: value,
+              // ignore: deprecated_member_use
               groupValue: _selectedPaymentMethod,
+              // ignore: deprecated_member_use
               onChanged: (int? newValue) {
                 setState(() {
                   _selectedPaymentMethod = newValue!;

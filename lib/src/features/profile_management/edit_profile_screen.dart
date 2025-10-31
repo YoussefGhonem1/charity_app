@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:charity/src/shared/theme/app_colors.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+import '../../shared/state/profile_service.dart';
+import 'data/profile_repository.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class EditProfileScreen extends StatefulWidget {
-  const EditProfileScreen({Key? key}) : super(key: key);
+  const EditProfileScreen({super.key});
 
   @override
   State<EditProfileScreen> createState() => _EditProfileScreenState();
@@ -10,9 +15,33 @@ class EditProfileScreen extends StatefulWidget {
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _nameController = TextEditingController(text: 'Mr Hegazy');
-  final TextEditingController _emailController = TextEditingController(text: 'hegazy@example.com');
-  final TextEditingController _phoneController = TextEditingController(text: '+201234567890');
+  late final TextEditingController _nameController;
+  late final TextEditingController _emailController;
+  late final TextEditingController _phoneController;
+  String? _avatarPath;
+
+  @override
+  void initState() {
+    super.initState();
+    final p = ProfileService.instance.profile.value;
+    final accountEmail = FirebaseAuth.instance.currentUser?.email ?? '';
+    _nameController = TextEditingController(text: p.name);
+    _emailController = TextEditingController(
+      text: accountEmail.isNotEmpty ? accountEmail : p.email,
+    );
+    _phoneController = TextEditingController(text: p.phone);
+    _avatarPath = p.avatarPathOrUrl;
+  }
+
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final xfile = await picker.pickImage(source: ImageSource.gallery, imageQuality: 75);
+    if (xfile != null) {
+      setState(() {
+        _avatarPath = xfile.path;
+      });
+    }
+  }
 
   @override
   void dispose() {
@@ -44,9 +73,37 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              CircleAvatar(
-                radius: 40,
-                backgroundImage: const NetworkImage('https://images.unsplash.com/photo-1500648767791-00dcc994a43e'),
+              Center(
+                child: Stack(
+                  children: [
+                    CircleAvatar(
+                      radius: 48,
+                      backgroundImage: _avatarPath == null
+                          ? null
+                          : (_avatarPath!.startsWith('http')
+                              ? NetworkImage(_avatarPath!) as ImageProvider
+                              : FileImage(File(_avatarPath!))),
+                      child: _avatarPath == null
+                          ? const Icon(Icons.person, size: 48)
+                          : null,
+                    ),
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: InkWell(
+                        onTap: _pickImage,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: AppColors.primaryColor,
+                            shape: BoxShape.circle,
+                          ),
+                          padding: const EdgeInsets.all(8),
+                          child: const Icon(Icons.camera_alt, color: Colors.white, size: 18),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
               ),
               const SizedBox(height: 16),
               TextFormField(
@@ -57,34 +114,23 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 ),
                 textInputAction: TextInputAction.next,
                 validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'Name is required';
-                  }
-                  if (value.trim().length < 3) {
-                    return 'Enter at least 3 characters';
-                  }
+                  final v = value?.trim() ?? '';
+                  if (v.isEmpty) return null; // optional
+                  if (v.length < 3) return 'Enter at least 3 characters';
                   return null;
                 },
               ),
               const SizedBox(height: 12),
               TextFormField(
                 controller: _emailController,
+                readOnly: true,
                 decoration: const InputDecoration(
                   labelText: 'Email',
                   prefixIcon: Icon(Icons.email),
                 ),
                 keyboardType: TextInputType.emailAddress,
                 textInputAction: TextInputAction.next,
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'Email is required';
-                  }
-                  final emailRegex = RegExp(r'^\S+@\S+\.\S+$');
-                  if (!emailRegex.hasMatch(value.trim())) {
-                    return 'Enter a valid email';
-                  }
-                  return null;
-                },
+                validator: (_) => null,
               ),
               const SizedBox(height: 12),
               TextFormField(
@@ -96,12 +142,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 keyboardType: TextInputType.phone,
                 textInputAction: TextInputAction.done,
                 validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'Phone is required';
-                  }
-                  if (value.trim().length < 8) {
-                    return 'Enter a valid phone number';
-                  }
+                  final v = value?.trim() ?? '';
+                  if (v.isEmpty) return null; // optional
+                  if (v.length < 8) return 'Enter a valid phone number';
                   return null;
                 },
               ),
@@ -126,15 +169,43 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     final isValid = _formKey.currentState?.validate() ?? false;
     if (!isValid) return;
     FocusScope.of(context).unfocus();
-    final result = {
-      'name': _nameController.text.trim(),
-      'email': _emailController.text.trim(),
-      'phone': _phoneController.text.trim(),
-    };
+    _saveAsync();
+  }
+}
+
+extension on _EditProfileScreenState {
+  Future<void> _saveAsync() async {
+    final name = _nameController.text.trim();
+    final email = FirebaseAuth.instance.currentUser?.email?.trim() ?? '';
+    final phone = _phoneController.text.trim();
+
+    String? avatarUrl = ProfileService.instance.profile.value.avatarPathOrUrl;
+    if (_avatarPath != null && !_avatarPath!.startsWith('http')) {
+      try {
+        avatarUrl = await ProfileRepository.instance.uploadAvatar(File(_avatarPath!));
+      } catch (_) {}
+    }
+
+    await ProfileRepository.instance.upsertProfile(
+      name: name,
+      email: email,
+      phone: phone,
+      avatarUrl: avatarUrl,
+    );
+
+    final updated = ProfileService.instance.profile.value.copyWith(
+      name: name,
+      email: email,
+      phone: phone,
+      avatarPathOrUrl: avatarUrl,
+    );
+    ProfileService.instance.update(updated);
+
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Profile updated successfully')),
     );
-    Navigator.pop(context, result);
+    Navigator.pop(context);
   }
 }
 
