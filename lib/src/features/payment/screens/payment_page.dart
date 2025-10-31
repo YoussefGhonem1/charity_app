@@ -151,7 +151,7 @@ class _PaymentPageState extends State<PaymentPage> {
                   _selectedPaymentMethod = newValue!;
                 });
               },
-              activeColor: AppColors.primaryColor,
+              fillColor: WidgetStateProperty.all(AppColors.primaryColor),
             ),
           ],
         ),

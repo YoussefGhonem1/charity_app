@@ -25,7 +25,7 @@ class CampaignModel {
     this.period,
   });
 factory CampaignModel.fromFirestore(Map<String, dynamic> data) {
-  double _toDouble(dynamic value) {
+  double toDouble(dynamic value) {
     if (value is num) return value.toDouble();
     if (value is String) return double.tryParse(value) ?? 0.0;
     return 0.0;
@@ -34,9 +34,9 @@ factory CampaignModel.fromFirestore(Map<String, dynamic> data) {
   return CampaignModel(
     title: data['title'] ?? '',
     organization: data['organization'] ?? '',
-    progress: _toDouble(data['progress']),
-    donatedAmount: _toDouble(data['donatedAmount']),
-    amount: _toDouble(data['amount']),
+    progress: toDouble(data['progress']),
+    donatedAmount: toDouble(data['donatedAmount']),
+    amount: toDouble(data['amount']),
     category: data['category'] ?? '',
     location: data['location'] ?? '',
     imageUrl: data['imageUrl'] ?? '',
