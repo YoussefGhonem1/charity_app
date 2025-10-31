@@ -16,6 +16,7 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   bool _notificationsEnabled = true;
+<<<<<<< HEAD
 
   @override
   void initState() {
@@ -27,6 +28,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
       });
     });
   }
+=======
+  bool _darkModeEnabled = false;
+  String _language = 'English';
+>>>>>>> develop
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +50,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
               SettingsRepository.instance.updateSettings(notificationsEnabled: value);
               _toast('${t.notifications} ${value ? t.enabled : t.disabled}');
             },
+<<<<<<< HEAD
             title: Text(t.notifications),
+=======
+            title: const Text('Notifications', style: TextStyle(fontSize: 18)),
+>>>>>>> develop
             secondary: const Icon(Icons.notifications),
             activeThumbColor: AppColors.primaryColor,
           ),
@@ -63,6 +72,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 activeThumbColor: AppColors.primaryColor,
               );
             },
+<<<<<<< HEAD
           ),
           ListTile(
             leading: const Icon(Icons.language),
@@ -71,6 +81,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
               valueListenable: settings.languageName,
               builder: (_, lang, _) => Text(lang),
             ),
+=======
+            title: const Text('Dark mode', style: TextStyle(fontSize: 18)),
+            secondary: const Icon(Icons.dark_mode),
+            activeColor: AppColors.primaryColor,
+          ),
+          ListTile(
+            leading: const Icon(Icons.language),
+            title: const Text('Language', style: TextStyle(fontSize: 18)),
+            subtitle: Text(_language),
+>>>>>>> develop
             trailing: const Icon(Icons.chevron_right),
             onTap: _pickLanguage,
           ),
@@ -79,7 +99,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
           _buildSectionTitle(context, t.about),
           ListTile(
             leading: const Icon(Icons.info_outline),
+<<<<<<< HEAD
             title: Text(t.aboutApp),
+=======
+            title: const Text('About app', style: TextStyle(fontSize: 18)),
+>>>>>>> develop
             onTap: () {
               showAboutDialog(
                 context: context,
@@ -91,7 +115,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           ListTile(
             leading: const Icon(Icons.privacy_tip_outlined),
+<<<<<<< HEAD
             title: Text(t.privacyPolicy),
+=======
+            title: const Text('Privacy policy', style: TextStyle(fontSize: 18)),
+>>>>>>> develop
             onTap: () {
               _toast(t.openPrivacyPolicy);
             },
@@ -101,7 +129,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
           _buildSectionTitle(context, t.dangerZone),
           ListTile(
             leading: const Icon(Icons.logout, color: Colors.redAccent),
+<<<<<<< HEAD
             title: Text(t.logout),
+=======
+            title: const Text('Log out', style: TextStyle(fontSize: 18)),
+>>>>>>> develop
             onTap: _confirmLogout,
           ),
         ],
@@ -114,15 +146,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
       padding: const EdgeInsets.fromLTRB(12, 12, 12, 4),
       child: Text(
         text,
-        style: Theme.of(context).textTheme.labelMedium,
+        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
       ),
     );
   }
 
   void _toast(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   Future<void> _pickLanguage() async {
@@ -169,7 +201,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
             TextButton(
               onPressed: () => Navigator.pop(context, true),
+<<<<<<< HEAD
               child: Text(t.logout, style: TextStyle(color: AppColors.primaryColor)),
+=======
+              child: Text(
+                'Log out',
+                style: TextStyle(color: AppColors.primaryColor),
+              ),
+>>>>>>> develop
             ),
           ],
         );
@@ -192,5 +231,3 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
   }
 }
-
-

@@ -15,6 +15,7 @@ class EditProfileScreen extends StatefulWidget {
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
   final _formKey = GlobalKey<FormState>();
+<<<<<<< HEAD
   late final TextEditingController _nameController;
   late final TextEditingController _emailController;
   late final TextEditingController _phoneController;
@@ -42,6 +43,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       });
     }
   }
+=======
+  final TextEditingController _nameController = TextEditingController(text: 'Mr Hegazy' );
+  final TextEditingController _emailController = TextEditingController(text: 'hegazy@example.com');
+  final TextEditingController _phoneController = TextEditingController(text: '+201234567890');
+>>>>>>> develop
 
   @override
   void dispose() {
@@ -109,7 +115,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               TextFormField(
                 controller: _nameController,
                 decoration: const InputDecoration(
-                  labelText: 'Full name',
+                  labelText: 'Full name' ,
                   prefixIcon: Icon(Icons.person),
                 ),
                 textInputAction: TextInputAction.next,

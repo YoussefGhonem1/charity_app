@@ -1,7 +1,11 @@
+import 'package:charity/src/features/add_donate/add_donate.dart';
 import 'package:charity/src/features/create_account/screens/create_account.dart';
+import 'package:charity/src/features/donation_page/screen/foundation_page.dart';
 import 'package:charity/src/features/favourite/favourite.dart';
 import 'package:charity/src/features/donation_page/screen/donation_page.dart';
 import 'package:charity/src/features/forget_password/screens/forget_password_page.dart';
+import 'package:charity/src/features/home/models/campaign_model.dart';
+import 'package:charity/src/features/home/models/foundation_model.dart';
 import 'package:charity/src/features/home/screen/home_screen.dart';
 import 'package:charity/src/features/layout/screens/layout_screen.dart';
 import 'package:charity/src/features/on_boarding/screens/on_boarding_page.dart';
@@ -10,7 +14,9 @@ import 'package:charity/src/features/payment/screens/donate_page.dart';
 import 'package:charity/src/features/payment/screens/enter_pin_page.dart';
 import 'package:charity/src/features/payment/screens/payment_page.dart';
 import 'package:charity/src/features/payment/screens/success_page.dart';
+import 'package:charity/src/features/profile_management/profile_management_screen.dart';
 import 'package:charity/src/features/splash/screens/splash_page.dart';
+import 'package:charity/src/features/zakat_calculator/screens/zakat_calculator_page.dart';
 import 'package:flutter/material.dart';
 import 'package:charity/src/features/forget_password/screens/reset_password_sent_page.dart';
 import '../../features/sigin_in_email/screens/signin_email.dart';
@@ -19,6 +25,7 @@ import 'package:charity/src/features/profile_management/transactions_screen.dart
 import 'package:charity/src/features/profile_management/edit_profile_screen.dart';
 import 'package:charity/src/features/profile_management/invite_friends_screen.dart';
 import 'package:charity/src/features/profile_management/settings_screen.dart';
+
 
 class Routes {
   static const String initial = '/';
@@ -41,6 +48,10 @@ class Routes {
   static const String editProfile = '/edit-profile';
   static const String inviteFriends = '/invite';
   static const String settings = '/settings';
+  static const String zakatCalculator = '/zakat_calculator';
+  static const String add_donate = '/add_donate';
+  static const String prof_manage = '/prof_manage';
+    static const String foundationPage = "/foundation_page";
 }
 
 class AppRoutes {
@@ -53,13 +64,18 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const OnBoardingPage());
 
       case Routes.signInPassword:
-        return MaterialPageRoute(builder: (_) => SignInPasswordScreen());
-
+        final email = settings.arguments as String;
+        return MaterialPageRoute(
+          builder: (_) => SignInPasswordScreen(email: email),
+        );
       case Routes.createAcount:
         return MaterialPageRoute(builder: (_) => CreateAccountPage());
 
       case Routes.donationPage:
-        return MaterialPageRoute(builder: (_) => const DonationPage());
+  final campaign = settings.arguments as CampaignModel;
+  return MaterialPageRoute(
+    builder: (_) => DonationPage(campaign: campaign),
+  );
       case Routes.layout:
         return MaterialPageRoute(builder: (_) => const LayoutScreen());
 
@@ -86,12 +102,24 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => HomeScreen());
       case Routes.transactions:
         return MaterialPageRoute(builder: (_) => const TransactionsScreen());
+         case Routes.prof_manage:
+        return MaterialPageRoute(builder: (_) => const ProfileManagementScreen());
       case Routes.editProfile:
         return MaterialPageRoute(builder: (_) => const EditProfileScreen());
       case Routes.inviteFriends:
         return MaterialPageRoute(builder: (_) => const InviteFriendsScreen());
       case Routes.settings:
         return MaterialPageRoute(builder: (_) => const SettingsScreen());
+      case Routes.zakatCalculator:
+        return MaterialPageRoute(builder: (_) => const ZakatCalculatorPage());
+      case Routes.add_donate:
+        return MaterialPageRoute(builder: (_) => DonationScreen());
+case Routes.foundationPage:
+  final foundation = settings.arguments as FoundationModel;
+  return MaterialPageRoute(
+    builder: (_) => FoundationPage(foundation: foundation),
+  );
+
       default:
         return MaterialPageRoute(
           builder: (_) =>

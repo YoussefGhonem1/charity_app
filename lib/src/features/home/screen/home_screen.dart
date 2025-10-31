@@ -1,7 +1,12 @@
+import 'package:charity/src/features/create_account/cubits/user_cubit.dart';
+import 'package:charity/src/features/create_account/models/users_models.dart';
+import 'package:charity/src/features/home/cubits/foundations_cubit.dart';
+import 'package:charity/src/features/home/widgets/foundation_card.dart';
 import 'package:charity/src/shared/routing/app_routs.dart';
 import 'dart:io';
 import 'package:charity/src/shared/widgets/button.dart';
 import 'package:flutter/material.dart';
+<<<<<<< HEAD
 import 'package:charity/l10n/app_localizations.dart';
 import '../models/user_model.dart';
 import '../data/campaign_repository.dart';
@@ -9,11 +14,14 @@ import '../../../shared/state/favourite_service.dart';
 import '../../../shared/state/profile_service.dart';
 import '../models/category_model.dart';
 import '../models/location_model.dart';
+=======
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../cubits/campaign_cubit.dart';
+>>>>>>> develop
 import '../widgets/feature_campaign_card.dart';
 import '../widgets/lastest_campaign_card.dart';
-import '../widgets/category_chip.dart';
-import '../widgets/location_chip.dart';
 
+<<<<<<< HEAD
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -114,11 +122,16 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+=======
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+>>>>>>> develop
 
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context);
     return Scaffold(
+<<<<<<< HEAD
       backgroundColor: Color(0xFFF7FAF8),
       body: SafeArea(
         child: ListView(
@@ -136,18 +149,120 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: user.avatarUrl.trim().isEmpty
                       ? const Icon(Icons.person)
                       : null,
+=======
+      backgroundColor: const Color(0xFFF7FAF8),
+      body: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          BlocBuilder<UserCubit, UserModel?>(
+            builder: (context, user) {
+              if (user == null)
+                return const Center(child: CircularProgressIndicator());
+              return Row(
+                children: [
+                  CircleAvatar(
+                    backgroundImage: NetworkImage(user.avatarUrl),
+                    radius: 24,
+                  ),
+                  const SizedBox(width: 16),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Hello, ${user.firstName} ${user.lastName}",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                      ),
+                      Text(
+                        "Donated ${user.donatedAmount}",
+                        style: TextStyle(color: Colors.grey[600], fontSize: 13),
+                      ),
+                    ],
+                  ),
+                ],
+              );
+            },
+          ),
+          const SizedBox(height: 24),
+          BlocBuilder<UserCubit, UserModel?>(
+            builder: (context, user) {
+              if (user == null) return const SizedBox.shrink();
+              return Card(
+                color: const Color(0xFFFE7277),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+>>>>>>> develop
                 ),
-                SizedBox(width: 16),
-                Column(
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            "Donation Wallet",
+                            style: TextStyle(color: Colors.white, fontSize: 16),
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            "${user.wallet}.00",
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                      ElevatedButton(
+                        onPressed: () {},
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        child: const Text(
+                          "Top up",
+                          style: TextStyle(
+                            color: Color(0xFFFE7277),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+          const SizedBox(height: 24),
+          BlocBuilder<CampaignsCubit, CampaignsState>(
+            builder: (context, state) {
+              if (state is CampaignsLoading)
+                return const Center(child: CircularProgressIndicator());
+              if (state is CampaignsLoaded) {
+                final featureCampaigns = state.campaigns;
+                return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+<<<<<<< HEAD
                     Text(
                       user.name.trim().isEmpty ? t.helloNoName : t.hello(user.name),
+=======
+                    const Text(
+                      'Feature Campaigns',
+>>>>>>> develop
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
                       ),
                     ),
+<<<<<<< HEAD
                     SizedBox(height: 2),
                     Text(
                       t.donated(user.donatedAmount),
@@ -236,11 +351,82 @@ class _HomeScreenState extends State<HomeScreen> {
                           repo.featureCampaigns[i].by,
                         );
                       });
+=======
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      height: 300,
+                      child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: featureCampaigns.length,
+                        separatorBuilder: (_, __) => const SizedBox(width: 12),
+                        itemBuilder: (context, index) {
+                          final campaign = featureCampaigns[index];
+                          return GestureDetector(
+                            onTap: () {
+                               Navigator.pushNamed(
+    context,
+    Routes.donationPage,
+    arguments: campaign,
+  );
+                            },
+                            child: FeatureCampaignCard(
+                              campaign: campaign,
+                              isFavourite: false,
+                              onFavouriteTap: () {},
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                );
+              }
+              if (state is CampaignsError)
+                return Center(child: Text('Error: ${state.message}'));
+              return const SizedBox();
+            },
+          ),
+          const SizedBox(height: 20),
+          const Text(
+            'Foundations',
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+          ),
+          const SizedBox(height: 12),
+          SizedBox(
+            height: 240,
+            child: BlocBuilder<FoundationCubit, FoundationsState>(
+              builder: (context, state) {
+                if (state is FoundationsLoading)
+                  return const Center(child: CircularProgressIndicator());
+                if (state is FoundationsLoaded) {
+                  return ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: state.foundations.length,
+                    itemBuilder: (context, index) {
+                      final foundation = state.foundations[index];
+                      return GestureDetector(
+                        onTap: () {
+                             Navigator.pushNamed(
+    context,
+    Routes.foundationPage,
+    arguments: foundation,
+  );
+                        },
+                        child: SizedBox(
+                          width: 200,
+                          child: FoundationCard(foundation: foundation),
+                        ),
+                      );
+>>>>>>> develop
                     },
-                  ),
-                ),
-              ),
+                  );
+                }
+                if (state is FoundationsError)
+                  return Center(child: Text('Error: ${state.message}'));
+                return const SizedBox();
+              },
             ),
+<<<<<<< HEAD
             SizedBox(height: 5),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -343,6 +529,87 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
+=======
+          ),
+          const SizedBox(height: 20),
+          BlocBuilder<CampaignsCubit, CampaignsState>(
+            builder: (context, state) {
+              if (state is CampaignsLoading)
+                return const Center(child: CircularProgressIndicator());
+              if (state is CampaignsLoaded) {
+                final latestCampaigns = state.campaigns;
+                final displayedCampaigns = latestCampaigns.length > 4
+                    ? latestCampaigns.sublist(0, 4)
+                    : latestCampaigns;
+                bool showAll = false;
+                return StatefulBuilder(
+                  builder: (context, setState) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Latest Campaigns',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        GridView.builder(
+                          padding: EdgeInsets.zero,
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: showAll
+                              ? latestCampaigns.length
+                              : displayedCampaigns.length,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                childAspectRatio: 0.99,
+                                crossAxisSpacing: 12,
+                                mainAxisSpacing: 12,
+                              ),
+                          itemBuilder: (context, index) {
+                            final campaign = showAll
+                                ? latestCampaigns[index]
+                                : displayedCampaigns[index];
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.pushNamed(
+    context,
+    Routes.donationPage,
+    arguments: campaign,
+  );
+                              },
+                              child: LastestCampaignCard(
+                                campaign: campaign,
+                                isFavourite: false,
+                                onFavouriteTap: () {},
+                              ),
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 10),
+                        ContinueButton(
+                          text: showAll ? "Show Less" : "See All",
+                          onPressed: () {
+                            setState(() {
+                              showAll = !showAll;
+                            });
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
+              }
+              if (state is CampaignsError)
+                return Center(child: Text('Error: ${state.message}'));
+              return const SizedBox();
+            },
+          ),
+        ],
+>>>>>>> develop
       ),
     );
   }

@@ -44,7 +44,7 @@ class ResetPasswordSentScreen extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(vertical: 14),
                     ),
                     onPressed: () {
-                     Navigator.pushReplacementNamed(context, Routes.signInPassword);
+                     Navigator.pushReplacementNamed(context, Routes.signInEmail);
                     },
                     child: const Text(
                       "Return to Login",

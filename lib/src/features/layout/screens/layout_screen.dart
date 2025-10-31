@@ -1,6 +1,7 @@
 import 'package:charity/src/features/favourite/favourite.dart';
 import 'package:charity/src/features/home/screen/home_screen.dart';
 import 'package:charity/src/features/profile_management/profile_management_screen.dart';
+import 'package:charity/src/features/zakat_calculator/screens/zakat_calculator_page.dart';
 import 'package:charity/src/shared/theme/app_colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +16,12 @@ class LayoutScreen extends StatefulWidget {
 
 class _LayoutScreenState extends State<LayoutScreen> {
   int _selectedIndex = 0;
-  List<Widget> tabs = [HomeScreen(), FavouriteScreen(), HomeScreen(), const ProfileManagementScreen()];
+  List<Widget> tabs = [
+    HomeScreen(),
+    FavouriteScreen(),
+    ZakatCalculatorPage(),
+    const ProfileManagementScreen(),
+  ];
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context);
@@ -27,6 +33,7 @@ class _LayoutScreenState extends State<LayoutScreen> {
         onTap: _onItemTapped,
 
         items: <BottomNavigationBarItem>[
+<<<<<<< HEAD
            BottomNavigationBarItem(
               icon: Icon(CupertinoIcons.home),
               label: t.home,
@@ -43,6 +50,21 @@ class _LayoutScreenState extends State<LayoutScreen> {
               icon: Icon(CupertinoIcons.person),
               label: t.account,
             ),
+=======
+          BottomNavigationBarItem(
+            icon: Icon(CupertinoIcons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(CupertinoIcons.heart),
+            label: 'Favourite',
+          ),
+          BottomNavigationBarItem(icon: Icon(Icons.calculate), label: 'Zakat'),
+          BottomNavigationBarItem(
+            icon: Icon(CupertinoIcons.person),
+            label: 'Account',
+          ),
+>>>>>>> develop
         ],
       ),
       body: tabs[_selectedIndex],

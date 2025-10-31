@@ -1,7 +1,7 @@
-
 import 'package:charity/src/features/splash/widgets/animation_letter.dart';
 import 'package:charity/src/shared/routing/app_routs.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../../shared/theme/app_colors.dart';
 
@@ -60,8 +60,21 @@ late final List<Offset> entryOffsets = List.generate(
     });
 
     startAnimations();
-    navigateToOnBoarding();
+    _checkAuthState(); 
   }
+
+  Future<void> _checkAuthState() async {
+    await Future.delayed(const Duration(seconds: 3));
+    if (mounted) {
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        Navigator.pushReplacementNamed(context, Routes.layout);
+      } else {
+        Navigator.pushReplacementNamed(context, Routes.onBoarding);
+      }
+    }
+  }
+
 
   Future<void> startAnimations() async {
     for (var controller in _controllers) {
@@ -70,13 +83,7 @@ late final List<Offset> entryOffsets = List.generate(
     }
   }
 
-  void navigateToOnBoarding() {
-    Future.delayed(const Duration(seconds: 3), () {
-      if (mounted) {
-        Navigator.pushReplacementNamed(context, Routes.onBoarding);
-      }
-    });
-  }
+ 
 
   @override
   void dispose() {

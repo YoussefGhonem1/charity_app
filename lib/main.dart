@@ -1,3 +1,6 @@
+import 'package:charity/src/features/create_account/cubits/user_cubit.dart';
+import 'package:charity/src/features/home/cubits/campaign_cubit.dart';
+import 'package:charity/src/features/home/cubits/foundations_cubit.dart';
 import 'package:charity/src/shared/routing/app_routs.dart';
 import 'package:charity/src/shared/theme/app_theme.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -6,6 +9,7 @@ import 'src/shared/state/settings_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+<<<<<<< HEAD
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,6 +17,23 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(const MyApp());
+=======
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  runApp(
+    MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => UserCubit()..loadUserData()),
+        BlocProvider(create: (_) => CampaignsCubit()..fetchCampaigns()),
+        BlocProvider(create: (context) => FoundationCubit()..fetchFoundations()),
+      ],
+      child: const MyApp(),
+    ),
+  );
+>>>>>>> develop
 }
 
 class MyApp extends StatelessWidget {
@@ -20,6 +41,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+<<<<<<< HEAD
     final settings = SettingsController.instance;
     return ValueListenableBuilder<Locale>(
       valueListenable: settings.locale,
@@ -47,7 +69,14 @@ class MyApp extends StatelessWidget {
           },
         );
       },
+=======
+    return MaterialApp(
+      title: 'Charity App',
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.theme,
+      onGenerateRoute: AppRoutes.onGenerateRoute,
+      initialRoute: Routes.initial,
+>>>>>>> develop
     );
   }
 }
-
