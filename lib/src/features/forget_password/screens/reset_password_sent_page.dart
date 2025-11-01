@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../../../shared/theme/app_colors.dart' ;
 
 class ResetPasswordSentScreen extends StatelessWidget {
-  const ResetPasswordSentScreen({super.key});
+  const ResetPasswordSentScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

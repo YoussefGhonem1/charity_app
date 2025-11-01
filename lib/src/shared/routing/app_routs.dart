@@ -2,6 +2,7 @@ import 'package:charity/src/features/add_donate/add_donate.dart';
 import 'package:charity/src/features/create_account/screens/create_account.dart';
 import 'package:charity/src/features/donation_page/screen/foundation_page.dart';
 import 'package:charity/src/features/favourite/favourite.dart';
+import 'package:charity/src/features/favourite/cubits/favourite_cubit.dart';
 import 'package:charity/src/features/donation_page/screen/donation_page.dart';
 import 'package:charity/src/features/forget_password/screens/forget_password_page.dart';
 import 'package:charity/src/features/home/models/campaign_model.dart';
@@ -25,6 +26,9 @@ import 'package:charity/src/features/profile_management/transactions_screen.dart
 import 'package:charity/src/features/profile_management/edit_profile_screen.dart';
 import 'package:charity/src/features/profile_management/invite_friends_screen.dart';
 import 'package:charity/src/features/profile_management/settings_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:charity/src/features/profile_management/cubits/settings_cubit.dart';
+import 'package:charity/src/features/profile_management/cubits/transactions_cubit.dart';
 
 
 class Routes {
@@ -96,20 +100,40 @@ class AppRoutes {
       case Routes.success:
         return MaterialPageRoute(builder: (_) => SuccessPage());
       case Routes.favourite:
-        return MaterialPageRoute(builder: (_) => FavouriteScreen());
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (_) => FavouriteCubit()..loadFavourites(),
+            child: const FavouriteScreen(),
+          ),
+        );
 
       case Routes.homePage:
         return MaterialPageRoute(builder: (_) => HomeScreen());
       case Routes.transactions:
-        return MaterialPageRoute(builder: (_) => const TransactionsScreen());
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (_) => TransactionsCubit()..fetch(),
+            child: const TransactionsScreen(),
+          ),
+        );
          case Routes.prof_manage:
-        return MaterialPageRoute(builder: (_) => const ProfileManagementScreen());
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (_) => SettingsCubit()..load(),
+            child: const ProfileManagementScreen(),
+          ),
+        );
       case Routes.editProfile:
         return MaterialPageRoute(builder: (_) => const EditProfileScreen());
       case Routes.inviteFriends:
         return MaterialPageRoute(builder: (_) => const InviteFriendsScreen());
       case Routes.settings:
-        return MaterialPageRoute(builder: (_) => const SettingsScreen());
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (_) => SettingsCubit()..load(),
+            child: const SettingsScreen(),
+          ),
+        );
       case Routes.zakatCalculator:
         return MaterialPageRoute(builder: (_) => const ZakatCalculatorPage());
       case Routes.add_donate:

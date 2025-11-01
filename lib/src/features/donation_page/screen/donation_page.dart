@@ -8,8 +8,7 @@ import '../../../shared/widgets/text_form.dart';
 class DonationPage extends StatelessWidget {
 final CampaignModel campaign;
 
-  const DonationPage({super.key,    required this.campaign,
-});
+  const DonationPage({Key? key, required this.campaign}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -265,7 +264,7 @@ final CampaignModel campaign;
                                                 style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
                                               ),
                                               selected: selectedIndex == 0,
-                                              selectedTileColor: Colors.purple.withOpacity(0.07),
+                                              selectedTileColor: Colors.purple.withValues(alpha: 0.07),
                                               shape: RoundedRectangleBorder(
                                                 side: BorderSide(
                                                   color: selectedIndex == 0 ? Colors.purple : Colors.transparent,
@@ -288,7 +287,7 @@ final CampaignModel campaign;
                                                 style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
                                               ),
                                               selected: selectedIndex == 1,
-                                              selectedTileColor: Colors.blueAccent.withOpacity(0.07),
+                                              selectedTileColor: Colors.blueAccent.withValues(alpha: 0.07),
                                               shape: RoundedRectangleBorder(
                                                 side: BorderSide(
                                                   color: selectedIndex == 1 ? Colors.blueAccent : Colors.transparent,
@@ -311,7 +310,7 @@ final CampaignModel campaign;
                                                 style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
                                               ),
                                               selected: selectedIndex == 2,
-                                              selectedTileColor: Colors.orangeAccent.withOpacity(0.07),
+                                              selectedTileColor: Colors.orangeAccent.withValues(alpha: 0.07),
                                               shape: RoundedRectangleBorder(
                                                 side: BorderSide(
                                                   color: selectedIndex == 2 ? Colors.orangeAccent : Colors.transparent,
@@ -334,7 +333,7 @@ final CampaignModel campaign;
                                                 style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
                                               ),
                                               selected: selectedIndex == 3,
-                                              selectedTileColor: Colors.red.withOpacity(0.07),
+                                              selectedTileColor: Colors.red.withValues(alpha: 0.07),
                                               shape: RoundedRectangleBorder(
                                                 side: BorderSide(
                                                   color: selectedIndex == 3 ? Colors.red : Colors.transparent,
@@ -357,7 +356,7 @@ final CampaignModel campaign;
                                                 style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
                                               ),
                                               selected: selectedIndex == 4,
-                                              selectedTileColor: Colors.pinkAccent.withOpacity(0.07),
+                                              selectedTileColor: Colors.pinkAccent.withValues(alpha: 0.07),
                                               shape: RoundedRectangleBorder(
                                                 side: BorderSide(
                                                   color: selectedIndex == 4 ? Colors.pinkAccent : Colors.transparent,
@@ -380,7 +379,7 @@ final CampaignModel campaign;
                                                 style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
                                               ),
                                               selected: selectedIndex == 5,
-                                              selectedTileColor: Colors.greenAccent.withOpacity(0.07),
+                                              selectedTileColor: Colors.greenAccent.withValues(alpha: 0.07),
                                               shape: RoundedRectangleBorder(
                                                 side: BorderSide(
                                                   color: selectedIndex == 5 ? Colors.greenAccent : Colors.transparent,
@@ -403,7 +402,7 @@ final CampaignModel campaign;
                                                 style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
                                               ),
                                               selected: selectedIndex == 6,
-                                              selectedTileColor: Colors.blueGrey.withOpacity(0.07),
+                                              selectedTileColor: Colors.blueGrey.withValues(alpha: 0.07),
                                               shape: RoundedRectangleBorder(
                                                 side: BorderSide(
                                                   color: selectedIndex == 6 ? Colors.blueGrey : Colors.transparent,

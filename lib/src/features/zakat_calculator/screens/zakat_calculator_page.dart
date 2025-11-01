@@ -25,6 +25,7 @@ class _ZakatCalculatorPageState extends State<ZakatCalculatorPage> {
   Future<void> _launchURL(String url) async {
     final Uri uri = Uri.parse(url);
     if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('لا يمكن فتح الرابط: $url'),
@@ -251,7 +252,7 @@ class CustomTextField extends StatelessWidget {
   final TextDirection? textDirection;
 
   const CustomTextField({
-    super.key,
+    Key? key,
     required this.controller,
     required this.hintText,
     this.keyboardType = TextInputType.text,

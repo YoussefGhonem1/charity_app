@@ -1,4 +1,4 @@
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/foundation_model.dart';
 
@@ -28,11 +28,9 @@ class FoundationCubit extends Cubit<FoundationsState> {
           .collection('foundations')
           .get();
    final foundationsList = snapshot.docs.map((doc) {
-  final rawData = doc.data() as Map<String, dynamic>;
-  print("Raw data from Firestore: $rawData");
+  final rawData = doc.data();
   
   final foundation = FoundationModel.fromJson(rawData);
-  print("Foundation fetched: ${foundation.title}, ${foundation.organization}, ${foundation.imageUrl}");
   
   return foundation;
 }).toList();

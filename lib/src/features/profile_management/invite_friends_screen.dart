@@ -1,55 +1,74 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:charity/src/shared/theme/app_colors.dart';
+import 'package:charity/src/shared/localization/app_translations.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:charity/src/features/create_account/cubits/user_cubit.dart';
 
 class InviteFriendsScreen extends StatefulWidget {
-  const InviteFriendsScreen({Key? key}) : super(key: key);
+  const InviteFriendsScreen();
 
   @override
   State<InviteFriendsScreen> createState() => _InviteFriendsScreenState();
 }
 
 class _InviteFriendsScreenState extends State<InviteFriendsScreen> {
-  final String _referralCode = 'HEGAZY25';
-  final String _referralLink = 'https://charity.example/invite?code=HEGAZY25';
+  late final String _referralCode;
+  late final String _referralLink;
+
+  @override
+  void initState() {
+    super.initState();
+    final user = context.read<UserCubit>().state;
+    final base = user?.uid ?? 'guest';
+    _referralCode = base.substring(0, base.length >= 8 ? 8 : base.length).toUpperCase();
+    _referralLink = 'https://charity.example/invite?code=$_referralCode';
+  }
 
   @override
   Widget build(BuildContext context) {
+    final t = AppTranslations.of(context);
     return Scaffold(
-      appBar: AppBar(title: const Text('Invite Friends')),
+      appBar: AppBar(title: Text(t.translate('invite_friends_title'))),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              'Share your referral link',
+              t.translate('share_your_referral_link'),
               style: Theme.of(context).textTheme.headlineSmall,
             ),
             const SizedBox(height: 8),
             Text(
-              'Invite friends and help more people. Share your unique link below.',
+              t.translate('invite_friends_description'),
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             const SizedBox(height: 16),
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: AppColors.lightGrey,
+                color: AppColors.lightGreyColor(context),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.greyShade200),
+                border: Border.all(color: AppColors.greyShade(context)),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Your code', style: Theme.of(context).textTheme.labelMedium),
+                  Text(
+                    t.translate('your_code'),
+                    style: Theme.of(context).textTheme.labelMedium,
+                  ),
                   const SizedBox(height: 4),
                   Text(
                     _referralCode,
                     style: Theme.of(context).textTheme.headlineSmall,
                   ),
                   const SizedBox(height: 16),
-                  Text('Referral link', style: Theme.of(context).textTheme.labelMedium),
+                  Text(
+                    t.translate('referral_link'),
+                    style: Theme.of(context).textTheme.labelMedium,
+                  ),
                   const SizedBox(height: 4),
                   SelectableText(_referralLink),
                   const SizedBox(height: 12),
@@ -59,7 +78,7 @@ class _InviteFriendsScreenState extends State<InviteFriendsScreen> {
                         child: OutlinedButton.icon(
                           onPressed: _copyLink,
                           icon: const Icon(Icons.copy),
-                          label: const Text('Copy link'),
+                          label: Text(t.translate('copy_link')),
                         ),
                       ),
                     ],
@@ -75,7 +94,7 @@ class _InviteFriendsScreenState extends State<InviteFriendsScreen> {
                 minimumSize: const Size.fromHeight(48),
               ),
               onPressed: _copyLink,
-              child: const Text('Copy and share later'),
+              child: Text(t.translate('copy_and_share_later')),
             ),
           ],
         ),
@@ -84,10 +103,11 @@ class _InviteFriendsScreenState extends State<InviteFriendsScreen> {
   }
 
   Future<void> _copyLink() async {
+    final t = AppTranslations.of(context);
     await Clipboard.setData(ClipboardData(text: _referralLink));
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Referral link copied to clipboard')),
+      SnackBar(content: Text(t.translate('referral_link_copied'))),
     );
   }
 }
