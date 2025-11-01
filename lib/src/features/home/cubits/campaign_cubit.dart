@@ -19,12 +19,12 @@ class CampaignsCubit extends Cubit<CampaignsState> {
 
   CampaignsCubit() : super(CampaignsInitial());
 
-  Future<void> fetchCampaigns() async {
+Future<void> fetchCampaigns() async {
     emit(CampaignsLoading());
     try {
       var snapshot = await FirebaseFirestore.instance.collection('campaigns').get();
       var campaigns = snapshot.docs
-          .map((doc) => CampaignModel.fromFirestore(doc.data()))
+          .map((doc) => CampaignModel.fromFirestore(doc.id, doc.data())) 
           .toList();
       _cachedCampaigns = campaigns;
       emit(CampaignsLoaded(campaigns));

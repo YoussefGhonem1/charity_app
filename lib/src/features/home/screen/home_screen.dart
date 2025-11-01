@@ -31,8 +31,13 @@ class HomeScreen extends StatelessWidget {
               return Row(
                 children: [
                   CircleAvatar(
-                    backgroundImage: NetworkImage(user.avatarUrl),
+                    backgroundImage: (user.avatarUrl.isNotEmpty)
+                        ? NetworkImage(user.avatarUrl)
+                        : null,
                     radius: 24,
+                    child: (user.avatarUrl.isEmpty)
+                        ? const Icon(Icons.person)
+                        : null,
                   ),
                   const SizedBox(width: 16),
                   Column(
@@ -47,7 +52,7 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        "${t.donated} ${user.donatedAmount}",
+                        "${t.donated} \$${user.donatedAmount.toStringAsFixed(2)}",
                         style: TextStyle(color: Colors.grey[600], fontSize: 13),
                       ),
                     ],
@@ -75,11 +80,12 @@ class HomeScreen extends StatelessWidget {
                         children: [
                           Text(
                             t.donationWallet,
-                            style: const TextStyle(color: Colors.white, fontSize: 16),
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 16),
                           ),
                           const SizedBox(height: 10),
                           Text(
-                            "${user.wallet}.00",
+                            "\$${user.wallet.toStringAsFixed(2)}",
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 22,
@@ -139,23 +145,27 @@ class HomeScreen extends StatelessWidget {
                           final campaign = featureCampaigns[index];
                           return GestureDetector(
                             onTap: () {
-                               Navigator.pushNamed(
-    context,
-    Routes.donationPage,
-    arguments: campaign,
-  );
+                              Navigator.pushNamed(
+                                context,
+                                Routes.donationPage,
+                                arguments: campaign,
+                              );
                             },
                             child: BlocBuilder<FavouriteCubit, FavouriteState>(
                               builder: (context, favState) {
                                 return FutureBuilder<bool>(
-                                  future: context.read<FavouriteCubit>().isFavourite(campaign, null),
+                                  future: context
+                                      .read<FavouriteCubit>()
+                                      .isFavourite(campaign, null),
                                   builder: (context, snapshot) {
                                     final isFav = snapshot.data ?? false;
                                     return FeatureCampaignCard(
                                       campaign: campaign,
                                       isFavourite: isFav,
                                       onFavouriteTap: () {
-                                        context.read<FavouriteCubit>().toggleFavourite(campaign, null);
+                                        context
+                                            .read<FavouriteCubit>()
+                                            .toggleFavourite(campaign, null);
                                       },
                                     );
                                   },
@@ -170,7 +180,8 @@ class HomeScreen extends StatelessWidget {
                 );
               }
               if (state is CampaignsError)
-                return Center(child: Text('${t.translate('error')}: ${state.message}'));
+                return Center(
+                    child: Text('${t.translate('error')}: ${state.message}'));
               return const SizedBox();
             },
           ),
@@ -198,11 +209,11 @@ class HomeScreen extends StatelessWidget {
                       final foundation = state.foundations[index];
                       return GestureDetector(
                         onTap: () {
-                             Navigator.pushNamed(
-    context,
-    Routes.foundationPage,
-    arguments: foundation,
-  );
+                          Navigator.pushNamed(
+                            context,
+                            Routes.foundationPage,
+                            arguments: foundation,
+                          );
                         },
                         child: SizedBox(
                           width: 200,
@@ -213,7 +224,8 @@ class HomeScreen extends StatelessWidget {
                   );
                 }
                 if (state is FoundationsError)
-                  return Center(child: Text('${t.translate('error')}: ${state.message}'));
+                  return Center(
+                      child: Text('${t.translate('error')}: ${state.message}'));
                 return const SizedBox();
               },
             ),
@@ -252,11 +264,11 @@ class HomeScreen extends StatelessWidget {
                               : displayedCampaigns.length,
                           gridDelegate:
                               const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                childAspectRatio: 0.99,
-                                crossAxisSpacing: 12,
-                                mainAxisSpacing: 12,
-                              ),
+                            crossAxisCount: 2,
+                            childAspectRatio: 0.99,
+                            crossAxisSpacing: 12,
+                            mainAxisSpacing: 12,
+                          ),
                           itemBuilder: (context, index) {
                             final campaign = showAll
                                 ? latestCampaigns[index]
@@ -264,22 +276,27 @@ class HomeScreen extends StatelessWidget {
                             return GestureDetector(
                               onTap: () {
                                 Navigator.pushNamed(
-    context,
-    Routes.donationPage,
-    arguments: campaign,
-  );
+                                  context,
+                                  Routes.donationPage,
+                                  arguments: campaign,
+                                );
                               },
-                              child: BlocBuilder<FavouriteCubit, FavouriteState>(
+                              child:
+                                  BlocBuilder<FavouriteCubit, FavouriteState>(
                                 builder: (context, favState) {
                                   return FutureBuilder<bool>(
-                                    future: context.read<FavouriteCubit>().isFavourite(campaign, null),
+                                    future: context
+                                        .read<FavouriteCubit>()
+                                        .isFavourite(campaign, null),
                                     builder: (context, snapshot) {
                                       final isFav = snapshot.data ?? false;
                                       return LastestCampaignCard(
                                         campaign: campaign,
                                         isFavourite: isFav,
                                         onFavouriteTap: () {
-                                          context.read<FavouriteCubit>().toggleFavourite(campaign, null);
+                                          context
+                                              .read<FavouriteCubit>()
+                                              .toggleFavourite(campaign, null);
                                         },
                                       );
                                     },
@@ -304,7 +321,8 @@ class HomeScreen extends StatelessWidget {
                 );
               }
               if (state is CampaignsError)
-                return Center(child: Text('${t.translate('error')}: ${state.message}'));
+                return Center(
+                    child: Text('${t.translate('error')}: ${state.message}'));
               return const SizedBox();
             },
           ),

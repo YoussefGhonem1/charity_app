@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:charity/src/features/home/models/campaign_model.dart';
 
+
 abstract class FavouriteState {}
 
 class FavouriteInitial extends FavouriteState {}
@@ -42,9 +43,8 @@ class FavouriteCubit extends Cubit<FavouriteState> {
         return;
       }
 
-      // Get campaigns directly from favourites collection
       final campaigns = favsSnapshot.docs
-          .map((doc) => CampaignModel.fromFirestore(doc.data()))
+          .map((doc) => CampaignModel.fromFirestore(doc.id, doc.data())) 
           .toList();
 
       emit(FavouriteLoaded(campaigns));
@@ -58,8 +58,7 @@ class FavouriteCubit extends Cubit<FavouriteState> {
     if (user == null) return;
 
     try {
-      // Use campaign title as document ID if docId is null
-      final docId = campaignDocId ?? campaign.title.hashCode.toString();
+      final docId = campaign.id; 
       
       final favRef = FirebaseFirestore.instance
           .collection('users')
@@ -72,26 +71,26 @@ class FavouriteCubit extends Cubit<FavouriteState> {
       if (favDoc.exists) {
         await favRef.delete();
       } else {
-        // First get the campaign document to save its data
+       
         final campaignData = {
           'title': campaign.title,
           'organization': campaign.organization,
           'progress': campaign.progress,
           'donatedAmount': campaign.donatedAmount,
           'amount': campaign.amount,
+          'currentAmount': campaign.currentAmount,
           'category': campaign.category,
           'location': campaign.location,
           'imageUrl': campaign.imageUrl,
           'imageUrl1': campaign.imageUrl1,
           'story': campaign.story,
           'period': campaign.period,
-          'addedAt': FieldValue.serverTimestamp(),
+          'addedAt': FieldValue.serverTimestamp(), 
         };
         
         await favRef.set(campaignData);
       }
 
-      // Reload favourites
       await loadFavourites();
     } catch (e) {
       emit(FavouriteError(e.toString()));
@@ -103,7 +102,7 @@ class FavouriteCubit extends Cubit<FavouriteState> {
     if (user == null) return false;
 
     try {
-      final docId = campaignDocId ?? campaign.title.hashCode.toString();
+      final docId = campaign.id;
       final favDoc = await FirebaseFirestore.instance
           .collection('users')
           .doc(user.uid)
@@ -117,4 +116,3 @@ class FavouriteCubit extends Cubit<FavouriteState> {
     }
   }
 }
-

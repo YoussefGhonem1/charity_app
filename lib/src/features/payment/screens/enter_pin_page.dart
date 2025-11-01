@@ -1,11 +1,13 @@
+import 'package:charity/src/features/home/models/campaign_model.dart';
 import 'package:charity/src/shared/routing/app_routs.dart';
 import 'package:charity/src/shared/widgets/button.dart';
 import 'package:flutter/material.dart';
 import 'package:charity/src/shared/theme/app_colors.dart';
 
 class EnterPinPage extends StatefulWidget {
-  const EnterPinPage({super.key});
-
+final CampaignModel campaign;
+  final double amount; 
+  const EnterPinPage({super.key, required this.campaign, required this.amount});
   @override
   State<EnterPinPage> createState() => _EnterPinPageState();
 }
@@ -84,12 +86,19 @@ class _EnterPinPageState extends State<EnterPinPage> {
                       const SizedBox(height: 32),
                       _buildPinDots(),
                       const SizedBox(height: 48),
-                      ContinueButton(
-                        text: 'Confirm',
-                        onPressed: () {
-                          Navigator.pushNamed(context, Routes.success);
+                     ContinueButton(
+                    text: 'Confirm',
+                    onPressed: () {
+                      Navigator.pushNamed(
+                        context,
+                        Routes.success,
+                        arguments: { 
+                          'campaign': widget.campaign,
+                          'amount': widget.amount,
                         },
-                      ),
+                      );
+                    },
+                  ),
                     ],
                   ),
                   _buildKeypad(),

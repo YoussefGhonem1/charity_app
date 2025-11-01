@@ -32,10 +32,9 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
     final user = context.read<UserCubit>().state;
     if (user != null) {
       userName = '${user.firstName} ${user.lastName}';
-      walletBalance = user.wallet.toDouble();
-      donatedAmount = user.donatedAmount.toDouble();
+      walletBalance = user.wallet;
+      donatedAmount = user.donatedAmount;
     }
-    // Only load settings once when the screen is first built
     if (!_settingsLoaded) {
       _settingsLoaded = true;
       context.read<SettingsCubit>().load();
@@ -47,8 +46,8 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
     final t = AppTranslations.of(context);
     final user = context.watch<UserCubit>().state;
     userName = user != null ? '${user.firstName} ${user.lastName}'.trim() : '';
-    walletBalance = user?.wallet.toDouble() ?? 0.0;
-    donatedAmount = user?.donatedAmount.toDouble() ?? 0.0;
+    walletBalance = user?.wallet ?? 0.0;
+    donatedAmount = user?.donatedAmount ?? 0.0;
 
     return Scaffold(
       body: SafeArea(
@@ -80,7 +79,9 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
                         ),
                       ),
                       Text(
-                        donatedAmount > 0 ? '${t.donated} $donatedAmount' : '',
+                        donatedAmount > 0
+                            ? '${t.donated} \$${donatedAmount.toStringAsFixed(2)}'
+                            : '',
                         style: TextStyle(color: Colors.grey),
                       ),
                     ],
@@ -88,7 +89,6 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
                 ],
               ),
               const SizedBox(height: 25),
-
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -134,7 +134,6 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
                 ),
               ),
               const SizedBox(height: 25),
-
               _buildMenuItem(
                 icon: Icons.receipt_long,
                 text: t.transactions,
@@ -168,7 +167,6 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
                   }
                 },
               ),
-
               BlocBuilder<SettingsCubit, SettingsState>(
                 builder: (context, settings) {
                   return ListTile(
@@ -180,14 +178,15 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
                     trailing: Switch(
                       value: settings.donateAsAnonymous,
                       onChanged: (value) {
-                        context.read<SettingsCubit>().setDonateAsAnonymous(value);
+                        context
+                            .read<SettingsCubit>()
+                            .setDonateAsAnonymous(value);
                       },
                       activeThumbColor: AppColors.primaryColor,
                     ),
                   );
                 },
               ),
-
               _buildMenuItem(
                 icon: Icons.group_add,
                 text: t.inviteFriends,
