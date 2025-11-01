@@ -1,13 +1,10 @@
-import 'package:charity/src/features/home/models/campaign_model.dart';
+import 'package:charity/src/features/home/cubits/campaign_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:image_picker/image_picker.dart';
-import 'dart:io';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DonationScreen extends StatefulWidget {
   @override
-  // ignore: library_private_types_in_public_api
   _AddDonationPageState createState() => _AddDonationPageState();
 }
 
@@ -17,143 +14,22 @@ class _AddDonationPageState extends State<DonationScreen> {
   final _locationController = TextEditingController();
   final _storyController = TextEditingController();
   final _amountController = TextEditingController();
-  final _PeriodController = TextEditingController();
+  final _periodController = TextEditingController();
   final _organizationController = TextEditingController();
   final _categoryController = TextEditingController();
-  final _donatedAmountController = TextEditingController();
   final _imageLinkController = TextEditingController();
+  final _imageLinkController1 = TextEditingController();
 
-  
   bool _isLoading = false;
-  File? _imageFile;
-  String?  _imageUrlFromLink;
-  final ImagePicker _picker = ImagePicker();
 
-  // Pick image from gallery or camera
-  Future<void> pickImage(ImageSource source) async {
-    try {
-      final XFile? pickedFile = await _picker.pickImage(
-        source: source,
-        maxWidth: 1920,
-        maxHeight: 1080,
-        imageQuality: 85,
-      );
-
-      if (pickedFile != null) {
-        setState(() {
-          _imageFile = File(pickedFile.path);
-        });
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error picking image: $e')),
-      );
-    }
-  }
-
-  // Show dialog to choose image source
-  void showImageSourceDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Choose Image Source'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: Icon(Icons.camera_alt),
-              title: Text('Camera'),
-              onTap: () {
-                Navigator.pop(context);
-                pickImage(ImageSource.camera);
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.photo_library),
-              title: Text('Gallery'),
-              onTap: () {
-                Navigator.pop(context);
-                pickImage(ImageSource.gallery);
-              },
-            ), 
-
-        Divider(),
- ListTile(
-              leading: Icon(Icons.link),
-              title: Text('Use Image URL'),
-              onTap: () {
-                Navigator.pop(context);
-                setState(() {
-                  _imageFile = null;
-                  _imageUrlFromLink = null;
-                });
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // Upload image to Firebase Storage
-  Future<String?> uploadImageToStorage() async {
-    if (_imageFile == null) return null;
-
-    try {
-      String fileName = 'donations/${DateTime.now().millisecondsSinceEpoch}.jpg';
-      Reference storageRef = FirebaseStorage.instance.ref().child(fileName);
-      
-      UploadTask uploadTask = storageRef.putFile(_imageFile!);
-      TaskSnapshot snapshot = await uploadTask;
-      
-      String downloadUrl = await snapshot.ref.getDownloadURL();
-      return downloadUrl;
-    } catch (e) {
-      print('Error uploading image: $e');
-      return null;
-    }
-  }
-
-void confirmImageLink() {
-    String url = _imageLinkController.text.trim();
-    
-    if (url.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please enter an image URL')),
-      );
-      return;
-    }
-    
-    if (!url.startsWith('http://') && !url.startsWith('https://')) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please enter a valid URL (starting with http:// or https://)')),
-      );
-      return;
-    }
-    
-    setState(() {
-      _imageUrlFromLink = url;
-      _imageFile = null; // Clear uploaded file if URL is used
-    });
-    
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Image link confirmed!'),
-        backgroundColor: Colors.green,
-      ),
-    );
-  }
-
-
-  // Add donation to Firestore with image
   Future<void> addDonationToFirestore() async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
 
-    if (_imageFile == null && _imageUrlFromLink == null) {
+    if (_imageLinkController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please add a photo')),
+        SnackBar(content: Text('Please add the primary photo URL')),
       );
       return;
     }
@@ -163,37 +39,28 @@ void confirmImageLink() {
     });
 
     try {
-      // Upload image first
-      String? imageUrl; 
+      String imageUrl = _imageLinkController.text.trim();
+      String? imageUrl1 = _imageLinkController1.text.trim().isNotEmpty
+          ? _imageLinkController1.text.trim()
+          : null;
 
-      if (_imageUrlFromLink != null) {
-        imageUrl = _imageUrlFromLink;
-      } else {
-        imageUrl = await uploadImageToStorage();
-      }
-
-      if (imageUrl == null) {
-        throw Exception('Failed to get image URL');
-      }
-
-      // Add donation data to Firestore
       await FirebaseFirestore.instance.collection('campaigns').add({
         'title': _titleController.text,
         'location': _locationController.text,
         'story': _storyController.text,
-        'requiredAmount': double.parse(_amountController.text),
-        'imageUrl': _imageLinkController.text.isNotEmpty 
-      ? _imageLinkController.text:imageUrl,       
-        'Period':int.parse(_PeriodController.text),
-        'donatedAmount': double.parse(_donatedAmountController.text),
+        'amount': double.parse(_amountController.text),
+        'imageUrl': imageUrl,
+        'imageUrl1': imageUrl1,
+        'period': _periodController.text,
         'organization': _organizationController.text,
-        'category':_categoryController.text,
+        'category': _categoryController.text,
+        'donatedAmount': 0.0,
+        'progress': 0.0,
         'createdAt': FieldValue.serverTimestamp(),
         'status': 'active',
         'currentAmount': 0,
       });
 
-      // Show success message
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Donation added successfully!'),
@@ -201,27 +68,20 @@ void confirmImageLink() {
         ),
       );
 
-      // Clear the form
       _titleController.clear();
       _locationController.clear();
       _storyController.clear();
       _amountController.clear();
-      _PeriodController.clear();
+      _periodController.clear();
       _categoryController.clear();
-      _donatedAmountController.clear();
       _organizationController.clear();
       _imageLinkController.clear();
-      setState(() {
-        _imageFile = null;
-        _imageUrlFromLink = null;
+      _imageLinkController1.clear();
 
-      });
+      context.read<CampaignsCubit>().fetchCampaigns();
 
-      // Go back
       Navigator.pop(context);
-      
     } catch (e) {
-      // Show error message
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Error: $e'),
@@ -241,11 +101,11 @@ void confirmImageLink() {
     _locationController.dispose();
     _storyController.dispose();
     _amountController.dispose();
-    _PeriodController.dispose();
-    _donatedAmountController.dispose();
+    _periodController.dispose();
     _categoryController.dispose();
     _organizationController.dispose();
     _imageLinkController.dispose();
+    _imageLinkController1.dispose();
     super.dispose();
   }
 
@@ -273,100 +133,61 @@ void confirmImageLink() {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Image Picker
-              GestureDetector(
-                onTap: showImageSourceDialog,
-                child: Container(
-                  width: double.infinity,
-                  height: 250,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Color(0xFFE57373), width: 2),
-                    borderRadius: BorderRadius.circular(12),
-                    color: Colors.grey[100],
+              Text(
+                'Primary Image URL',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 8),
+              TextFormField(
+                controller: _imageLinkController,
+                decoration: InputDecoration(
+                  hintText: 'Paste primary image URL here (https://...)',
+                  prefixIcon: Icon(Icons.link),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                  child: _imageFile == null && _imageUrlFromLink == null
-                      ? Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.camera_alt,
-                              size: 80,
-                              color: Colors.grey[400],
-                            ),
-                            SizedBox(height: 16),
-                            Text(
-                              'Add Photo',
-                              style: TextStyle(
-                                fontSize: 18,
-                                color: Colors.grey[600],
-                              ),
-                            ),
-                          ],
-                        )
-                      : ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: _imageFile != null?Image.file(_imageFile!,fit: BoxFit.cover,)
-                          :Image.network(
-                                  _imageUrlFromLink!,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Center(
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Icon(Icons.error, color: Colors.red, size: 50),
-                                          SizedBox(height: 8),
-                                          Text('Failed to load image'),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                  loadingBuilder: (context, child, loadingProgress) {
-                                    if (loadingProgress == null) return child;
-                                    return Center(
-                                      child: CircularProgressIndicator(),
-                                    );
-                                  },
-                                ),
-                        ),
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 12, vertical: 16),
                 ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter the primary image URL';
+                  }
+                  if (!value.startsWith('http://') &&
+                      !value.startsWith('https://')) {
+                    return 'Please enter a valid URL';
+                  }
+                  return null;
+                },
               ),
               SizedBox(height: 20),
-
-  Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _imageLinkController,
-                      decoration: InputDecoration(
-                        hintText: 'Or paste image URL here',
-                        prefixIcon: Icon(Icons.link),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 16),
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 8),
-                  ElevatedButton(
-                    onPressed: confirmImageLink,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFFE57373),
-                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                    child: Text(
-                      'Confirm',
-                      style: TextStyle(color: Colors.white, fontSize: 16),
-                    ),
-                  ),
-                ],
+              Text(
+                'Secondary Image URL (Optional)',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-
-              // Title
+              SizedBox(height: 8),
+              TextFormField(
+                controller: _imageLinkController1,
+                decoration: InputDecoration(
+                  hintText: 'Paste secondary image URL here (https://...)',
+                  prefixIcon: Icon(Icons.link),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+                ),
+                validator: (value) {
+                  if (value != null &&
+                      value.isNotEmpty &&
+                      !value.startsWith('http://') &&
+                      !value.startsWith('https://')) {
+                    return 'Please enter a valid URL or leave it empty';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 20),
               Text(
                 'Title',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -389,8 +210,6 @@ void confirmImageLink() {
                 },
               ),
               SizedBox(height: 20),
-
-              // Location
               Text(
                 'Location',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -412,8 +231,7 @@ void confirmImageLink() {
                 },
               ),
               SizedBox(height: 20),
-
-            Text(
+              Text(
                 'Category',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
@@ -434,8 +252,7 @@ void confirmImageLink() {
                 },
               ),
               SizedBox(height: 20),
-
- Text(
+              Text(
                 'Organization',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
@@ -456,8 +273,6 @@ void confirmImageLink() {
                 },
               ),
               SizedBox(height: 20),
-
-              // Story
               Text(
                 'Story',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -480,36 +295,8 @@ void confirmImageLink() {
                 },
               ),
               SizedBox(height: 20),
-
- Text(
-                'Donated Amount',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 8),
-              TextFormField(
-                controller: _donatedAmountController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  prefixText: '\$ ',
-                  hintText: 'Enter Donated amount',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter amount';
-                  }
-                  if (double.tryParse(value) == null) {
-                    return 'Please enter a valid number';
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(height: 20),
-              // Required Amount
               Text(
-                'Required Amount',
+                'Target Amount',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 8),
@@ -533,11 +320,8 @@ void confirmImageLink() {
                   return null;
                 },
               ),
-
-                          SizedBox(height: 20),
-
-
- Row(
+              SizedBox(height: 20),
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: const [
                   Text(
@@ -548,24 +332,22 @@ void confirmImageLink() {
               ),
               const SizedBox(height: 8),
               TextFormField(
-                controller: _PeriodController,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(Icons.timer),
-                  hintText: "Enter collection period (in days)",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                  controller: _periodController,
+                  keyboardType: TextInputType.text,
+                  decoration: const InputDecoration(
+                    prefixIcon: Icon(Icons.timer),
+                    hintText: "Enter collection period (e.g., '30 days')",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                    ),
                   ),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter amount';
-                  }return null;}
-              ),
-
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter period';
+                    }
+                    return null;
+                  }),
               SizedBox(height: 30),
-
-              // Submit Button
               SizedBox(
                 width: double.infinity,
                 height: 50,
