@@ -1,39 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:charity/src/shared/theme/app_colors.dart';
+import 'package:charity/src/shared/localization/app_translations.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'cubits/transactions_cubit.dart';
 
 class TransactionsScreen extends StatefulWidget {
-  const TransactionsScreen({Key? key}) : super(key: key);
+  const TransactionsScreen();
 
   @override
   State<TransactionsScreen> createState() => _TransactionsScreenState();
 }
 
 class _TransactionsScreenState extends State<TransactionsScreen> {
-  final List<_Transaction> _transactions = [
-    _Transaction(
-      title: 'Donation to Education Fund',
-      amount: 50.00,
-      date: DateTime.now().subtract(const Duration(days: 1)),
-    ),
-    _Transaction(
-      title: 'Monthly Subscription',
-      amount: 25.00,
-      date: DateTime.now().subtract(const Duration(days: 3)),
-    ),
-    _Transaction(
-      title: 'Emergency Relief',
-      amount: 100.00,
-      date: DateTime.now().subtract(const Duration(days: 7)),
-    ),
-  ];
-
-  bool _loading = false;
-
   @override
   Widget build(BuildContext context) {
-    final total = _transactions.fold<double>(0, (sum, t) => sum + t.amount);
+    final t = AppTranslations.of(context);
+    final state = context.watch<TransactionsCubit>().state;
+    final items = state.items;
+    final total = items.fold<double>(0, (sum, tr) => sum + tr.amount);
     return Scaffold(
-      appBar: AppBar(title: const Text('Transactions')),
+      appBar: AppBar(title: Text(t.transactions)),
       body: Column(
         children: [
           Padding(
@@ -41,19 +27,19 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
             child: Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: AppColors.lightGrey,
+                color: AppColors.lightGreyColor(context),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.greyShade200),
+                border: Border.all(color: AppColors.greyShade(context)),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    'Total donated',
+                  Text(
+                    t.totalDonated,
                     style: TextStyle(color: AppColors.primaryColor),
                   ),
                   Text(
-                    '4${total.toStringAsFixed(2)}',
+                    '\$${total.toStringAsFixed(2)}',
                     style: Theme.of(context).textTheme.headlineSmall,
                   ),
                 ],
@@ -63,24 +49,35 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
           Expanded(
             child: RefreshIndicator(
               color: AppColors.primaryColor,
-              onRefresh: _refresh,
+              onRefresh: () => context.read<TransactionsCubit>().fetch(),
               child: ListView.separated(
                 physics: const AlwaysScrollableScrollPhysics(),
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                 itemBuilder: (context, index) {
-                  final t = _transactions[index];
+                  if (state.loading && items.isEmpty) {
+                    return ListTile(title: Text(t.loading));
+                  }
+                  final transaction = items[index];
                   return ListTile(
                     leading: CircleAvatar(
-                      backgroundColor: AppColors.primaryColor.withOpacity(0.1),
-                      child: const Icon(
+                      backgroundColor: AppColors.primaryColor.withValues(alpha: 0.1),
+                      child: Icon(
                         Icons.volunteer_activism,
-                        color: Colors.black54,
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white70
+                            : Colors.black54,
                       ),
                     ),
-                    title: Text(t.title, style: TextStyle(fontSize: 18)),
-                    subtitle: Text(_formatDate(t.date)),
+                    title: Text(
+                      transaction.title,
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Theme.of(context).textTheme.bodyLarge?.color,
+                      ),
+                    ),
+                    subtitle: Text(_formatDate(transaction.date)),
                     trailing: Text(
-                      '+\u00024${t.amount.toStringAsFixed(2)}',
+                      '+\$${transaction.amount.toStringAsFixed(2)}',
                       style: const TextStyle(
                         color: Colors.green,
                         fontWeight: FontWeight.bold,
@@ -88,47 +85,17 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                     ),
                   );
                 },
-                separatorBuilder: (_, __) => const Divider(height: 1),
-                itemCount: _transactions.length,
+                separatorBuilder: (_, _) => const Divider(height: 1),
+                itemCount: items.length,
               ),
             ),
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: AppColors.primaryColor,
-        foregroundColor: Colors.white,
-        onPressed: _simulateAdd,
-        icon: const Icon(Icons.add),
-        label: const Text('Add test'),
-      ),
     );
-  }
-
-  Future<void> _refresh() async {
-    if (_loading) return;
-    setState(() => _loading = true);
-    await Future.delayed(const Duration(seconds: 1));
-    setState(() => _loading = false);
-  }
-
-  void _simulateAdd() {
-    setState(() {
-      _transactions.insert(
-        0,
-        _Transaction(title: 'New donation', amount: 10.0, date: DateTime.now()),
-      );
-    });
   }
 
   String _formatDate(DateTime d) {
     return '${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}/${d.year}';
   }
-}
-
-class _Transaction {
-  final String title;
-  final double amount;
-  final DateTime date;
-  _Transaction({required this.title, required this.amount, required this.date});
 }

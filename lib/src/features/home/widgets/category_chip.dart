@@ -4,7 +4,7 @@ import '../models/category_model.dart';
 class CategoryChip extends StatelessWidget {
   final CategoryModel category;
 
-  const CategoryChip({required this.category, super.key});
+  const CategoryChip({Key? key, required this.category}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

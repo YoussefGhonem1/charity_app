@@ -10,14 +10,14 @@ class CustomTextField extends StatelessWidget {
   final List<TextInputFormatter>? inputFormatters; // **أضف هذه الخاصية**
 
   const CustomTextField({
-    super.key,
+    Key? key,
     required this.controller,
     required this.hintText,
     this.keyboardType = TextInputType.text,
     this.obscureText = false,
     this.readOnly = false,
     this.inputFormatters, // **أضف هذا في الكونستركتور**
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

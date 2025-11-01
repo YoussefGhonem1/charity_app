@@ -10,7 +10,7 @@ import 'package:charity/src/features/create_account/models/users_models.dart';
 
 class SignInPasswordScreen extends StatelessWidget {
   final String email;
-  SignInPasswordScreen({super.key, required this.email});
+  SignInPasswordScreen({Key? key, required this.email}) : super(key: key);
 
   final TextEditingController passController = TextEditingController();
 
@@ -19,13 +19,17 @@ class SignInPasswordScreen extends StatelessWidget {
     final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: theme.scaffoldBackgroundColor,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
+          icon: Icon(
+            Icons.arrow_back,
+            color: theme.iconTheme.color,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
       ),
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -64,21 +68,25 @@ class SignInPasswordScreen extends StatelessWidget {
                           ...doc.data()!,
                         });
 
+                        if (!context.mounted) return;
                         context.read<UserCubit>().setUser(userModel);
                       }
 
                       // 🟢 الانتقال إلى الصفحة الرئيسية
+                      if (!context.mounted) return;
                       Navigator.pushNamedAndRemoveUntil(
                         context,
                         Routes.layout,
                         (route) => false,
                       );
                     } else {
+                      if (!context.mounted) return;
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text('Login Failed: User Null')),
                       );
                     }
                   } on FirebaseAuthException catch (e) {
+                    if (!context.mounted) return;
                     if (e.code == 'user-not-found') {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text('No user found for that email.')),
@@ -89,6 +97,7 @@ class SignInPasswordScreen extends StatelessWidget {
                       );
                     }
                   } catch (e) {
+                    if (!context.mounted) return;
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text('Error: $e')),
                     );

@@ -2,7 +2,10 @@ import 'package:charity/src/features/create_account/cubits/user_cubit.dart';
 import 'package:charity/src/features/create_account/models/users_models.dart';
 import 'package:charity/src/features/home/cubits/foundations_cubit.dart';
 import 'package:charity/src/features/home/widgets/foundation_card.dart';
+import 'package:charity/src/features/favourite/cubits/favourite_cubit.dart';
 import 'package:charity/src/shared/routing/app_routs.dart';
+import 'package:charity/src/shared/localization/app_translations.dart';
+import 'package:charity/src/shared/theme/app_colors.dart';
 import 'package:charity/src/shared/widgets/button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,12 +14,13 @@ import '../widgets/feature_campaign_card.dart';
 import '../widgets/lastest_campaign_card.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final t = AppTranslations.of(context);
     return Scaffold(
-      backgroundColor: const Color(0xFFF7FAF8),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -35,14 +39,15 @@ class HomeScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Hello, ${user.firstName} ${user.lastName}",
-                        style: const TextStyle(
+                        "${t.hello}, ${user.firstName} ${user.lastName}",
+                        style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 18,
+                          color: Theme.of(context).textTheme.bodyLarge?.color,
                         ),
                       ),
                       Text(
-                        "Donated ${user.donatedAmount}",
+                        "${t.donated} ${user.donatedAmount}",
                         style: TextStyle(color: Colors.grey[600], fontSize: 13),
                       ),
                     ],
@@ -68,9 +73,9 @@ class HomeScreen extends StatelessWidget {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            "Donation Wallet",
-                            style: TextStyle(color: Colors.white, fontSize: 16),
+                          Text(
+                            t.donationWallet,
+                            style: const TextStyle(color: Colors.white, fontSize: 16),
                           ),
                           const SizedBox(height: 10),
                           Text(
@@ -91,10 +96,10 @@ class HomeScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
-                        child: const Text(
-                          "Top up",
+                        child: Text(
+                          t.topUp,
                           style: TextStyle(
-                            color: Color(0xFFFE7277),
+                            color: AppColors.primaryColor,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -115,11 +120,12 @@ class HomeScreen extends StatelessWidget {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Feature Campaigns',
+                    Text(
+                      t.featureCampaigns,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
+                        color: Theme.of(context).textTheme.bodyLarge?.color,
                       ),
                     ),
                     const SizedBox(height: 12),
@@ -128,7 +134,7 @@ class HomeScreen extends StatelessWidget {
                       child: ListView.separated(
                         scrollDirection: Axis.horizontal,
                         itemCount: featureCampaigns.length,
-                        separatorBuilder: (_, __) => const SizedBox(width: 12),
+                        separatorBuilder: (_, _) => const SizedBox(width: 12),
                         itemBuilder: (context, index) {
                           final campaign = featureCampaigns[index];
                           return GestureDetector(
@@ -139,10 +145,22 @@ class HomeScreen extends StatelessWidget {
     arguments: campaign,
   );
                             },
-                            child: FeatureCampaignCard(
-                              campaign: campaign,
-                              isFavourite: false,
-                              onFavouriteTap: () {},
+                            child: BlocBuilder<FavouriteCubit, FavouriteState>(
+                              builder: (context, favState) {
+                                return FutureBuilder<bool>(
+                                  future: context.read<FavouriteCubit>().isFavourite(campaign, null),
+                                  builder: (context, snapshot) {
+                                    final isFav = snapshot.data ?? false;
+                                    return FeatureCampaignCard(
+                                      campaign: campaign,
+                                      isFavourite: isFav,
+                                      onFavouriteTap: () {
+                                        context.read<FavouriteCubit>().toggleFavourite(campaign, null);
+                                      },
+                                    );
+                                  },
+                                );
+                              },
                             ),
                           );
                         },
@@ -152,14 +170,18 @@ class HomeScreen extends StatelessWidget {
                 );
               }
               if (state is CampaignsError)
-                return Center(child: Text('Error: ${state.message}'));
+                return Center(child: Text('${t.translate('error')}: ${state.message}'));
               return const SizedBox();
             },
           ),
           const SizedBox(height: 20),
-          const Text(
-            'Foundations',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+          Text(
+            t.foundations,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+              color: Theme.of(context).textTheme.bodyLarge?.color,
+            ),
           ),
           const SizedBox(height: 12),
           SizedBox(
@@ -191,7 +213,7 @@ class HomeScreen extends StatelessWidget {
                   );
                 }
                 if (state is FoundationsError)
-                  return Center(child: Text('Error: ${state.message}'));
+                  return Center(child: Text('${t.translate('error')}: ${state.message}'));
                 return const SizedBox();
               },
             ),
@@ -212,11 +234,12 @@ class HomeScreen extends StatelessWidget {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Latest Campaigns',
+                        Text(
+                          t.latestCampaigns,
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 18,
+                            color: Theme.of(context).textTheme.bodyLarge?.color,
                           ),
                         ),
                         const SizedBox(height: 12),
@@ -246,17 +269,29 @@ class HomeScreen extends StatelessWidget {
     arguments: campaign,
   );
                               },
-                              child: LastestCampaignCard(
-                                campaign: campaign,
-                                isFavourite: false,
-                                onFavouriteTap: () {},
+                              child: BlocBuilder<FavouriteCubit, FavouriteState>(
+                                builder: (context, favState) {
+                                  return FutureBuilder<bool>(
+                                    future: context.read<FavouriteCubit>().isFavourite(campaign, null),
+                                    builder: (context, snapshot) {
+                                      final isFav = snapshot.data ?? false;
+                                      return LastestCampaignCard(
+                                        campaign: campaign,
+                                        isFavourite: isFav,
+                                        onFavouriteTap: () {
+                                          context.read<FavouriteCubit>().toggleFavourite(campaign, null);
+                                        },
+                                      );
+                                    },
+                                  );
+                                },
                               ),
                             );
                           },
                         ),
                         const SizedBox(height: 10),
                         ContinueButton(
-                          text: showAll ? "Show Less" : "See All",
+                          text: showAll ? t.showLess : t.seeAll,
                           onPressed: () {
                             setState(() {
                               showAll = !showAll;
@@ -269,7 +304,7 @@ class HomeScreen extends StatelessWidget {
                 );
               }
               if (state is CampaignsError)
-                return Center(child: Text('Error: ${state.message}'));
+                return Center(child: Text('${t.translate('error')}: ${state.message}'));
               return const SizedBox();
             },
           ),

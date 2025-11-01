@@ -1,275 +1,249 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:charity/src/shared/theme/app_colors.dart';
+import 'package:charity/src/shared/localization/app_translations.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:charity/src/features/favourite/cubits/favourite_cubit.dart';
+import 'package:charity/src/shared/routing/app_routs.dart';
 
-class FavouriteScreen extends StatefulWidget {
+class FavouriteScreen extends StatelessWidget {
   const FavouriteScreen({super.key});
 
   @override
-  State<FavouriteScreen> createState() => _FavouriteScreenState();
-}
-
-class _FavouriteScreenState extends State<FavouriteScreen> {
-  int _selectedIndex = 1;
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
-  final List<Map<String, dynamic>> donations = [
-    {
-      'title': 'Donation for Child',
-      'org': 'Unesco',
-      'image':
-          'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=500&q=80',
-      'progress': 0.7,
-      'isFav': true,
-    },
-    {
-      'title': 'Feed the Hungry',
-      'org': 'Red Cross',
-      'image':
-          'https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?w=500&q=80',
-      'progress': 0.5,
-      'isFav': true,
-    },
-
-    {
-      'title': 'Education for All',
-      'org': 'Unesco',
-      'image':
-          'https://images.unsplash.com/photo-1588072432836-e10032774350?w=500&q=80',
-      'progress': 0.8,
-      'isFav': true,
-    },
-    {
-      'title': 'Save the Planet',
-      'org': 'Wwf',
-      'image':
-          'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=500&q=80',
-      'progress': 0.6,
-      'isFav': false,
-    },
-  ];
-
-  @override
   Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.dark,
+    final t = AppTranslations.of(context);
+    final theme = Theme.of(context);
+    
+    return BlocProvider(
+      create: (context) => FavouriteCubit()..loadFavourites(),
       child: Scaffold(
+        backgroundColor: theme.scaffoldBackgroundColor,
         body: SafeArea(
           child: Column(
             children: [
               Container(
                 padding: const EdgeInsets.all(16.0),
-                color: const Color(0xFFFFEBEE), // Light red background
+                decoration: BoxDecoration(
+                  color: AppColors.primaryColor.withValues(alpha: 0.1),
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Favourite',
+                    Text(
+                      t.favourite,
                       style: TextStyle(
-                        color: Colors.black,
+                        color: theme.textTheme.bodyLarge?.color,
                         fontWeight: FontWeight.bold,
                         fontSize: 28,
                       ),
                     ),
                     const SizedBox(height: 16),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: Colors.redAccent),
-                            ),
-                            child: const TextField(
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                suffixIcon: Icon(
-                                  Icons.search_rounded,
-                                  color: Colors.grey,
-                                ),
-                                contentPadding: EdgeInsets.symmetric(
-                                  horizontal: 13,
-                                  vertical: 12,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        const Icon(Icons.filter_list, size: 30),
-                      ],
-                    ),
                   ],
                 ),
               ),
-
               Expanded(
-                child: ListView.builder(
-                  padding: const EdgeInsets.all(16.0),
-                  itemCount: donations.length,
-                  itemBuilder: (context, index) {
-                    final donation = donations[index];
-                    return DonationCard(
-                      title: donation['title'],
-                      org: donation['org'],
-                      imageUrl: donation['image'],
-                      progress: donation['progress'],
-                      isFavourite: donation['isFav'],
-                      onFavToggle: () {
-                        setState(() {
-                          donation['isFav'] = !donation['isFav'];
-                        });
-                      },
-                    );
+                child: BlocBuilder<FavouriteCubit, FavouriteState>(
+                  builder: (context, state) {
+                    if (state is FavouriteLoading) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    if (state is FavouriteError) {
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              state.message,
+                              style: TextStyle(color: Colors.red),
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                context.read<FavouriteCubit>().loadFavourites();
+                              },
+                              child: Text(t.translate('try_again')),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                    if (state is FavouriteLoaded) {
+                      if (state.campaigns.isEmpty) {
+                        return Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.favorite_border,
+                                size: 64,
+                                color: Colors.grey,
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                t.translate('no_favourites'),
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 18,
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                      return ListView.builder(
+                        padding: const EdgeInsets.all(16.0),
+                        itemCount: state.campaigns.length,
+                        itemBuilder: (context, index) {
+                          final campaign = state.campaigns[index];
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                Routes.donationPage,
+                                arguments: campaign,
+                              );
+                            },
+                            child: Card(
+                              elevation: 2.0,
+                              color: theme.cardColor,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15.0),
+                              ),
+                              margin: const EdgeInsets.only(bottom: 20.0),
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Row(
+                                  children: [
+                                    Stack(
+                                      alignment: Alignment.topRight,
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                          child: (campaign.imageUrl.isNotEmpty)
+                                              ? Image.network(
+                                                  campaign.imageUrl,
+                                                  height: 110,
+                                                  width: 100,
+                                                  fit: BoxFit.cover,
+                                                )
+                                              : Image.asset(
+                                                  'assets/images/image1170x530cropped.jpg',
+                                                  height: 110,
+                                                  width: 100,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                        ),
+                                        GestureDetector(
+                                          onTap: () {
+                                            context
+                                                .read<FavouriteCubit>()
+                                                .toggleFavourite(campaign, null);
+                                          },
+                                          child: Container(
+                                            margin: const EdgeInsets.all(5.0),
+                                            padding: const EdgeInsets.all(4.0),
+                                            decoration: BoxDecoration(
+                                              color: Colors.white.withValues(alpha: 0.9),
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: Icon(
+                                              Icons.favorite,
+                                              color: AppColors.primaryColor,
+                                              size: 20,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(width: 16.0),
+                                    Expanded(
+                                      child: SizedBox(
+                                        height: 110,
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                          children: [
+                                            Text(
+                                              campaign.title,
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
+                                                color: theme.textTheme.bodyLarge?.color,
+                                              ),
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  t.translate('by'),
+                                                  style: TextStyle(color: Colors.grey),
+                                                ),
+                                                const SizedBox(width: 4.0),
+                                                Text(
+                                                  campaign.organization,
+                                                  style: TextStyle(
+                                                    color: AppColors.primaryColor,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 4.0),
+                                                Icon(
+                                                  Icons.verified_outlined,
+                                                  color: AppColors.primaryColor,
+                                                  size: 16,
+                                                ),
+                                              ],
+                                            ),
+                                            Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: [
+                                                    Text(
+                                                      t.translate('raised'),
+                                                      style: TextStyle(
+                                                        color: Colors.grey[600],
+                                                        fontSize: 12,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      '${(campaign.progress * 100).toInt()}%',
+                                                      style: TextStyle(
+                                                        color: theme.textTheme.bodyLarge?.color,
+                                                        fontSize: 13,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                const SizedBox(height: 4.0),
+                                                LinearProgressIndicator(
+                                                  value: campaign.progress,
+                                                  backgroundColor: Colors.grey[300],
+                                                  color: AppColors.primaryColor,
+                                                  minHeight: 8,
+                                                  borderRadius: BorderRadius.circular(5),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    }
+                    return const SizedBox();
                   },
                 ),
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class DonationCard extends StatelessWidget {
-  final String imageUrl;
-  final String title;
-  final String org;
-  final double progress;
-  final bool isFavourite;
-  final VoidCallback onFavToggle;
-
-  const DonationCard({
-    super.key,
-    required this.imageUrl,
-    required this.title,
-    required this.org,
-    required this.progress,
-    required this.isFavourite,
-    required this.onFavToggle,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 2.0,
-      shadowColor: Colors.grey.withOpacity(0.2),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-      margin: const EdgeInsets.only(bottom: 20.0),
-      child: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Row(
-          children: [
-            Stack(
-              alignment: Alignment.topRight,
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(10.0),
-                  child: Image.network(
-                    imageUrl,
-                    height: 110,
-                    width: 100,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                GestureDetector(
-                  onTap: onFavToggle,
-                  child: Container(
-                    margin: const EdgeInsets.all(5.0),
-                    padding: const EdgeInsets.all(4.0),
-                    decoration: BoxDecoration(
-                      color: Colors.grey.withOpacity(0.8),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      isFavourite ? Icons.favorite : Icons.favorite_border,
-                      color: isFavourite ? Colors.redAccent : Colors.black,
-                      size: 20,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-
-            const SizedBox(width: 16.0),
-
-            Expanded(
-              child: SizedBox(
-                height: 110,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Text(
-                      title,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        const Text('By', style: TextStyle(color: Colors.grey)),
-                        const SizedBox(width: 4.0),
-                        Text(
-                          org,
-                          style: const TextStyle(
-                            color: Colors.blueAccent,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        const SizedBox(width: 4.0),
-                        const Icon(
-                          Icons.verified_outlined,
-                          color: Colors.redAccent,
-                          size: 16,
-                        ),
-                      ],
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Raised',
-                              style: TextStyle(
-                                color: Colors.grey[600],
-                                fontSize: 12,
-                              ),
-                            ),
-                            Text(
-                              '${(progress * 100).toInt()}%',
-                              style: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 13,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 4.0),
-                        LinearProgressIndicator(
-                          value: progress,
-                          backgroundColor: Colors.grey[300],
-                          color: Colors.redAccent,
-                          minHeight: 8,
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
         ),
       ),
     );

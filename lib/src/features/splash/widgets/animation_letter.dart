@@ -7,12 +7,12 @@ class AnimatedLetter extends StatelessWidget {
   final bool raise;
 
   const AnimatedLetter({
+    Key? key,
     required this.char,
     required this.slideAnimation,
     required this.fadeAnimation,
     this.raise = false,
-    super.key,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

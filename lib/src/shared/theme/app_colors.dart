@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 
 abstract class AppColors {
@@ -17,12 +15,40 @@ abstract class AppColors {
       800: Color(0xFFFB2A35),
       900: Color(0xFFFA0A1A),
     },
-  );  static const Color bgColor = Color(0xFFFFFFFF);
- static const Color lightGrey = Color(0xFFF2F1F1);
- static const Color blackColor = Color(0xFF000000);
+  );
+  
+  // Light theme colors
+  static const Color bgColor = Color(0xFFFFFFFF);
+  static const Color lightGrey = Color(0xFFF2F1F1);
+  static const Color blackColor = Color(0xFF000000);
   static const Color greyColor = Color(0xFF9E9E9E);
   static const Color greyShade200 = Color(0xFFEEEEEE);
   static const Color greenColor = Color.fromARGB(255, 11, 148, 18);
   
+  // Dark theme colors
+  static const Color darkBgColor = Color(0xFF121212);
+  static const Color darkLightGrey = Color(0xFF1E1E1E);
+  static const Color darkGreyColor = Color(0xFF757575);
+  static const Color darkGreyShade200 = Color(0xFF2C2C2C);
   
+  // Theme-aware color helpers
+  static Color backgroundColor(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+    return brightness == Brightness.dark ? darkBgColor : bgColor;
   }
+  
+  static Color lightGreyColor(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+    return brightness == Brightness.dark ? darkLightGrey : lightGrey;
+  }
+  
+  static Color greyShade(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+    return brightness == Brightness.dark ? darkGreyShade200 : greyShade200;
+  }
+  
+  static Color grey(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+    return brightness == Brightness.dark ? darkGreyColor : greyColor;
+  }
+}

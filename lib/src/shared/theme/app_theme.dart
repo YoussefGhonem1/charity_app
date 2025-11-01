@@ -39,4 +39,23 @@ class AppTheme {
       labelSmall: TextStyle(fontSize: 15, color: Colors.black),
     ),
   );
+
+  static ThemeData darkTheme = ThemeData(
+    brightness: Brightness.dark,
+    scaffoldBackgroundColor: Colors.black,
+    inputDecorationTheme: const InputDecorationTheme(
+      filled: true,
+      fillColor: Color(0xFF222222),
+      hintStyle: TextStyle(color: Colors.white70, fontSize: 17),
+    ),
+    textTheme: const TextTheme(
+      headlineLarge: TextStyle(fontSize: 34, fontWeight: FontWeight.bold),
+      headlineMedium: TextStyle(fontSize: 28, fontWeight: FontWeight.w700, color: Colors.white),
+      headlineSmall: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: Colors.white),
+      bodyLarge: TextStyle(fontSize: 24, fontWeight: FontWeight.w400, color: Colors.white70),
+      bodyMedium: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white),
+      labelMedium: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white),
+      labelSmall: TextStyle(fontSize: 15, color: Colors.white),
+    ),
+  );
 }

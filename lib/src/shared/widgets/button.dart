@@ -6,10 +6,10 @@ class ContinueButton extends StatelessWidget {
   final VoidCallback onPressed;
   final String text;
   const ContinueButton({
-    super.key,
+    Key? key,
     required this.onPressed,
     this.text = 'Continue',
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
