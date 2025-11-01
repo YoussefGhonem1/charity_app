@@ -72,20 +72,24 @@ class FeatureCampaignCard extends StatelessWidget {
                 style: TextStyle(fontSize: 12, color: Color(0xFFFE7277)),
               ),
               SizedBox(width: 3),
-              Icon(Icons.verified, color: Color.fromARGB(255, 212, 109, 112), size: 15),
+              Icon(Icons.verified,
+                  color: Color.fromARGB(255, 212, 109, 112), size: 15),
             ],
           ),
           SizedBox(height: 5),
           Row(
             children: [
               Text(
-                "Raised",
-                style: TextStyle(fontSize: 11, color: Colors.grey[500]),
+                "\$${campaign.currentAmount.toInt()} raised",
+                style: TextStyle(
+                    fontSize: 11,
+                    color: Colors.black87,
+                    fontWeight: FontWeight.bold),
               ),
               Spacer(),
               Text(
-                "${(campaign.progress * 100).round()}%",
-                style: TextStyle(fontSize: 11, color: Color(0xFFFE7277)),
+                "of \$${campaign.amount.toInt()}",
+                style: TextStyle(fontSize: 11, color: Colors.grey[600]),
               ),
             ],
           ),

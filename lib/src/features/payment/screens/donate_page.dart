@@ -1,11 +1,12 @@
+import 'package:charity/src/features/home/models/campaign_model.dart';
 import 'package:charity/src/shared/routing/app_routs.dart';
 import 'package:charity/src/shared/widgets/button.dart';
 import 'package:flutter/material.dart';
 import 'package:charity/src/shared/theme/app_colors.dart';
 
 class DonatePage extends StatefulWidget {
-  const DonatePage({super.key});
-
+final CampaignModel campaign; // <-- أضف هذا
+  const DonatePage({super.key, required this.campaign});
   @override
   State<DonatePage> createState() => _DonatePageState();
 }
@@ -100,11 +101,22 @@ class _DonatePageState extends State<DonatePage> {
                 _buildPresetAmountsGrid(),
                 _buildAnonymousCheckbox(theme),
                 const SizedBox(height: 22),
-                ContinueButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, Routes.payment);
+              ContinueButton(
+              onPressed: () {
+                final amount = double.tryParse(_amountController.text);
+                if (amount == null || amount <= 0) {
+                  return;
+                }
+                Navigator.pushNamed(
+                  context,
+                  Routes.payment,
+                  arguments: { 
+                    'campaign': widget.campaign,
+                    'amount': amount,
                   },
-                ),
+                );
+              },
+            ),
               ],
             ),
           ),

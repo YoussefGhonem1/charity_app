@@ -78,13 +78,19 @@ class LastestCampaignCard extends StatelessWidget {
           Row(
             children: [
               Text(
-                "Raised",
-                style: TextStyle(fontSize: 10, color: Colors.grey[500]),
+                "\$${campaign.currentAmount.toInt()} / \$${campaign.amount.toInt()}",
+                style: TextStyle(
+                    fontSize: 10,
+                    color: Colors.grey[700],
+                    fontWeight: FontWeight.w500),
               ),
               Spacer(),
               Text(
                 "${(campaign.progress * 100).round()}%",
-                style: TextStyle(fontSize: 10, color: Color(0xFFFE7277)),
+                style: TextStyle(
+                    fontSize: 10,
+                    color: Color(0xFFFE7277),
+                    fontWeight: FontWeight.bold),
               ),
             ],
           ),

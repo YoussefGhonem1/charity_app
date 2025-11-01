@@ -87,18 +87,32 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => ForgetPasswordPage());
       case Routes.forgetConfirmation:
         return MaterialPageRoute(builder: (_) => ResetPasswordSentScreen());
-      case Routes.donate:
-        return MaterialPageRoute(builder: (_) => DonatePage());
+    case Routes.donate:
+        final campaign = settings.arguments as CampaignModel; 
+        return MaterialPageRoute(builder: (_) => DonatePage(campaign: campaign));
+
       case Routes.payment:
-        return MaterialPageRoute(builder: (_) => PaymentPage());
+        final args = settings.arguments as Map<String, dynamic>; 
+        final campaign = args['campaign'] as CampaignModel;
+        final amount = args['amount'] as double;
+        return MaterialPageRoute(builder: (_) => PaymentPage(campaign: campaign, amount: amount)); 
+
+      case Routes.enterPin:
+        final args = settings.arguments as Map<String, dynamic>;
+        final campaign = args['campaign'] as CampaignModel;
+        final amount = args['amount'] as double;
+        return MaterialPageRoute(builder: (_) => EnterPinPage(campaign: campaign, amount: amount)); 
+
+      case Routes.success:
+        final args = settings.arguments as Map<String, dynamic>; 
+        final campaign = args['campaign'] as CampaignModel;
+        final amount = args['amount'] as double;
+        return MaterialPageRoute(builder: (_) => SuccessPage(campaign: campaign, amount: amount)); 
       case Routes.addCard:
         return MaterialPageRoute(builder: (_) => AddNewCardPage());
       case Routes.signInEmail:
         return MaterialPageRoute(builder: (_) => LoginPage());
-      case Routes.enterPin:
-        return MaterialPageRoute(builder: (_) => EnterPinPage());
-      case Routes.success:
-        return MaterialPageRoute(builder: (_) => SuccessPage());
+   
       case Routes.favourite:
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
