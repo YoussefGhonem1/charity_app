@@ -9,12 +9,25 @@ import 'package:charity/src/shared/theme/app_colors.dart';
 import 'package:charity/src/shared/widgets/button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../category_details/category_details.dart';
 import '../cubits/campaign_cubit.dart';
 import '../widgets/feature_campaign_card.dart';
 import '../widgets/lastest_campaign_card.dart';
+import '../widgets/category_chip.dart';
+import '../models/category_model.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
+
+
+  static final List<CategoryModel> categories = [
+    CategoryModel('Education'),
+    CategoryModel('Health'),
+    CategoryModel('Food'),
+    CategoryModel('Shelter'),
+    CategoryModel('Clothes'),
+    CategoryModel('Emergency'),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -117,6 +130,40 @@ class HomeScreen extends StatelessWidget {
             },
           ),
           const SizedBox(height: 24),
+
+
+          Text(
+            t.translate('categories') ?? 'categories',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+              color: Theme.of(context).textTheme.bodyLarge?.color,
+            ),
+          ),
+          const SizedBox(height: 12),
+          SizedBox(
+            height: 48,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              itemCount: categories.length,
+              separatorBuilder: (_, __) => const SizedBox(width: 10),
+              itemBuilder: (context, index) {
+                final category = categories[index];
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(
+                      context,
+                      Routes.categoryDetails,
+                      arguments: category.name,
+                      );
+                  },
+                  child: CategoryChip(category: category),
+                );
+              },
+            ),
+          ),
+          const SizedBox(height: 24),
+
           BlocBuilder<CampaignsCubit, CampaignsState>(
             builder: (context, state) {
               if (state is CampaignsLoading)
@@ -263,7 +310,7 @@ class HomeScreen extends StatelessWidget {
                               ? latestCampaigns.length
                               : displayedCampaigns.length,
                           gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
+                          const SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 2,
                             childAspectRatio: 0.99,
                             crossAxisSpacing: 12,
@@ -282,7 +329,7 @@ class HomeScreen extends StatelessWidget {
                                 );
                               },
                               child:
-                                  BlocBuilder<FavouriteCubit, FavouriteState>(
+                              BlocBuilder<FavouriteCubit, FavouriteState>(
                                 builder: (context, favState) {
                                   return FutureBuilder<bool>(
                                     future: context

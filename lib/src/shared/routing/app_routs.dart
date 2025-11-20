@@ -20,6 +20,7 @@ import 'package:charity/src/features/splash/screens/splash_page.dart';
 import 'package:charity/src/features/zakat_calculator/screens/zakat_calculator_page.dart';
 import 'package:flutter/material.dart';
 import 'package:charity/src/features/forget_password/screens/reset_password_sent_page.dart';
+import '../../features/category_details/category_details.dart';
 import '../../features/sigin_in_email/screens/signin_email.dart';
 import '../../features/sign_in_password/screens/sign_in_password_screen.dart';
 import 'package:charity/src/features/profile_management/transactions_screen.dart';
@@ -55,7 +56,8 @@ class Routes {
   static const String zakatCalculator = '/zakat_calculator';
   static const String add_donate = '/add_donate';
   static const String prof_manage = '/prof_manage';
-    static const String foundationPage = "/foundation_page";
+  static const String foundationPage = "/foundation_page";
+  static const String categoryDetails = '/category_details';
 }
 
 class AppRoutes {
@@ -76,43 +78,48 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => CreateAccountPage());
 
       case Routes.donationPage:
-  final campaign = settings.arguments as CampaignModel;
-  return MaterialPageRoute(
-    builder: (_) => DonationPage(campaign: campaign),
-  );
+        final campaign = settings.arguments as CampaignModel;
+        return MaterialPageRoute(
+          builder: (_) => DonationPage(campaign: campaign),
+        );
+
       case Routes.layout:
         return MaterialPageRoute(builder: (_) => const LayoutScreen());
 
       case Routes.forgetPassword:
         return MaterialPageRoute(builder: (_) => ForgetPasswordPage());
+
       case Routes.forgetConfirmation:
         return MaterialPageRoute(builder: (_) => ResetPasswordSentScreen());
-    case Routes.donate:
-        final campaign = settings.arguments as CampaignModel; 
+
+      case Routes.donate:
+        final campaign = settings.arguments as CampaignModel;
         return MaterialPageRoute(builder: (_) => DonatePage(campaign: campaign));
 
       case Routes.payment:
-        final args = settings.arguments as Map<String, dynamic>; 
+        final args = settings.arguments as Map<String, dynamic>;
         final campaign = args['campaign'] as CampaignModel;
         final amount = args['amount'] as double;
-        return MaterialPageRoute(builder: (_) => PaymentPage(campaign: campaign, amount: amount)); 
+        return MaterialPageRoute(builder: (_) => PaymentPage(campaign: campaign, amount: amount));
 
       case Routes.enterPin:
         final args = settings.arguments as Map<String, dynamic>;
         final campaign = args['campaign'] as CampaignModel;
         final amount = args['amount'] as double;
-        return MaterialPageRoute(builder: (_) => EnterPinPage(campaign: campaign, amount: amount)); 
+        return MaterialPageRoute(builder: (_) => EnterPinPage(campaign: campaign, amount: amount));
 
       case Routes.success:
-        final args = settings.arguments as Map<String, dynamic>; 
+        final args = settings.arguments as Map<String, dynamic>;
         final campaign = args['campaign'] as CampaignModel;
         final amount = args['amount'] as double;
-        return MaterialPageRoute(builder: (_) => SuccessPage(campaign: campaign, amount: amount)); 
+        return MaterialPageRoute(builder: (_) => SuccessPage(campaign: campaign, amount: amount));
+
       case Routes.addCard:
         return MaterialPageRoute(builder: (_) => AddNewCardPage());
+
       case Routes.signInEmail:
         return MaterialPageRoute(builder: (_) => LoginPage());
-   
+
       case Routes.favourite:
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
@@ -123,6 +130,7 @@ class AppRoutes {
 
       case Routes.homePage:
         return MaterialPageRoute(builder: (_) => HomeScreen());
+
       case Routes.transactions:
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
@@ -130,17 +138,21 @@ class AppRoutes {
             child: const TransactionsScreen(),
           ),
         );
-         case Routes.prof_manage:
+
+      case Routes.prof_manage:
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
             create: (_) => SettingsCubit()..load(),
             child: const ProfileManagementScreen(),
           ),
         );
+
       case Routes.editProfile:
         return MaterialPageRoute(builder: (_) => const EditProfileScreen());
+
       case Routes.inviteFriends:
         return MaterialPageRoute(builder: (_) => const InviteFriendsScreen());
+
       case Routes.settings:
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
@@ -148,20 +160,30 @@ class AppRoutes {
             child: const SettingsScreen(),
           ),
         );
+
       case Routes.zakatCalculator:
         return MaterialPageRoute(builder: (_) => const ZakatCalculatorPage());
+
       case Routes.add_donate:
         return MaterialPageRoute(builder: (_) => DonationScreen());
-case Routes.foundationPage:
-  final foundation = settings.arguments as FoundationModel;
-  return MaterialPageRoute(
-    builder: (_) => FoundationPage(foundation: foundation),
-  );
+
+      case Routes.foundationPage:
+        final foundation = settings.arguments as FoundationModel;
+        return MaterialPageRoute(
+          builder: (_) => FoundationPage(foundation: foundation),
+        );
+
+
+      case Routes.categoryDetails:
+        final categoryName = settings.arguments as String;
+        return MaterialPageRoute(
+          builder: (_) => CategoryDetailsScreen(categoryName: categoryName),
+        );
 
       default:
         return MaterialPageRoute(
           builder: (_) =>
-              const Scaffold(body: Center(child: Text('404 - Page Not Found'))),
+          const Scaffold(body: Center(child: Text('404 - Page Not Found'))),
         );
     }
   }
