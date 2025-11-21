@@ -66,7 +66,7 @@ class FoundationCard extends StatelessWidget {
           Row(
             children: [
               ...List.generate(
-                3,
+                2,
                 (idx) => Padding(
                   padding: EdgeInsets.only(right: 2),
                   child: CircleAvatar(

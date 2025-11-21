@@ -1,3 +1,4 @@
+import 'package:charity/see_founadtion/all_foundation.dart';
 import 'package:charity/src/features/add_donate/add_donate.dart';
 import 'package:charity/src/features/create_account/screens/create_account.dart';
 import 'package:charity/src/features/donation_page/screen/foundation_page.dart';
@@ -5,6 +6,7 @@ import 'package:charity/src/features/favourite/favourite.dart';
 import 'package:charity/src/features/favourite/cubits/favourite_cubit.dart';
 import 'package:charity/src/features/donation_page/screen/donation_page.dart';
 import 'package:charity/src/features/forget_password/screens/forget_password_page.dart';
+import 'package:charity/src/features/home/cubits/foundations_cubit.dart';
 import 'package:charity/src/features/home/models/campaign_model.dart';
 import 'package:charity/src/features/home/models/foundation_model.dart';
 import 'package:charity/src/features/home/screen/home_screen.dart';
@@ -56,7 +58,8 @@ class Routes {
   static const String zakatCalculator = '/zakat_calculator';
   static const String add_donate = '/add_donate';
   static const String prof_manage = '/prof_manage';
-  static const String foundationPage = "/foundation_page";
+    static const String foundationPage = "/foundation_page";
+    static const String all = "/all_foundation";
   static const String categoryDetails = '/category_details';
 }
 
@@ -121,6 +124,10 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => LoginPage());
 
       case Routes.favourite:
+        return MaterialPageRoute(builder: (_) => FavouriteScreen());
+      case Routes.all:
+        return MaterialPageRoute(builder: (_) => AllFoundation());  
+
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
             create: (_) => FavouriteCubit()..loadFavourites(),

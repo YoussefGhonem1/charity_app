@@ -19,7 +19,6 @@ import '../models/category_model.dart';
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
-
   static final List<CategoryModel> categories = [
     CategoryModel('Education'),
     CategoryModel('Health'),
@@ -94,7 +93,9 @@ class HomeScreen extends StatelessWidget {
                           Text(
                             t.donationWallet,
                             style: const TextStyle(
-                                color: Colors.white, fontSize: 16),
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
                           ),
                           const SizedBox(height: 10),
                           Text(
@@ -131,7 +132,6 @@ class HomeScreen extends StatelessWidget {
           ),
           const SizedBox(height: 24),
 
-
           Text(
             t.translate('categories') ?? 'categories',
             style: TextStyle(
@@ -155,7 +155,7 @@ class HomeScreen extends StatelessWidget {
                       context,
                       Routes.categoryDetails,
                       arguments: category.name,
-                      );
+                    );
                   },
                   child: CategoryChip(category: category),
                 );
@@ -228,20 +228,37 @@ class HomeScreen extends StatelessWidget {
               }
               if (state is CampaignsError)
                 return Center(
-                    child: Text('${t.translate('error')}: ${state.message}'));
+                  child: Text('${t.translate('error')}: ${state.message}'),
+                );
               return const SizedBox();
             },
           ),
           const SizedBox(height: 20),
-          Text(
-            t.foundations,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-              color: Theme.of(context).textTheme.bodyLarge?.color,
-            ),
+
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                t.foundations,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                  color: Theme.of(context).textTheme.bodyLarge?.color,
+                ),
+              ),
+
+              TextButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, Routes.all);
+                },
+                child: Text(
+                  'See All',
+                  style: TextStyle(fontSize: 16, color: Colors.blue),
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           SizedBox(
             height: 240,
             child: BlocBuilder<FoundationCubit, FoundationsState>(
@@ -254,17 +271,20 @@ class HomeScreen extends StatelessWidget {
                     itemCount: state.foundations.length,
                     itemBuilder: (context, index) {
                       final foundation = state.foundations[index];
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.pushNamed(
-                            context,
-                            Routes.foundationPage,
-                            arguments: foundation,
-                          );
-                        },
-                        child: SizedBox(
-                          width: 200,
-                          child: FoundationCard(foundation: foundation),
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 12),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(
+                              context,
+                              Routes.foundationPage,
+                              arguments: foundation,
+                            );
+                          },
+                          child: SizedBox(
+                            width: 200,
+                            child: FoundationCard(foundation: foundation),
+                          ),
                         ),
                       );
                     },
@@ -272,7 +292,8 @@ class HomeScreen extends StatelessWidget {
                 }
                 if (state is FoundationsError)
                   return Center(
-                      child: Text('${t.translate('error')}: ${state.message}'));
+                    child: Text('${t.translate('error')}: ${state.message}'),
+                  );
                 return const SizedBox();
               },
             ),
@@ -310,12 +331,12 @@ class HomeScreen extends StatelessWidget {
                               ? latestCampaigns.length
                               : displayedCampaigns.length,
                           gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            childAspectRatio: 0.99,
-                            crossAxisSpacing: 12,
-                            mainAxisSpacing: 12,
-                          ),
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                childAspectRatio: 0.99,
+                                crossAxisSpacing: 12,
+                                mainAxisSpacing: 12,
+                              ),
                           itemBuilder: (context, index) {
                             final campaign = showAll
                                 ? latestCampaigns[index]
@@ -329,27 +350,30 @@ class HomeScreen extends StatelessWidget {
                                 );
                               },
                               child:
-                              BlocBuilder<FavouriteCubit, FavouriteState>(
-                                builder: (context, favState) {
-                                  return FutureBuilder<bool>(
-                                    future: context
-                                        .read<FavouriteCubit>()
-                                        .isFavourite(campaign, null),
-                                    builder: (context, snapshot) {
-                                      final isFav = snapshot.data ?? false;
-                                      return LastestCampaignCard(
-                                        campaign: campaign,
-                                        isFavourite: isFav,
-                                        onFavouriteTap: () {
-                                          context
-                                              .read<FavouriteCubit>()
-                                              .toggleFavourite(campaign, null);
+                                  BlocBuilder<FavouriteCubit, FavouriteState>(
+                                    builder: (context, favState) {
+                                      return FutureBuilder<bool>(
+                                        future: context
+                                            .read<FavouriteCubit>()
+                                            .isFavourite(campaign, null),
+                                        builder: (context, snapshot) {
+                                          final isFav = snapshot.data ?? false;
+                                          return LastestCampaignCard(
+                                            campaign: campaign,
+                                            isFavourite: isFav,
+                                            onFavouriteTap: () {
+                                              context
+                                                  .read<FavouriteCubit>()
+                                                  .toggleFavourite(
+                                                    campaign,
+                                                    null,
+                                                  );
+                                            },
+                                          );
                                         },
                                       );
                                     },
-                                  );
-                                },
-                              ),
+                                  ),
                             );
                           },
                         ),
@@ -369,7 +393,8 @@ class HomeScreen extends StatelessWidget {
               }
               if (state is CampaignsError)
                 return Center(
-                    child: Text('${t.translate('error')}: ${state.message}'));
+                  child: Text('${t.translate('error')}: ${state.message}'),
+                );
               return const SizedBox();
             },
           ),
