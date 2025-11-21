@@ -5,7 +5,7 @@ import '../../../shared/widgets/text_form.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class ForgetPasswordPage extends StatelessWidget {
-  ForgetPasswordPage({super.key});
+  ForgetPasswordPage({Key? key}) : super(key: key);
 
   final TextEditingController passController = TextEditingController();
 
@@ -40,9 +40,11 @@ class ForgetPasswordPage extends StatelessWidget {
                     await FirebaseAuth.instance.sendPasswordResetEmail(
                       email: passController.text.trim(),
                     );
+                    if (!context.mounted) return;
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text("Password reset email sent!")),
                     );
+                    if (!context.mounted) return;
                     Navigator.pushNamed(context, Routes.forgetConfirmation);
                   } on FirebaseAuthException catch (e) {
                     String message = '';
@@ -53,6 +55,7 @@ class ForgetPasswordPage extends StatelessWidget {
                     } else {
                       message = 'Failed to send email. Try again.';
                     }
+                    if (!context.mounted) return;
                     ScaffoldMessenger.of(
                       context,
                     ).showSnackBar(SnackBar(content: Text(message)));

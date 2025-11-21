@@ -26,28 +26,6 @@ class AllFoundation extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(30),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 5,
-                    offset: Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: const TextField(
-                decoration: InputDecoration(
-                  hintText: 'Search foundation...',
-                  prefixIcon: Icon(Icons.search),
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(vertical: 14),
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
             Expanded(
               child: BlocBuilder<FoundationCubit, FoundationsState>(
                 builder: (context, state) {
@@ -59,11 +37,11 @@ class AllFoundation extends StatelessWidget {
                     return GridView.builder(
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 0.65,
-                        crossAxisSpacing: 12,
-                        mainAxisSpacing: 12,
-                      ),
+                            crossAxisCount: 2,
+                            childAspectRatio: 0.75,
+                            crossAxisSpacing: 12,
+                            mainAxisSpacing: 12,
+                          ),
                       itemCount: state.foundations.length,
                       itemBuilder: (context, index) {
                         final foundation = state.foundations[index];
@@ -82,9 +60,7 @@ class AllFoundation extends StatelessWidget {
                   }
 
                   if (state is FoundationsError) {
-                    return Center(
-                      child: Text(state.message),
-                    );
+                    return Center(child: Text(state.message));
                   }
 
                   return const SizedBox();

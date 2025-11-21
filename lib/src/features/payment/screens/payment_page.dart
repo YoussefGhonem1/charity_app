@@ -1,11 +1,13 @@
+import 'package:charity/src/features/home/models/campaign_model.dart';
 import 'package:charity/src/shared/routing/app_routs.dart';
 import 'package:charity/src/shared/widgets/button.dart';
 import 'package:flutter/material.dart';
 import 'package:charity/src/shared/theme/app_colors.dart';
 
 class PaymentPage extends StatefulWidget {
-  const PaymentPage({super.key});
-
+final CampaignModel campaign; // <-- أضف هذا
+  final double amount; // <-- أضف هذا
+  const PaymentPage({super.key, required this.campaign, required this.amount}); // <-- عدّل هذا
   @override
   State<PaymentPage> createState() => _PaymentPageState();
 }
@@ -94,11 +96,18 @@ class _PaymentPageState extends State<PaymentPage> {
                   const SizedBox(height: 16),
                   _buildAddNewCardButton(),
                   const SizedBox(height: 26),
-                  ContinueButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, Routes.enterPin);
+                 ContinueButton(
+                onPressed: () {
+                  Navigator.pushNamed(
+                    context,
+                    Routes.enterPin,
+                    arguments: { 
+                      'campaign': widget.campaign,
+                      'amount': widget.amount,
                     },
-                  ),
+                  );
+                },
+              ),
                 ],
               ),
             ),
@@ -151,7 +160,7 @@ class _PaymentPageState extends State<PaymentPage> {
                   _selectedPaymentMethod = newValue!;
                 });
               },
-              activeColor: AppColors.primaryColor,
+              fillColor: WidgetStateProperty.all(AppColors.primaryColor),
             ),
           ],
         ),

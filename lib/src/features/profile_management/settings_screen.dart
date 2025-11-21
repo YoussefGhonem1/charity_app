@@ -1,63 +1,81 @@
 import 'package:flutter/material.dart';
 import 'package:charity/src/shared/theme/app_colors.dart';
+import 'package:charity/src/shared/localization/app_translations.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:charity/src/shared/cubits/theme_cubit.dart';
+import 'package:charity/src/shared/cubits/locale_cubit.dart';
+import 'package:charity/src/features/profile_management/cubits/settings_cubit.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SettingsScreen extends StatefulWidget {
-  const SettingsScreen({Key? key}) : super(key: key);
+  const SettingsScreen();
 
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  bool _notificationsEnabled = true;
-  bool _darkModeEnabled = false;
-  String _language = 'English';
 
   @override
   Widget build(BuildContext context) {
+    final t = AppTranslations.of(context);
     return Scaffold(
-      appBar: AppBar(title: const Text('Settings')),
+      appBar: AppBar(title: Text(t.settings)),
       body: ListView(
         padding: const EdgeInsets.all(8),
         children: [
-          _buildSectionTitle(context, 'Preferences'),
-          SwitchListTile(
-            value: _notificationsEnabled,
-            onChanged: (value) {
-              setState(() => _notificationsEnabled = value);
-              _toast('Notifications ${value ? 'enabled' : 'disabled'}');
+          _buildSectionTitle(context, t.preferences),
+          BlocBuilder<SettingsCubit, SettingsState>(
+            builder: (context, settings) {
+              return SwitchListTile(
+                value: settings.notificationsEnabled,
+                onChanged: (value) {
+                  context.read<SettingsCubit>().setNotifications(value);
+                  _toast(value ? t.translate('notifications_enabled') : t.translate('notifications_disabled'));
+                },
+                title: Text(t.notifications, style: const TextStyle(fontSize: 18)),
+                secondary: const Icon(Icons.notifications),
+                activeThumbColor: AppColors.primaryColor,
+              );
             },
-            title: const Text('Notifications', style: TextStyle(fontSize: 18)),
-            secondary: const Icon(Icons.notifications),
-            activeColor: AppColors.primaryColor,
           ),
-          SwitchListTile(
-            value: _darkModeEnabled,
-            onChanged: (value) {
-              setState(() => _darkModeEnabled = value);
-              _toast('Dark mode ${value ? 'enabled' : 'disabled'}');
+          BlocBuilder<ThemeCubit, ThemeMode>(
+            builder: (context, mode) {
+              final enabled = mode == ThemeMode.dark;
+              return SwitchListTile(
+                value: enabled,
+                onChanged: (value) {
+                  context.read<ThemeCubit>().toggleDark(value);
+                  _toast(value ? t.translate('dark_mode_enabled') : t.translate('dark_mode_disabled'));
+                },
+                title: Text(t.darkMode, style: const TextStyle(fontSize: 18)),
+                secondary: const Icon(Icons.dark_mode),
+                activeThumbColor: AppColors.primaryColor,
+              );
             },
-            title: const Text('Dark mode', style: TextStyle(fontSize: 18)),
-            secondary: const Icon(Icons.dark_mode),
-            activeColor: AppColors.primaryColor,
           ),
-          ListTile(
-            leading: const Icon(Icons.language),
-            title: const Text('Language', style: TextStyle(fontSize: 18)),
-            subtitle: Text(_language),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: _pickLanguage,
+          BlocBuilder<LocaleCubit, Locale>(
+            builder: (context, locale) {
+              final language = locale.languageCode == 'ar' ? t.arabic : t.english;
+              return ListTile(
+                leading: const Icon(Icons.language),
+                title: Text(t.language, style: const TextStyle(fontSize: 18)),
+                subtitle: Text(language),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: _pickLanguage,
+              );
+            },
           ),
 
           const Divider(),
-          _buildSectionTitle(context, 'About'),
+          _buildSectionTitle(context, t.about),
           ListTile(
             leading: const Icon(Icons.info_outline),
-            title: const Text('About app', style: TextStyle(fontSize: 18)),
+            title: Text(t.aboutApp, style: const TextStyle(fontSize: 18)),
             onTap: () {
               showAboutDialog(
                 context: context,
-                applicationName: 'Charity App',
+                applicationName: t.appName,
                 applicationVersion: '1.0.0',
                 applicationLegalese: '© 2025 Charity Org',
               );
@@ -65,17 +83,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           ListTile(
             leading: const Icon(Icons.privacy_tip_outlined),
-            title: const Text('Privacy policy', style: TextStyle(fontSize: 18)),
+            title: Text(t.privacyPolicy, style: const TextStyle(fontSize: 18)),
             onTap: () {
-              _toast('Open privacy policy');
+              _toast(t.openPrivacyPolicy);
             },
           ),
 
           const Divider(),
-          _buildSectionTitle(context, 'Danger zone'),
+          _buildSectionTitle(context, t.dangerZone),
           ListTile(
             leading: const Icon(Icons.logout, color: Colors.redAccent),
-            title: const Text('Log out', style: TextStyle(fontSize: 18)),
+            title: Text(t.logOut, style: const TextStyle(fontSize: 18)),
             onTap: _confirmLogout,
           ),
         ],
@@ -100,19 +118,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<void> _pickLanguage() async {
+    final t = AppTranslations.of(context);
     final selected = await showModalBottomSheet<String>(
       context: context,
       builder: (context) {
+        final translations = AppTranslations.of(context);
         return SafeArea(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                title: const Text('English'),
+                title: Text(translations.english),
                 onTap: () => Navigator.pop(context, 'English'),
               ),
               ListTile(
-                title: const Text('Arabic'),
+                title: Text(translations.arabic),
                 onTap: () => Navigator.pop(context, 'Arabic'),
               ),
             ],
@@ -121,27 +141,33 @@ class _SettingsScreenState extends State<SettingsScreen> {
       },
     );
     if (selected != null) {
-      setState(() => _language = selected);
-      _toast('Language set to $selected');
+      if (!context.mounted) return;
+      final locale = selected == 'Arabic' ? const Locale('ar') : const Locale('en');
+      context.read<LocaleCubit>().setLocale(locale);
+      final updatedT = AppTranslations.of(context);
+      final languageName = selected == 'Arabic' ? updatedT.arabic : updatedT.english;
+      _toast('${t.translate('language_set_to')} $languageName');
     }
   }
 
   Future<void> _confirmLogout() async {
+    final t = AppTranslations.of(context);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) {
+        final translations = AppTranslations.of(context);
         return AlertDialog(
-          title: const Text('Log out'),
-          content: const Text('Are you sure you want to log out?'),
+          title: Text(translations.logOut),
+          content: Text(translations.areYouSureLogout),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: const Text('Cancel'),
+              child: Text(translations.cancel),
             ),
             TextButton(
               onPressed: () => Navigator.pop(context, true),
               child: Text(
-                'Log out',
+                translations.logOut,
                 style: TextStyle(color: AppColors.primaryColor),
               ),
             ),
@@ -150,7 +176,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
       },
     );
     if (confirmed == true) {
-      _toast('Logged out');
+      await FirebaseAuth.instance.signOut();
+      if (!mounted) return;
       Navigator.pop(context);
     }
   }

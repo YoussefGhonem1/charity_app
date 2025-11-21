@@ -7,7 +7,7 @@ import '../../home/models/foundation_model.dart';
 class FoundationPage extends StatelessWidget {
   final FoundationModel foundation;
 
-  const FoundationPage({super.key, required this.foundation});
+  const FoundationPage({Key? key, required this.foundation}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -1,10 +1,18 @@
+import 'package:charity/src/features/home/models/campaign_model.dart';
 import 'package:charity/src/shared/routing/app_routs.dart';
 import 'package:flutter/material.dart';
 import 'package:charity/src/shared/theme/app_colors.dart';
 import 'package:confetti/confetti.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:charity/src/features/create_account/cubits/user_cubit.dart';
+import 'package:charity/src/features/home/cubits/campaign_cubit.dart';
 
 class SuccessPage extends StatefulWidget {
-  const SuccessPage({super.key});
+  final CampaignModel campaign;
+  final double amount;
+  const SuccessPage({super.key, required this.campaign, required this.amount});
 
   @override
   State<SuccessPage> createState() => _SuccessPageState();
@@ -12,6 +20,7 @@ class SuccessPage extends StatefulWidget {
 
 class _SuccessPageState extends State<SuccessPage> {
   late ConfettiController _confettiController;
+  bool _isProcessing = true; 
 
   @override
   void initState() {
@@ -20,6 +29,75 @@ class _SuccessPageState extends State<SuccessPage> {
       duration: const Duration(seconds: 1),
     );
     _confettiController.play();
+    _processDonation();
+  }
+
+  Future<void> _processDonation() async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        throw Exception("User is not logged in.");
+      }
+
+      final double donationAmount = widget.amount;
+      final CampaignModel campaign = widget.campaign;
+
+      final campaignRef = FirebaseFirestore.instance
+          .collection('campaigns')
+          .doc(campaign.id);
+      final userRef =
+          FirebaseFirestore.instance.collection('users').doc(user.uid);
+      final transactionRef =
+          userRef.collection('transactions').doc();
+
+      final double newCurrentAmount = campaign.currentAmount + donationAmount;
+      final double newProgress =
+          (newCurrentAmount / campaign.amount).clamp(0.0, 1.0);
+
+      final batch = FirebaseFirestore.instance.batch();
+
+      batch.update(campaignRef, {
+        'currentAmount': newCurrentAmount,
+        'progress': newProgress,
+        'donatedAmount':
+            FieldValue.increment(1), 
+      });
+
+      batch.update(userRef, {
+        'donatedAmount':
+            FieldValue.increment(donationAmount), 
+      });
+
+      batch.set(transactionRef, {
+        'title': 'Donation to ${campaign.title}',
+        'amount': donationAmount,
+        'date': Timestamp.now(),
+        'dateMs': DateTime.now().millisecondsSinceEpoch,
+        'campaignId': campaign.id,
+      });
+
+      await batch.commit();
+
+      if (mounted) {
+        context.read<UserCubit>().loadUserData();
+        context.read<CampaignsCubit>().fetchCampaigns();
+      }
+    } catch (e) {
+      print("Error processing donation: $e");
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text('Error: ${e.toString()}'),
+              backgroundColor: Colors.red),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isProcessing = false; 
+        });
+      }
+    }
   }
 
   @override
@@ -58,7 +136,7 @@ class _SuccessPageState extends State<SuccessPage> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Thank you for making a donation',
+                    'Thank you for donating \$${widget.amount.toStringAsFixed(2)}!',
                     textAlign: TextAlign.center,
                     style: theme.textTheme.bodyMedium,
                   ),
@@ -68,21 +146,33 @@ class _SuccessPageState extends State<SuccessPage> {
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primaryColor,
-
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
                       ),
-                      onPressed: () {
-                        Navigator.pushNamed(context, Routes.layout);
-                      },
-                      child: Text(
-                        'OK',
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: AppColors.bgColor,
-                        ),
-                      ),
+                      onPressed: _isProcessing
+                          ? null
+                          : () {
+                              Navigator.pushNamedAndRemoveUntil(
+                                context,
+                                Routes.layout,
+                                (route) => false, 
+                              );
+                            },
+                      child: _isProcessing
+                          ? const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                  color: Colors.white, strokeWidth: 2),
+                            )
+                          : Text(
+                              'OK',
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: AppColors.bgColor,
+                              ),
+                            ),
                     ),
                   ),
                 ],

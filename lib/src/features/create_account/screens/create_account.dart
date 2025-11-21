@@ -116,8 +116,8 @@ Future<void> signUpWithEmail({
       'lastName': lastName,
       'email': email,
       'createdAt': FieldValue.serverTimestamp(),
-      'donatedAmount': 0,
-      'wallet': 0,
+      'donatedAmount': 0.0,
+      'wallet': 0.0,
       'avatarUrl': '',
     };
 
@@ -129,8 +129,8 @@ Future<void> signUpWithEmail({
       lastName: lastName,
       email: email,
       avatarUrl: '',
-      donatedAmount: 0,
-      wallet: 0,
+      donatedAmount: 0.0,
+      wallet: 0.0,
     );
 
     context.read<UserCubit>().setUser(newUser);

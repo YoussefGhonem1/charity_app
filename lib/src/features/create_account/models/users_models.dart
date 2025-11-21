@@ -4,8 +4,8 @@ class UserModel {
   final String lastName;
   final String email;
   final String avatarUrl;
-  final int donatedAmount;
-  final int wallet;
+  final double donatedAmount;
+  final double wallet;
 
   UserModel({
     required this.uid,
@@ -18,14 +18,20 @@ class UserModel {
   });
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
+    double toDouble(dynamic value) {
+      if (value is num) return value.toDouble();
+      if (value is String) return double.tryParse(value) ?? 0.0;
+      return 0.0;
+    }
+
     return UserModel(
       uid: map['uid'] ?? '',
       firstName: map['firstName'] ?? '',
       lastName: map['lastName'] ?? '',
       email: map['email'] ?? '',
       avatarUrl: map['avatarUrl'] ?? '',
-      donatedAmount: map['donatedAmount'] ?? 0,
-      wallet: map['wallet'] ?? 0,
+      donatedAmount: toDouble(map['donatedAmount']),
+      wallet: toDouble(map['wallet']),
     );
   }
 

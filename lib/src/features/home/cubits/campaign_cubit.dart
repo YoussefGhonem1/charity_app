@@ -1,4 +1,4 @@
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/campaign_model.dart';
 
@@ -19,12 +19,12 @@ class CampaignsCubit extends Cubit<CampaignsState> {
 
   CampaignsCubit() : super(CampaignsInitial());
 
-  Future<void> fetchCampaigns() async {
+Future<void> fetchCampaigns() async {
     emit(CampaignsLoading());
     try {
       var snapshot = await FirebaseFirestore.instance.collection('campaigns').get();
       var campaigns = snapshot.docs
-          .map((doc) => CampaignModel.fromFirestore(doc.data() as Map<String, dynamic>))
+          .map((doc) => CampaignModel.fromFirestore(doc.id, doc.data())) 
           .toList();
       _cachedCampaigns = campaigns;
       emit(CampaignsLoaded(campaigns));
