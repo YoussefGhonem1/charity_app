@@ -157,11 +157,26 @@ class HomeScreen extends StatelessWidget {
             },
           ),
           const SizedBox(height: 20),
-          const Text(
+          Row( mainAxisAlignment: MainAxisAlignment.spaceBetween,children: [Text(
             'Foundations',
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
           ),
-          const SizedBox(height: 12),
+
+TextButton(
+      onPressed: () {
+        Navigator.pushNamed(context, Routes.all);
+      },
+      child: Text(
+        'See All',
+        style: TextStyle(
+          fontSize: 16,
+          color: Colors.blue,
+        ),
+      ),
+    ),
+          ]
+          ),
+           SizedBox(height: 12),
           SizedBox(
             height: 240,
             child: BlocBuilder<FoundationCubit, FoundationsState>(
