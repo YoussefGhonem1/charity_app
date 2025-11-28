@@ -60,7 +60,11 @@ class AppTranslations {
       'log_out': 'Log out',
       'are_you_sure_logout': 'Are you sure you want to log out?',
       'cancel': 'Cancel',
-      
+      'knowledge_hub': 'Knowledge Hub',
+      'zakat_guidelines': 'Zakat Guidelines',
+      'success_stories': 'Success Stories',
+      'faq_title': 'Frequently Asked Questions',
+
       // Home Screen
       'feature_campaigns': 'Feature Campaigns',
       'foundations': 'Foundations',
@@ -187,6 +191,10 @@ class AppTranslations {
       'log_out': 'تسجيل الخروج',
       'are_you_sure_logout': 'هل أنت متأكد من تسجيل الخروج؟',
       'cancel': 'إلغاء',
+      'knowledge_hub': 'مركز المعرفة الخيري',
+      'zakat_guidelines': 'دليل الزكاة الشامل',
+      'success_stories': 'قصص نجاح مُلهمة',
+      'faq_title': 'الأسئلة الشائعة',
       
       // Home Screen
       'feature_campaigns': 'حملات مميزة',
