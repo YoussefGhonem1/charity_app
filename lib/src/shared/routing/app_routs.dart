@@ -10,6 +10,12 @@ import 'package:charity/src/features/home/cubits/foundations_cubit.dart';
 import 'package:charity/src/features/home/models/campaign_model.dart';
 import 'package:charity/src/features/home/models/foundation_model.dart';
 import 'package:charity/src/features/home/screen/home_screen.dart';
+import 'package:charity/src/features/knowledge_hub/screens/faq_screen.dart';
+import 'package:charity/src/features/knowledge_hub/screens/knowledge_hub_screen.dart';
+import 'package:charity/src/features/knowledge_hub/screens/story_detail_screen.dart';
+import 'package:charity/src/features/knowledge_hub/screens/success_stories_screen.dart';
+import 'package:charity/src/features/knowledge_hub/screens/zakat_topic_detail_screen.dart';
+import 'package:charity/src/features/knowledge_hub/screens/zakat_topics_screen.dart';
 import 'package:charity/src/features/layout/screens/layout_screen.dart';
 import 'package:charity/src/features/on_boarding/screens/on_boarding_page.dart';
 import 'package:charity/src/features/payment/screens/add_card_page.dart';
@@ -58,9 +64,15 @@ class Routes {
   static const String zakatCalculator = '/zakat_calculator';
   static const String add_donate = '/add_donate';
   static const String prof_manage = '/prof_manage';
-    static const String foundationPage = "/foundation_page";
-    static const String all = "/all_foundation";
+  static const String foundationPage = "/foundation_page";
+  static const String all = "/all_foundation";
   static const String categoryDetails = '/category_details';
+  static const String knowledgeHub = '/knowledge_hub';
+  static const String zakatTopics = '/zakat_topics';
+  static const String zakatTopicDetail = '/zakat_topic_detail';
+  static const String successStories = '/success_stories';
+  static const String storyDetail = '/story_detail';
+  static const String faq = '/faq';
 }
 
 class AppRoutes {
@@ -128,12 +140,20 @@ class AppRoutes {
       case Routes.all:
         return MaterialPageRoute(builder: (_) => AllFoundation());  
 
-        return MaterialPageRoute(
-          builder: (_) => BlocProvider(
-            create: (_) => FavouriteCubit()..loadFavourites(),
-            child: const FavouriteScreen(),
-          ),
-        );
+        case Routes.knowledgeHub:
+        return MaterialPageRoute(builder: (_) => const KnowledgeHubScreen());
+      case Routes.zakatTopics:
+        return MaterialPageRoute(builder: (_) => const ZakatTopicsScreen());
+      case Routes.zakatTopicDetail:
+        final topic = settings.arguments as String;
+        return MaterialPageRoute(builder: (_) => ZakatTopicDetailScreen(topic: topic));
+      case Routes.successStories:
+        return MaterialPageRoute(builder: (_) => const SuccessStoriesScreen());
+      case Routes.storyDetail:
+        final storyTitle = settings.arguments as String;
+        return MaterialPageRoute(builder: (_) => StoryDetailScreen(storyTitle: storyTitle));
+      case Routes.faq:
+        return MaterialPageRoute(builder: (_) => const FAQScreen());
 
       case Routes.homePage:
         return MaterialPageRoute(builder: (_) => HomeScreen());

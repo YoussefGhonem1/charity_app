@@ -108,7 +108,6 @@ class FoundationPage extends StatelessWidget {
 
                   const SizedBox(height: 24),
 
-                  // زر التبرع
                   Row(
                     children: [
                       Expanded(

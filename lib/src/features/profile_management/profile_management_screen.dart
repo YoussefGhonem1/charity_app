@@ -146,6 +146,11 @@ class _ProfileManagementScreenState extends State<ProfileManagementScreen> {
                     Navigator.pushNamed(context, Routes.zakatCalculator),
               ),
               _buildMenuItem(
+                icon: Icons.lightbulb_outline,
+                text: t.translate('knowledge_hub'),
+                onTap: () => Navigator.pushNamed(context, Routes.knowledgeHub),
+              ),
+              _buildMenuItem(
                 icon: Icons.add,
                 text: t.addCampaign,
                 onTap: () => Navigator.pushNamed(context, Routes.add_donate),

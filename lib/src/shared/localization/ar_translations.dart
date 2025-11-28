@@ -4,13 +4,13 @@
 const Map<String, String> arTranslations = {
   // Common
   'app_name': 'تطبيق الخير',
-  
+
   // Navigation tabs
   'home': 'الرئيسية',
   'favourite': 'المفضلة',
   'zakat': 'الزكاة',
   'account': 'الحساب',
-  
+
   // Profile Management
   'hello': 'مرحبا',
   'donated': 'تبرعت بـ',
@@ -27,7 +27,7 @@ const Map<String, String> arTranslations = {
   'logout': 'تسجيل الخروج',
   'logged_out_successfully': 'تم تسجيل الخروج بنجاح',
   'logout_failed': 'فشل تسجيل الخروج',
-  
+
   // Settings
   'preferences': 'التفضيلات',
   'notifications': 'الإشعارات',
@@ -48,7 +48,11 @@ const Map<String, String> arTranslations = {
   'log_out': 'تسجيل الخروج',
   'are_you_sure_logout': 'هل أنت متأكد من تسجيل الخروج؟',
   'cancel': 'إلغاء',
-  
+  'knowledge_hub': 'مركز المعرفة الخيري',
+  'zakat_guidelines': 'دليل الزكاة الشامل',
+  'success_stories': 'قصص نجاح مُلهمة',
+  'faq_title': 'الأسئلة الشائعة',
+
   // Home Screen
   'feature_campaigns': 'حملات مميزة',
   'foundations': 'الجمعيات',
@@ -56,7 +60,7 @@ const Map<String, String> arTranslations = {
   'see_all': 'عرض الكل',
   'show_less': 'عرض أقل',
   'error': 'خطأ',
-  
+
   // Edit Profile
   'save': 'حفظ',
   'full_name': 'الاسم الكامل',
@@ -72,27 +76,28 @@ const Map<String, String> arTranslations = {
   'profile_updated_successfully': 'تم تحديث الملف الشخصي بنجاح',
   'select_photo': 'اختر صورة',
   'change_photo': 'تغيير الصورة',
-  
+
   // Transactions
   'total_donated': 'إجمالي التبرعات',
-  
+
   // Invite Friends
   'invite_friends_title': 'دعوة الأصدقاء',
   'share_your_referral_link': 'شارك رابط الإحالة الخاص بك',
-  'invite_friends_description': 'ادعُ الأصدقاء وساعد المزيد من الناس. شارك رابطك الفريد أدناه.',
+  'invite_friends_description':
+      'ادعُ الأصدقاء وساعد المزيد من الناس. شارك رابطك الفريد أدناه.',
   'your_code': 'رمزك',
   'referral_link': 'رابط الإحالة',
   'copy_link': 'نسخ الرابط',
   'copy_and_share_later': 'نسخ ومشاركة لاحقاً',
   'referral_link_copied': 'تم نسخ رابط الإحالة إلى الحافظة',
   'share': 'مشاركة',
-  
+
   // Zakat Calculator
   'zakat_calculator_title': 'حاسبة الزكاة',
   'enter_your_assets': 'أدخل أصولك',
   'calculate': 'احسب',
   'zakat_amount': 'مبلغ الزكاة',
-  
+
   // Payment & Donation
   'donate': 'تبرع',
   'payment': 'الدفع',
@@ -101,7 +106,7 @@ const Map<String, String> arTranslations = {
   'success': 'نجح',
   'donation_amount': 'مبلغ التبرع',
   'enter_amount': 'أدخل المبلغ',
-  
+
   // Sign In/Up
   'sign_in': 'تسجيل الدخول',
   'sign_up': 'إنشاء حساب',
@@ -117,7 +122,7 @@ const Map<String, String> arTranslations = {
   'continue_with_google': 'المتابعة مع Google',
   'continue_with_facebook': 'المتابعة مع Facebook',
   'password': 'كلمة المرور',
-  
+
   // General
   'loading': 'جاري التحميل...',
   'error_occurred': 'حدث خطأ',
@@ -125,4 +130,3 @@ const Map<String, String> arTranslations = {
   'no_data': 'لا توجد بيانات متاحة',
   '404_page_not_found': '404 - الصفحة غير موجودة',
 };
-
