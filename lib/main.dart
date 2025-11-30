@@ -1,3 +1,4 @@
+import 'package:charity/src/features/articles/cubit/articles_cubit.dart';
 import 'package:charity/src/features/create_account/cubits/user_cubit.dart';
 import 'package:charity/src/features/home/cubits/campaign_cubit.dart';
 import 'package:charity/src/features/home/cubits/foundations_cubit.dart';
@@ -23,6 +24,7 @@ void main() async {
         BlocProvider(create: (_) => UserCubit()..loadUserData()),
         BlocProvider(create: (_) => CampaignsCubit()..fetchCampaigns()),
         BlocProvider(create: (context) => FoundationCubit()..fetchFoundations()),
+        BlocProvider(create: (context) => ArticlesCubit()..getArticles()),
         BlocProvider(create: (_) => FavouriteCubit()),
         BlocProvider(create: (_) => ThemeCubit()),
         BlocProvider(create: (_) => LocaleCubit()),
